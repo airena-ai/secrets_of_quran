@@ -1,40 +1,73 @@
 product_spec_northstar: >
-  Project Name: Quran Secrets Analyzer
-  Purpose: Develop a Python application to search secrets of Quran. 
-  
-  *** Build a comprehensive ultimate Quran Analyzer program that analyzes whole Quranic text and finds ultimate secrets. ***
-  Think and generate ideas about possible divine secrets and messages hidden, including but not limited to number 19. 
-  In each development phase of the program, expand the search space to new arabic words in Quran, verses, surahs and search patterns.
-  Start with arabic word and word groups that are in Quran but as you advanced look for more advanced patterns and search unthinkable secrets. 
-  Create lemma and root word analysis using python libraries such as well known CAMeL and Arabic lemmatizer.
-  Apply innovative new search ideas.
-  There's no limit or restriction on what kind of search and analysis you can do on seeking the ultimate secrets of Quran.
+  ### Objective:
+  Develop a comprehensive Python application called Quran Secrets to discover deep, potentially hidden patterns, numerical codes, and linguistic structures in the Quran. The goal is to search for ultimate secrets — from known codes like 19-based patterns to yet-undiscovered anomalies.
 
-  Data Source:
-  You are given {project_root}/data/quran-uthmani-min.txt Do NOT modify this file. It is the source of truth and assume this file will always be there.
-  Use this file in your program to do search and run analysis.
-  Each line in the file represents a unique verse and specifies surah and ayah numbers. Here are the first three lines:
+  ### Phase-Based Development Plan:
+  
+  * Start Simple:
+  Begin by analyzing frequencies of Arabic words, word groups, verses, and surahs using the given Quran text.
+  
+  * Expand Gradually:
+  As the project evolves, implement more advanced and innovative search techniques:
+  Root word and lemma analysis
+  Repeating patterns
+  Palindromic structures
+  Mathematical phenomena
+  Semantic symmetry
+  Rhythmic or structural balance in verse arrangements
+  Anything “unthinkable” that could hint at a secret code or structure
+  
+  * No Restrictions on Creativity:
+  There are no limits on what kind of secret or analysis technique you can try. Treat this as an open-ended, research-oriented mission.
+
+  ### Text Processing Requirements:
+  
+  * Data Source:
+  Use only the following file (do NOT modify it):
+  {project_root}/data/quran-uthmani-min.txt
+  Each line contains: Surah|Ayah|Verse Text
+  Example:
   1|1|بِسمِ اللَّهِ الرَّحمٰنِ الرَّحيمِ
   1|2|الحَمدُ لِلَّهِ رَبِّ العٰلَمينَ
   1|3|الرَّحمٰنِ الرَّحيمِ
   
-  Normalize the arabic text by processing it before your analysis:
-  1) Diacritics (e.g., اللَّهِ vs. الله)
-  2) Slight character variants (e.g., ى vs ي)
-  3) Possibly invisible Unicode differences
-  Arabic has no uppercase/lowercase.
+  * Preprocessing:
+  Normalize Arabic text before analysis:
+  Remove diacritics
+  Normalize Arabic letters (e.g., ى → ي, ة → ه, etc.)
+  Handle invisible Unicode artifacts
+  Arabic has no concept of case sensitivity
 
-  Analysis and Search Strategy:
-  *** Main function will be the ultimate driver of full analysis. It is not a test, example or demonstrations code. It must be through, verbose and fully complete Quran Analysis for finding ultimate Secrets. ***
-  Create an integration test that will run Main function fully without any mock and run the program to extract secrets. Log the results to a file.
-  If you find a secret make sure you tag it explicitly in the output with 'POTENTIAL SECRET FOUND:'. 
+  * Linguistic Tools:
+  Integrate advanced Arabic language processing tools:
+  CAMeL Tools
+  Arabic lemmatizers and root analyzers  
 
+  ### Program Structure & Expectations:
+
+  * Main Function:
+  Acts as the central driver of all analyses.
+  Should not be a demo or placeholder.
+  Must perform a complete and verbose Quran-wide analysis.
+  Must produce meaningful output for every analytical stage.
+
+  * Logging and Output:
+  Log all results to a structured file (e.g., results.log)
+  Any interesting findings should be explicitly tagged with:
+  POTENTIAL SECRET FOUND: [short description]
+
+  * Testing:
+  Create an integration test to run the full main() function
+  No mocks or partial runs — test the full analyzer as a real-world application
+
+  * Final Goal:
+  Build the ultimate Quran Analyzer, pushing the boundaries of pattern discovery, linguistic depth, and computational creativity.
 
 project_root_folder: C:\Github\secrets_of_quran
 product_spec_history_filename: product_spec_history.json
 architecture_spec_history_filename: architecture_spec_history.json
 codebase_metadata_filename: codebase_metadata.json
-total_runs_to_build_northstar: 20
+total_runs_to_build_northstar: 1
 max_test_attempts_per_iteration: 5
 programming_languages:
   - python
