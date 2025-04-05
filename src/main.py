@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry
 from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
@@ -63,6 +63,10 @@ def main():
     analyze_palindromes(text)
     analyze_abjad_numerals(text)
     analyze_semantic_symmetry(text)
+    
+    # New analysis for verse arrangement rhythm & balance
+    analyze_verse_length_symmetry(text)
+    analyze_enhanced_semantic_symmetry(text)
     
     # New analysis functions for lemma analysis and surah verse counts
     analyze_lemmas(text)

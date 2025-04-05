@@ -2,7 +2,7 @@
 
 import unittest
 from unittest.mock import MagicMock
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_repetitions
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry
 import importlib.util
 import src.logger
 
@@ -181,6 +181,54 @@ class TestAnalyzer(unittest.TestCase):
         
         src.logger.log_result = original_log_result
         src.logger.log_secret_found = original_log_secret
+
+    def test_analyze_verse_length_symmetry_symmetry_detected(self):
+        '''Test that analyze_verse_length_symmetry detects symmetry when halves have similar verse lengths.'''
+        sample_text = ("1|1| word word\n"
+                       "1|2| word word\n"
+                       "1|3| word word\n"
+                       "1|4| word word")
+        log_messages = []
+        original_log_secret = src.logger.log_secret_found
+        src.logger.log_secret_found = lambda msg: log_messages.append(msg)
+        results = analyze_verse_length_symmetry(sample_text, avg_threshold=0.5, stddev_threshold=0.5)
+        src.logger.log_secret_found = original_log_secret
+        self.assertIn("1", results)
+        self.assertTrue(results["1"]["symmetric"])
+        secret_logged = any("Verse length distribution symmetry detected in Surah 1" in msg for msg in log_messages)
+        self.assertTrue(secret_logged)
+        
+    def test_analyze_verse_length_symmetry_non_symmetric(self):
+        '''Test that analyze_verse_length_symmetry returns non-symmetric when verse lengths differ significantly.'''
+        sample_text = ("3|1| one two three four\n"
+                       "3|2| one\n"
+                       "3|3| one two three four five six\n"
+                       "3|4| one two")
+        results = analyze_verse_length_symmetry(sample_text, avg_threshold=1.0, stddev_threshold=1.0)
+        self.assertIn("3", results)
+        self.assertFalse(results["3"]["symmetric"])
+        
+    def test_analyze_enhanced_semantic_symmetry_symmetry_detected(self):
+        '''Test that analyze_enhanced_semantic_symmetry detects semantic symmetry when lemma overlap is high.'''
+        sample_text = ("2|1| alpha beta gamma\n"
+                       "2|2| alpha beta gamma")
+        log_messages = []
+        original_log_secret = src.logger.log_secret_found
+        src.logger.log_secret_found = lambda msg: log_messages.append(msg)
+        results = analyze_enhanced_semantic_symmetry(sample_text, symmetry_threshold=0.5)
+        src.logger.log_secret_found = original_log_secret
+        self.assertIn("2", results)
+        self.assertGreaterEqual(results["2"]["symmetry_score"], 0.5)
+        secret_logged = any("Enhanced semantic symmetry (lemma overlap) detected in Surah 2" in msg for msg in log_messages)
+        self.assertTrue(secret_logged)
+        
+    def test_analyze_enhanced_semantic_symmetry_low_symmetry(self):
+        '''Test that analyze_enhanced_semantic_symmetry returns low symmetry score when lemma overlap is minimal.'''
+        sample_text = ("4|1| alpha beta gamma\n"
+                       "4|2| delta epsilon zeta")
+        results = analyze_enhanced_semantic_symmetry(sample_text, symmetry_threshold=0.5)
+        self.assertIn("4", results)
+        self.assertEqual(results["4"]["symmetry_score"], 0)
 
 if __name__ == '__main__':
     unittest.main()

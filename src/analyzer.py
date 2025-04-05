@@ -132,7 +132,7 @@ def analyze_bigrams(tokenized_text, n=2):
 
     This function generates n-grams (bigrams by default) from the tokenized text,
     counts the frequency of each n-gram, and returns a dictionary where keys are n-gram tuples
-    and values are their respective occurrence counts.
+    and values are their frequency counts.
 
     Args:
         tokenized_text (list): A list of preprocessed tokens from the Quran text.
@@ -548,3 +548,153 @@ def analyze_semantic_symmetry(quran_text):
         symmetry_findings.append((surah, common_count, list(common)))
     
     return symmetry_findings
+
+def analyze_verse_length_symmetry(text, avg_threshold=1.0, stddev_threshold=1.0):
+    '''Analyze verse length symmetry between two halves of each Surah.
+    
+    For each Surah in the text, divided by line, the verses are split into two halves.
+    The average verse length (word count) and standard deviation of verse lengths is computed for each half.
+    If the difference in averages and standard deviations between the halves is within the given thresholds,
+    the symmetry is considered significant and logged as a potential secret.
+    
+    Args:
+        text (str): The preprocessed Quran text, with each line representing a verse.
+        avg_threshold (float, optional): Maximum allowed difference in average verse length between halves.
+        stddev_threshold (float, optional): Maximum allowed difference in verse length standard deviation between halves.
+    
+    Returns:
+        dict: A mapping from Surah numbers to a dictionary with metrics for both halves and a symmetry flag.
+    '''
+    import math
+    from collections import defaultdict
+    import re
+    surah_verses = defaultdict(list)
+    default_surah = "1"
+    default_ayah = 1
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    lines = text.splitlines()
+    for line in lines:
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            verse_text = m.group(3).strip()
+        else:
+            surah = default_surah
+            verse_text = line.strip()
+            default_ayah += 1
+        surah_verses[surah].append(verse_text)
+    results = {}
+    for surah, verses in surah_verses.items():
+        n = len(verses)
+        if n < 2:
+            continue
+        mid = n // 2
+        first_half = verses[:mid]
+        second_half = verses[mid:]
+        first_counts = [len(verse.split()) for verse in first_half]
+        second_counts = [len(verse.split()) for verse in second_half]
+        avg_first = sum(first_counts) / len(first_counts) if first_counts else 0
+        avg_second = sum(second_counts) / len(second_counts) if second_counts else 0
+        std_first = math.sqrt(sum((x - avg_first)**2 for x in first_counts)/len(first_counts)) if first_counts else 0
+        std_second = math.sqrt(sum((x - avg_second)**2 for x in second_counts)/len(second_counts)) if second_counts else 0
+        symmetric = (abs(avg_first - avg_second) <= avg_threshold and abs(std_first - std_second) <= stddev_threshold)
+        results[surah] = {
+            "first_half": {"average": avg_first, "stddev": std_first},
+            "second_half": {"average": avg_second, "stddev": std_second},
+            "symmetric": symmetric
+        }
+        src.logger.log_result(f"Surah {surah} - First Half: Avg = {avg_first:.2f}, StdDev = {std_first:.2f}; Second Half: Avg = {avg_second:.2f}, StdDev = {std_second:.2f}")
+        if symmetric:
+            src.logger.log_secret_found(f"Verse length distribution symmetry detected in Surah {surah} between the first and second halves.")
+    return results
+
+def analyze_enhanced_semantic_symmetry(text, symmetry_threshold=0.3):
+    '''Enhanced analysis of semantic symmetry using lemma overlap between two halves of each Surah.
+    
+    For each Surah, the verses are split into two halves and their texts are processed to extract lemmas.
+    The symmetry score is defined as the ratio of the number of common lemmas to the total unique lemmas in the Surah.
+    If the symmetry score meets or exceeds the threshold, it is logged as a potential secret.
+    
+    Args:
+        text (str): The preprocessed Quran text, with each line representing a verse.
+        symmetry_threshold (float, optional): The minimum normalized overlap required to consider semantic symmetry.
+    
+    Returns:
+        dict: A mapping from Surah numbers to a dictionary with the symmetry score and lemma sets for each half.
+    '''
+    from collections import defaultdict
+    import re
+    def get_lemmas(text_fragment):
+        '''Helper function to extract lemmas from a given text fragment using CAMeL Tools morphological analyzer if available.
+
+        Args:
+            text_fragment (str): A fragment of text from which to extract lemmas.
+
+        Returns:
+            list: A list of lemmas corresponding to the tokens in the text fragment.
+        '''
+        tokens = text_fragment.split()
+        lemmas = []
+        import importlib.util
+        camel_spec = importlib.util.find_spec("camel_tools")
+        if camel_spec is not None:
+            try:
+                from camel_tools.morphology.analyzer import Analyzer
+                analyzer = Analyzer.builtin_analyzer()
+                for token in tokens:
+                    try:
+                        analyses = analyzer.analyze(token)
+                        if analyses and 'lemma' in analyses[0]:
+                            lemmas.append(analyses[0]['lemma'])
+                        else:
+                            lemmas.append(token)
+                    except Exception:
+                        lemmas.append(token)
+            except Exception:
+                lemmas = tokens
+        else:
+            lemmas = tokens
+        return lemmas
+
+    surah_verses = defaultdict(list)
+    default_surah = "1"
+    default_ayah = 1
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    lines = text.splitlines()
+    for line in lines:
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            verse_text = m.group(3).strip()
+        else:
+            surah = default_surah
+            verse_text = line.strip()
+            default_ayah += 1
+        surah_verses[surah].append(verse_text)
+    
+    results = {}
+    for surah, verses in surah_verses.items():
+        n = len(verses)
+        if n < 2:
+            continue
+        mid = n // 2
+        first_half_text = " ".join(verses[:mid])
+        second_half_text = " ".join(verses[mid:])
+        lemmas_first = set(get_lemmas(first_half_text))
+        lemmas_second = set(get_lemmas(second_half_text))
+        common = lemmas_first.intersection(lemmas_second)
+        union = lemmas_first.union(lemmas_second)
+        symmetry_score = len(common) / len(union) if union else 0
+        results[surah] = {
+            "symmetry_score": symmetry_score,
+            "first_half_lemmas": lemmas_first,
+            "second_half_lemmas": lemmas_second
+        }
+        src.logger.log_result(f"Surah {surah} - Enhanced Semantic Symmetry Score: {symmetry_score:.2f}")
+        if symmetry_score >= symmetry_threshold:
+            src.logger.log_secret_found(f"Enhanced semantic symmetry (lemma overlap) detected in Surah {surah} between the first and second halves.")
+    return results
