@@ -356,7 +356,7 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '3', 'ayah_number': '1', 'verse_text': 'Verse in surah 3 but no match.'},
         ]
 
-        # Case-insensitive search in range (1,1) to (1,3)
+        # Case-insensitive search for "bismillah" in range (1,1) to (1,3)
         results1 = search_word_group_in_verse_range(dummy_data, "bismillah", (1, 1), (1, 3))
         self.assertEqual(len(results1), 3, "Should find 3 verses in surah 1 with 'bismillah' in case-insensitive search.")
 
@@ -392,7 +392,6 @@ class TestQuranSearch(unittest.TestCase):
         self.maxDiff = None
         import tempfile
         import os
-        # Prepare dummy data lines in the expected file format: surah_number|ayah_number|verse_text
         dummy_lines = [
             "1|1|This verse has five words",
             "1|2|" + " ".join(["alpha{}".format(i) for i in range(1, 20)]),
@@ -432,18 +431,15 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '1', 'ayah_number': '4', 'verse_text': 'word1'},
             {'surah_number': '1', 'ayah_number': '5', 'verse_text': 'word1 word2 word3 word4 word5 word6'}
         ]
-        # Positive test: multiple_of = 2 should select verses with 2, 4, and 6 words.
         results_multiple_2 = search_verses_by_word_count_multiple(dummy_data, 2)
         for verse in results_multiple_2:
             word_count = len(verse['verse_text'].split())
             self.assertEqual(word_count % 2, 0, "Verse word count should be a multiple of 2.")
         self.assertEqual(len(results_multiple_2), 3, "Should return 3 verses with word count multiple of 2.")
         
-        # Negative test: multiple_of = 5 should return an empty list as no verse has a word count that is a multiple of 5.
         results_multiple_5 = search_verses_by_word_count_multiple(dummy_data, 5)
         self.assertEqual(results_multiple_5, [], "Should return an empty list when no verse word count is a multiple of 5.")
         
-        # Test that a ValueError is raised for multiple_of = 0.
         with self.assertRaises(ValueError):
             search_verses_by_word_count_multiple(dummy_data, 0)
 
@@ -454,23 +450,10 @@ class TestQuranSearch(unittest.TestCase):
         """
         self.maxDiff = None
 
-        # Test with an empty string.
         self.assertEqual(calculate_gematrical_value(""), 0, "Empty string should return a gematrical value of 0.")
-
-        # Test with a known simple Arabic word: "ابجد"
-        # Mapping: ا=1, ب=2, ج=3, د=4. Sum=10.
         self.assertEqual(calculate_gematrical_value("ابجد"), 10, "Gematrical value of 'ابجد' should be 10.")
-
-        # Test with the word "الله"
-        # Calculation: ا=1, ل=30, ل=30, ه=5. Sum=66.
         self.assertEqual(calculate_gematrical_value("الله"), 66, "Gematrical value of 'الله' should be 66.")
-
-        # Test with the phrase "بسم الله الرحمن الرحيم"
-        # Expected calculation: بسم = 102, الله = 66,
-        # الرحمن = 329, الرحيم = 289, Total = 786.
         self.assertEqual(calculate_gematrical_value("بسم الله الرحمن الرحيم"), 786, "Gematrical value of 'بسم الله الرحمن الرحيم' should be 786.")
-
-        # Test with non-Arabic characters; they should be ignored.
         self.assertEqual(calculate_gematrical_value("123"), 0, "Non-mapped characters should contribute 0 to the gematrical value.")
 
     def test_search_words_by_gematrical_value(self):
@@ -490,7 +473,6 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'مثال الله'},
             {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'ابجد ابجد'}
         ]
-        # Test for gematrical value 66 ("الله")
         results_66 = search_words_by_gematrical_value(quran_data, 66)
         expected_66 = [
             {'word': 'الله', 'surah_number': '1', 'ayah_number': '1'},
@@ -498,7 +480,6 @@ class TestQuranSearch(unittest.TestCase):
         ]
         self.assertEqual(results_66, expected_66, "Should return words with gematrical value 66 (for 'الله').")
 
-        # Test for gematrical value 10 ("ابجد")
         results_10 = search_words_by_gematrical_value(quran_data, 10)
         expected_10 = [
             {'word': 'ابجد', 'surah_number': '1', 'ayah_number': '1'},
@@ -507,14 +488,12 @@ class TestQuranSearch(unittest.TestCase):
         ]
         self.assertEqual(results_10, expected_10, "Should return words with gematrical value 10 (for 'ابجد') occurring three times.")
 
-        # Test for gematrical value 0 ("test")
         results_0 = search_words_by_gematrical_value(quran_data, 0)
         expected_0 = [
             {'word': 'test', 'surah_number': '1', 'ayah_number': '1'}
         ]
         self.assertEqual(results_0, expected_0, "Should return words with gematrical value 0 (for 'test').")
 
-        # Test for gematrical value 571 ("مثال")
         results_571 = search_words_by_gematrical_value(quran_data, 571)
         expected_571 = [
             {'word': 'مثال', 'surah_number': '1', 'ayah_number': '2'}
@@ -539,7 +518,7 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'No matching phrase here.'}
         ]
         phrase = "الرحمن الرحيم"
-        target_value = 618  # Gematrical value for "الرحمن الرحيم"
+        target_value = 618
         results = search_word_groups_by_gematrical_value(dummy_data, phrase, target_value)
         expected = [
             {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'The opening has الرحمن الرحيم as a sign.'},
@@ -547,12 +526,10 @@ class TestQuranSearch(unittest.TestCase):
         ]
         self.assertEqual(results, expected, "Expected to find verses containing the phrase '{}' with gem value {}.".format(phrase, target_value))
         
-        # Test scenario: target gem value does not match computed value; expect empty result even if phrase appears.
         wrong_target = 600
         results_wrong = search_word_groups_by_gematrical_value(dummy_data, phrase, wrong_target)
         self.assertEqual(results_wrong, [], "Expected empty result when target gem value {} does not match computed value for '{}'.".format(wrong_target, phrase))
         
-        # Test scenario: phrase that does not appear in any verse.
         absent_phrase = "غير موجود"
         absent_computed = calculate_gematrical_value(absent_phrase)
         results_absent = search_word_groups_by_gematrical_value(dummy_data, absent_phrase, absent_computed)
@@ -570,14 +547,10 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'الله'},
             {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'Some non-Arabic text'}
         ]
-        # Expected for Surah 1:
-        # "بسم الله الرحمن الرحيم" splits into ["بسم", "الله", "الرحمن", "الرحيم"]
-        # Gematrical values: 102 + 66 + 329 + 289 = 786, and then adding "الله" = 66, total = 852.
         expected_total = 852
         calculated_total = calculate_surah_gematrical_value(quran_data, 1)
         self.assertEqual(calculated_total, expected_total, "Calculated gematrical value for Surah 1 should be {}.".format(expected_total))
         
-        # For Surah 2, the non-Arabic text should yield a gematrical value of 0.
         calculated_total_surah2 = calculate_surah_gematrical_value(quran_data, 2)
         self.assertEqual(calculated_total_surah2, 0, "Calculated gematrical value for Surah 2 should be 0 since no mapped Arabic letters.")
 
@@ -593,18 +566,15 @@ class TestQuranSearch(unittest.TestCase):
         quran_file_path = 'data/quran-uthmani-min.txt'
         quran_data = load_quran_data(quran_file_path)
         
-        # Define test verse range: verses 1 to 5
         start_verse = 1
         end_verse = 5
         
-        # Manually calculate expected gematrical value
         expected_total = 0
         for idx, verse in enumerate(quran_data, start=1):
             if start_verse <= idx <= end_verse:
                 verse_text = verse.get('verse_text', '')
                 expected_total += calculate_gematrical_value(verse_text)
         
-        # Call the new function
         actual_total = calculate_verse_range_gematrical_value(quran_data, start_verse, end_verse)
         self.assertEqual(actual_total, expected_total, "The gematrical value for verses {} to {} should be {}.".format(start_verse, end_verse, expected_total))
     
@@ -619,13 +589,7 @@ class TestQuranSearch(unittest.TestCase):
             {'verse_text': "ghij"},
             {'verse_text': "kl mn op"}
         ]
-        # Expected calculation:
-        # First verse: "abcd ef" -> words: "abcd" (length 4) and "ef" (length 2) => 4 + 2 = 6
-        # Second verse: "ghij" -> word: "ghij" (length 4) => 4
-        # Third verse: "kl mn op" -> words: "kl" (2), "mn" (2), "op" (2) => 6
-        # Total expected = 6 + 4 + 6 = 16.
         expected_total = 16
-        
         import src.quran_search as qs
         original_func = qs.calculate_gematrical_value
         qs.calculate_gematrical_value = lambda text: len(text)
@@ -650,31 +614,25 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'One two three four'},
             {'surah_number': '1', 'ayah_number': '4', 'verse_text': 'Case insensitive test'}
         ]
-        # Test 1: 'world' at position 2 in first verse
         results = search_word_at_position(dummy_data, "world", 2)
         self.assertEqual(len(results), 1, "Should find one verse with 'world' at position 2.")
         self.assertEqual(results[0]['ayah_number'], '1')
 
-        # Test 2: 'test' at position 1 in second verse (case-insensitive)
         results = search_word_at_position(dummy_data, "test", 1)
         self.assertEqual(len(results), 1, "Should find one verse with 'test' at position 1 (case-insensitive).")
         self.assertEqual(results[0]['ayah_number'], '2')
 
-        # Test 3: 'three' at position 3 in third verse
         results = search_word_at_position(dummy_data, "three", 3)
         self.assertEqual(len(results), 1, "Should find one verse with 'three' at position 3.")
         self.assertEqual(results[0]['ayah_number'], '3')
 
-        # Test 4: 'case' at position 1 in fourth verse (case-insensitive)
         results = search_word_at_position(dummy_data, "case", 1)
         self.assertEqual(len(results), 1, "Should find one verse with 'case' at position 1 (case-insensitive).")
         self.assertEqual(results[0]['ayah_number'], '4')
 
-        # Test 5: 'insensitive' at position 1 in fourth verse should not match
         results = search_word_at_position(dummy_data, "insensitive", 1)
         self.assertEqual(len(results), 0, "Should not find a verse with 'insensitive' at position 1.")
 
-        # Test 6: Invalid position (e.g., 10) should return no results
         results = search_word_at_position(dummy_data, "Hello", 10)
         self.assertEqual(len(results), 0, "Should return no verses for an out-of-range position.")
 
@@ -697,25 +655,19 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '1', 'ayah_number': '4', 'verse_text': 'quick Brown fox is agile'},
             {'surah_number': '1', 'ayah_number': '5', 'verse_text': 'A single word'}
         ]
-        # Case-insensitive search for "quick brown" starting at position 2:
-        # Expected to match verses where the word group ("quick", "brown") appears starting at the 2nd word.
         results_ci = search_word_group_at_position(dummy_data, "quick brown", 2, case_sensitive=False)
         self.assertEqual(len(results_ci), 3, "Case-insensitive search should match 3 verses.")
         self.assertEqual(results_ci[0]['ayah_number'], '1')
         self.assertEqual(results_ci[1]['ayah_number'], '2')
         self.assertEqual(results_ci[2]['ayah_number'], '3')
         
-        # Case-sensitive search for "quick Brown" starting at position 1:
-        # Expected to match only verse 4, because it exactly starts with the word group "quick Brown" in the correct case.
         results_cs = search_word_group_at_position(dummy_data, "quick Brown", 1, case_sensitive=True)
         self.assertEqual(len(results_cs), 1, "Case-sensitive search should match only 1 verse.")
         self.assertEqual(results_cs[0]['ayah_number'], '4')
         
-        # Test out-of-bounds: searching "fox jumps" starting at position 5 should return no matches
         results_oob = search_word_group_at_position(dummy_data, "fox jumps", 5)
         self.assertEqual(len(results_oob), 0, "Out-of-bounds search should return zero matches.")
         
-        # Test no match: searching for "brown fox" starting at position 1 should return an empty list
         results_no_match = search_word_group_at_position(dummy_data, "brown fox", 1)
         self.assertEqual(results_no_match, [], "Search should return an empty list when no match is found.")
 
@@ -728,9 +680,9 @@ class TestQuranSearch(unittest.TestCase):
         - Target word "ا" has a gematrical value of 1, so verses with exactly 1 word should be returned.
         - Target word "ج" has a gematrical value of 3, so verses with exactly 3 words should be returned.
         - Target word "د" has a gematrical value of 4, so no verse with 4 words should be returned.
+        Also tests both case-insensitive (default) and case-sensitive searches.
         """
         self.maxDiff = None
-        # Create dummy Quran data with controlled word counts.
         quran_data = [
             {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'word1 word2'},
             {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'word1 word2 word3'},
@@ -744,6 +696,8 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'word1 word2'}
         ]
         self.assertEqual(result_match, expected_match, "Expected verses with 2 words when target word's gematrical value is 2.")
+        result_match_cs = search_verses_by_word_gematrical_value_equals_word_count(quran_data, "ب", case_sensitive=True)
+        self.assertEqual(result_match_cs, expected_match, "Case-sensitive search for 'ب' should yield same result for dummy data.")
         
         # Scenario 2: Target word "ا" has gematrical value 1.
         result_single = search_verses_by_word_gematrical_value_equals_word_count(quran_data, "ا")
@@ -751,6 +705,8 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'onlyone'}
         ]
         self.assertEqual(result_single, expected_single, "Expected verses with 1 word when target word's gematrical value is 1.")
+        result_single_cs = search_verses_by_word_gematrical_value_equals_word_count(quran_data, "ا", case_sensitive=True)
+        self.assertEqual(result_single_cs, expected_single, "Case-sensitive search for 'ا' should yield same result for dummy data.")
         
         # Scenario 3: Target word "ج" has gematrical value 3.
         result_three = search_verses_by_word_gematrical_value_equals_word_count(quran_data, "ج")
@@ -758,10 +714,14 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'word1 word2 word3'}
         ]
         self.assertEqual(result_three, expected_three, "Expected verses with 3 words when target word's gematrical value is 3.")
+        result_three_cs = search_verses_by_word_gematrical_value_equals_word_count(quran_data, "ج", case_sensitive=True)
+        self.assertEqual(result_three_cs, expected_three, "Case-sensitive search for 'ج' should yield same result for dummy data.")
         
         # Scenario 4: Target word "د" has gematrical value 4. No verse with 4 words.
         result_none = search_verses_by_word_gematrical_value_equals_word_count(quran_data, "د")
         self.assertEqual(result_none, [], "Expected no verses when target word's gematrical value is 4 and no verse has 4 words.")
+        result_none_cs = search_verses_by_word_gematrical_value_equals_word_count(quran_data, "د", case_sensitive=True)
+        self.assertEqual(result_none_cs, [], "Case-sensitive search for 'د' should yield no results when no verse has 4 words.")
 
 if __name__ == '__main__':
     unittest.main()

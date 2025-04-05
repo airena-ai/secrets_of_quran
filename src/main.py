@@ -98,6 +98,16 @@ def main():
         print("Surah: {} Ayah: {} - {}".format(
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))
-
+    
+    # Demonstration of search_verses_by_word_gematrical_value_equals_word_count function (New Feature)
+    from src.quran_search import search_verses_by_word_gematrical_value_equals_word_count
+    target_word_group = "بسم الله"
+    results_gem_word_count = search_verses_by_word_gematrical_value_equals_word_count(quran_data, target_word_group)
+    print("\nSearch results for verses where word count equals gematrical value of word group '{}':".format(target_word_group))
+    for verse in results_gem_word_count:
+        print("Surah: {} Ayah: {} - {}".format(
+            verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
+        ))
+        
 if __name__ == '__main__':
     main()
