@@ -3,11 +3,12 @@ product_spec_northstar: >
   Purpose: Develop a Python application to search secrets of Quran. 
   
   *** Build a comprehensive ultimate Quran Analyzer program that analyzes whole Quranic text and finds ultimate secrets. ***
-  Start by extracting interesting words such as Allah, day, moon, sun, and special word groups such as bismillahirrahmanirrahim.
   Think and generate ideas about possible divine secrets and messages hidden, including but not limited to number 19. 
-  In each development phase of the program, expand the search space to new words, verses, surahs and search patterns.
-  Start with word and word groups but as you advanced look for more advanced patterns and search unthinkable secrets. 
-  There's no limit or restriction on what kind of search you can do on seeking the ultimate secrets of Quran. Use your imagination.
+  In each development phase of the program, expand the search space to new arabic words in Quran, verses, surahs and search patterns.
+  Start with arabic word and word groups that are in Quran but as you advanced look for more advanced patterns and search unthinkable secrets. 
+  Create lemma and root word analysis using python libraries such as well known CAMeL and Arabic lemmatizer.
+  Apply innovative new search ideas.
+  There's no limit or restriction on what kind of search and analysis you can do on seeking the ultimate secrets of Quran.
 
   Data Source:
   You are given {project_root}/data/quran-uthmani-min.txt Do NOT modify this file. It is the source of truth and assume this file will always be there.
@@ -16,13 +17,17 @@ product_spec_northstar: >
   1|1|بِسمِ اللَّهِ الرَّحمٰنِ الرَّحيمِ
   1|2|الحَمدُ لِلَّهِ رَبِّ العٰلَمينَ
   1|3|الرَّحمٰنِ الرَّحيمِ
+  
+  Normalize the arabic text by processing it before your analysis:
+  1) Diacritics (e.g., اللَّهِ vs. الله)
+  2) Slight character variants (e.g., ى vs ي)
+  3) Possibly invisible Unicode differences
+  Arabic has no uppercase/lowercase.
 
   Analysis and Search Strategy:
-  *** Main function will be the ultimate driver of full analysis. It is not a test or demonstrations code.  It must be fully complete Quran Analysis for finding ultimate Secrets. ***
-  Leverage unit tests to validate each method, class and functionality.
+  *** Main function will be the ultimate driver of full analysis. It is not a test, example or demonstrations code. It must be through, verbose and fully complete Quran Analysis for finding ultimate Secrets. ***
   Create an integration test that will run Main function fully without any mock and run the program to extract secrets. Log the results to a file.
-  Not all tests and analysis will yield to a secret but the goal is to search as much search space as possible within infinte possiblities. 
-  In rare circumstances, if you find a secret make sure you tag it explicitly in the output or do it in a way that is easily discovrable among possibly millions of test results. 
+  If you find a secret make sure you tag it explicitly in the output with 'POTENTIAL SECRET FOUND:'. 
 
 
 project_root_folder: C:\Github\secrets_of_quran
