@@ -1,0 +1,310 @@
+{
+  "files": [
+    {
+      "path": "setup.py",
+      "language": "Python",
+      "description": "Setup file for Quran Secrets package. Contains configuration details for packaging and installation of the Quran Secrets application.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "requirements.txt",
+      "language": "None",
+      "description": "Requirements file for listing package dependencies for the Quran Secrets package. Currently, it is empty.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "src/__init__.py",
+      "language": "Python",
+      "description": "Initialization file for quran_secrets package, used to mark the src directory as a Python package and perform any package-level initializations if required.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "src/main.py",
+      "language": "Python",
+      "description": "Main driver for the Quran Secrets application. It orchestrates the analysis by reading, preprocessing, analyzing and logging results from the Quran text.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "main",
+          "description": "Main entry point for the Quran Secrets analysis. It reads the Quran text, preprocesses it to remove diacritics and normalize letters, analyzes for anomalies, logs any found secrets and prints a completion message.",
+          "parameters": [],
+          "return_type": "None"
+        }
+      ],
+      "dependencies": [
+        "src/file_reader.py",
+        "src/text_preprocessor.py",
+        "src/analyzer.py",
+        "src/logger.py"
+      ]
+    },
+    {
+      "path": "src/file_reader.py",
+      "language": "Python",
+      "description": "Module for reading the Quran text from a file. Contains a function to open a file and return its contents, or raise an IOError if the file cannot be read.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "read_quran_text",
+          "description": "Read and return the text from the specified Quran file. Raises an IOError if the file cannot be read.",
+          "parameters": [
+            {
+              "name": "file_path",
+              "type": "str",
+              "description": "The path to the Quran text file."
+            }
+          ],
+          "return_type": "str"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "src/text_preprocessor.py",
+      "language": "Python",
+      "description": "This module provides functionality for preprocessing and normalizing Arabic text. It includes functions to remove diacritics and normalize specific Arabic letters according to certain rules. The module is designed to standardize Arabic text for further processing in NLP or text analysis applications.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "remove_diacritics",
+          "description": "Removes all Arabic diacritical marks (tashkeel) from the input text. These marks include fatha, kasra, damma, sukun, shadda, and other vowel marks that appear above or below letters in Arabic script. The function uses regular expressions to identify and remove these marks.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "The original Arabic text containing diacritics that need to be removed."
+            }
+          ],
+          "return_type": "str"
+        },
+        {
+          "name": "normalize_arabic_letters",
+          "description": "Normalizes specific Arabic letters in the given text according to contextual rules. It specifically handles two cases: 1) Converting the Arabic letter 'ى' (alef maqsura, U+0649) to 'ي' (yeh, U+064A) only when it appears as a standalone word, and 2) Converting the Arabic letter 'ة' (teh marbuta, U+0629) to 'ه' (heh, U+0647) when it appears at the end of words. This normalization helps standardize text variations that are semantically equivalent in Arabic.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "The Arabic text to be normalized."
+            }
+          ],
+          "return_type": "str"
+        }
+      ],
+      "dependencies": [
+        "re"
+      ]
+    },
+    {
+      "path": "src/analyzer.py",
+      "language": "Python",
+      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. It simulates detection of numerical patterns in the provided text.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_text",
+          "description": "Analyze the given text for hidden numerical patterns and anomalies. Returns a list of detected anomaly messages.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "The preprocessed text of the Quran."
+            }
+          ],
+          "return_type": "list"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "src/logger.py",
+      "language": "Python",
+      "description": "Module for logging analysis outputs of the Quran Secrets application. It provides functionality to log secret findings with a prefixed message to a log file.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "log_secret_found",
+          "description": "Log a secret finding to the log file with a prefix \"POTENTIAL SECRET FOUND:\".",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "str",
+              "description": "The secret message to log."
+            }
+          ],
+          "return_type": "None"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "tests/__init__.py",
+      "language": "Python",
+      "description": "Initialization file for tests directory to mark it as a package and perform any necessary test setup.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "tests/test_file_reader.py",
+      "language": "Python",
+      "description": "Unit tests for the file_reader module that test reading an existing file and handling errors for non-existing files.",
+      "classes": [
+        {
+          "name": "TestFileReader",
+          "description": "Unit test class for testing the file_reader module including tests for reading existing files and error handling when files do not exist.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_read_existing_file",
+              "description": "Test reading an existing file returns correct content.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_read_non_existing_file",
+              "description": "Test that reading a non-existing file raises an IOError.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/file_reader.py"
+      ]
+    },
+    {
+      "path": "tests/test_text_preprocessor.py",
+      "language": "Python",
+      "description": "Unit tests for the text_preprocessor module testing the removal of diacritics and normalization of Arabic letters.",
+      "classes": [
+        {
+          "name": "TestTextPreprocessor",
+          "description": "Unit test class for the text_preprocessor module, ensuring proper functionality of diacritics removal and Arabic letter normalization.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_remove_diacritics",
+              "description": "Test removal of Arabic diacritics from text.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_normalize_arabic_letters",
+              "description": "Test normalization of specific Arabic letters in text.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/text_preprocessor.py"
+      ]
+    },
+    {
+      "path": "tests/test_analyzer.py",
+      "language": "Python",
+      "description": "Unit tests for the analyzer module testing anomaly detection on non-empty and empty texts.",
+      "classes": [
+        {
+          "name": "TestAnalyzer",
+          "description": "Unit test class for the analyzer module, verifying that anomaly detection works correctly for non-empty texts and returns empty list for texts with only whitespace.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_analyze_non_empty",
+              "description": "Test that a non-empty text returns a simulated anomaly.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_empty",
+              "description": "Test that an empty text returns no anomalies.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/analyzer.py"
+      ]
+    },
+    {
+      "path": "tests/test_logger.py",
+      "language": "Python",
+      "description": "Unit tests for the logger module, verifying that the log_secret_found function writes the expected log message to a file.",
+      "classes": [
+        {
+          "name": "TestLogger",
+          "description": "Unit test class for the logger module, testing logging functionality.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_log_secret_found",
+              "description": "Test that log_secret_found writes the correct log message to a file.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/logger.py"
+      ]
+    },
+    {
+      "path": "tests/test_main.py",
+      "language": "Python",
+      "description": "Integration test for the main module to execute end-to-end analysis of the Quran Secrets application.",
+      "classes": [
+        {
+          "name": "TestMainIntegration",
+          "description": "Integration test class for the main module, testing the complete flow of reading, analyzing, and logging from the Quran text.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_main_integration",
+              "description": "Test the full execution of main() function end-to-end, verifying log creation and anomaly detection.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/main.py"
+      ]
+    },
+    {
+      "path": "data/quran-uthmani-min.txt",
+      "language": "None",
+      "description": "Text file containing the Quran text. This file is used as input for the analysis performed by the Quran Secrets application.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    }
+  ]
+}

@@ -41,7 +41,7 @@ agents:
     llm_model: "deepseek-r1:8b"
 
   - name: "Jack Mitchell"
-    llm_model:  "o3-mini" # "gemini-2.0-flash-thinking-exp-01-21" 
+    llm_model: "gemini-2.0-flash-thinking-exp-01-21" 
 
   #- name: "Kevin Williams"
   #  llm_model: "o3-mini"         

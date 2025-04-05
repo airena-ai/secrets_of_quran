@@ -1,0 +1,1 @@
+'''Initialization file for quran_secrets package.'''
