@@ -246,12 +246,11 @@ def analyze_lemmas(text):
                 try:
                     analyses = analyzer.analyze(token)
                     if analyses and 'lemma' in analyses[0]:
-                        lemma = analyses[0]['lemma']
+                        lemmas.append(analyses[0]['lemma'])
                     else:
-                        lemma = token
+                        lemmas.append(token)
                 except Exception:
-                    lemma = token
-                lemmas.append(lemma)
+                    lemmas.append(token)
         except Exception:
             lemmas = tokens
     else:
@@ -698,3 +697,103 @@ def analyze_enhanced_semantic_symmetry(text, symmetry_threshold=0.3):
         if symmetry_score >= symmetry_threshold:
             src.logger.log_secret_found(f"Enhanced semantic symmetry (lemma overlap) detected in Surah {surah} between the first and second halves.")
     return results
+
+def analyze_muqattaat(text):
+    '''Analyze Muqatta'at (Mysterious Letters) in the Quran text.
+
+    This function identifies Surahs that begin with Muqatta'at based on a predefined list.
+    It extracts the sequence of Arabic letters (Muqatta'at) from the beginning of the first verse of each identified Surah,
+    computes the frequency of each unique letter, and logs the results to the results log file.
+
+    The logged output includes:
+        - A header "#################### Muqatta'at Analysis ####################"
+        - List of Surahs with Muqatta'at (by Surah number)
+        - For each identified Surah, the extracted Muqatta'at letters along with its Surah name.
+        - Frequency count of each unique Muqatta'at letter.
+
+    Args:
+        text (str): The preprocessed Quran text.
+
+    Returns:
+        tuple: A tuple containing:
+            - A dictionary mapping Surah numbers to their extracted Muqatta'at letters.
+            - A Counter object representing the frequency of each Muqatta'at letter.
+    '''
+    import re
+    from collections import Counter
+    import src.logger as logger
+
+    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
+                           "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
+                           "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
+    surah_names = {
+        "2": "البقرة", "3": "آل عمران", "7": "الأعراف", "10": "يونس", "11": "هود", "12": "يوسف",
+        "13": "الرعد", "14": "ابراهيم", "15": "الحجر", "16": "النحل", "19": "مريم", "20": "طه",
+        "26": "الشعراء", "27": "النمل", "28": "القصص", "29": "العنكبوت", "30": "الروم",
+        "31": "لقمان", "32": "السجدة", "36": "يس", "38": "الصافات", "40": "غافر",
+        "41": "فصلت", "42": "الشورى", "43": "الزخرف", "44": "الدخان", "45": "الجاثية",
+        "46": "الأحقاف", "50": "ق", "68": "القلم"
+    }
+    
+    muqattaat_results = {}
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    lines = text.splitlines()
+    for line in lines:
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            verse_text = m.group(3).strip()
+            if surah in predefined_surahs and surah not in muqattaat_results:
+                m_letters = re.match(r'^([\u0621-\u064A]+)', verse_text)
+                if m_letters:
+                    muqattaat_results[surah] = m_letters.group(1)
+    
+    frequency_counter = Counter()
+    for letters in muqattaat_results.values():
+        frequency_counter.update(letters)
+        
+    logger.log_result("#################### Muqatta'at Analysis ####################")
+    surah_list = sorted(muqattaat_results.keys(), key=lambda x: int(x))
+    logger.log_result("Surahs with Muqatta'at: [{}]".format(", ".join(surah_list)))
+    for surah in surah_list:
+        name = surah_names.get(surah, "")
+        logger.log_result("Muqatta'at Letters in Surah {} ({}): {}".format(surah, name, muqattaat_results[surah]))
+    logger.log_result("Frequency of Muqatta'at Letters:")
+    letter_names = {
+        'ا': "Alif",
+        'ب': "Ba",
+        'ت': "Ta",
+        'ث': "Tha",
+        'ج': "Jim",
+        'ح': "Ha",
+        'خ': "Kha",
+        'د': "Dal",
+        'ذ': "Thal",
+        'ر': "Ra",
+        'ز': "Zay",
+        'س': "Seen",
+        'ش': "Sheen",
+        'ص': "Sad",
+        'ض': "Dad",
+        'ط': "Ta",
+        'ظ': "Za",
+        'ع': "Ain",
+        'غ': "Ghayn",
+        'ف': "Fa",
+        'ق': "Qaf",
+        'ك': "Kaf",
+        'ل': "Lam",
+        'م': "Meem",
+        'ن': "Noon",
+        'ه': "Ha",
+        'و': "Waw",
+        'ي': "Ya"
+    }
+    for letter, count in frequency_counter.items():
+        letter_name = letter_names.get(letter, letter)
+        logger.log_result("- {} ({}): {}".format(letter_name, letter, count))
+    logger.log_result("############################################################")
+    
+    return (muqattaat_results, frequency_counter)

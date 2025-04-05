@@ -13,7 +13,7 @@ class TestMainIntegration(unittest.TestCase):
     def test_main_integration_fallback(self):
         '''Test the full execution of main() function end-to-end with CAMeL Tools fallback.'''
         data_dir = "data"
-        file_path = os.path.join(data_dir, "quran-uthmani-min-test.txt")
+        file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
         sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
                        "1|2| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
@@ -49,16 +49,15 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Verse length consistency", log_contents)
                 self.assertIn("Verse length distribution symmetry detected", log_contents)
                 self.assertIn("Enhanced semantic symmetry (lemma overlap) detected", log_contents)
+                self.assertIn("#################### Muqatta'at Analysis ####################", log_contents)
             finally:
-                if os.path.exists(file_path):
-                    os.remove(file_path)
                 if os.path.exists(log_file):
                     os.remove(log_file)
 
     def test_main_integration_with_camel_tools(self):
         '''Test the full execution of main() function end-to-end with CAMeL Tools available.'''
         data_dir = "data"
-        file_path = os.path.join(data_dir, "quran-uthmani-min-test.txt")
+        file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
         sample_text = ("2|1| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين\n"
                        "2|2| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين")
@@ -105,12 +104,16 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Verse length consistency", log_contents)
                 self.assertIn("Verse length distribution symmetry detected", log_contents)
                 self.assertIn("Enhanced semantic symmetry (lemma overlap) detected", log_contents)
+                self.assertIn("#################### Muqatta'at Analysis ####################", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)
                 if os.path.exists(log_file):
                     os.remove(log_file)
-
+                try:
+                    os.rmdir(data_dir)
+                except OSError:
+                    pass
 
 if __name__ == '__main__':
     unittest.main()
