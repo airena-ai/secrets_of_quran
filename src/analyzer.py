@@ -4,6 +4,7 @@ from collections import Counter, defaultdict
 import datetime
 import importlib.util
 import re
+import math
 import src.logger
 
 def analyze_text(text):
@@ -811,10 +812,11 @@ def analyze_muqattaat_positions(text):
         text (str): The preprocessed Quran text.
 
     Returns:
-        None
+        str: A summary report of the Muqatta'at positional analysis.
     '''
     import re
     from math import ceil, floor
+    summary_lines = []
     # Group verses by Surah
     pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
     surahs = {}
@@ -875,18 +877,29 @@ def analyze_muqattaat_positions(text):
     import src.logger as logger
     logger.log_result("MUQATTA'AT POSITION ANALYSIS:")
     logger.log_result("---------------------------")
+    summary_lines.append("MUQATTA'AT POSITION ANALYSIS:")
+    summary_lines.append("---------------------------")
     for surah_no in sorted(position_results.keys(), key=lambda x: int(x)):
         res = position_results[surah_no]
-        logger.log_result("Surah {} - Muqatta'at: {} - Position: {}".format(surah_no, res["letters"], res["category"]))
+        line = "Surah {} - Muqatta'at: {} - Position: {}".format(surah_no, res["letters"], res["category"])
+        logger.log_result(line)
+        summary_lines.append(line)
     summary_counts = {"Beginning": 0, "Middle": 0, "End": 0, "Throughout": 0}
     for res in position_results.values():
         summary_counts[res["category"]] += 1
     logger.log_result("")
+    summary_lines.append("")
     logger.log_result("Summary of Muqatta'at Positions:")
+    summary_lines.append("Summary of Muqatta'at Positions:")
     logger.log_result("Beginning: {} Surahs".format(summary_counts["Beginning"]))
+    summary_lines.append("Beginning: {} Surahs".format(summary_counts["Beginning"]))
     logger.log_result("Middle: {} Surahs".format(summary_counts["Middle"]))
+    summary_lines.append("Middle: {} Surahs".format(summary_counts["Middle"]))
     logger.log_result("End: {} Surahs".format(summary_counts["End"]))
+    summary_lines.append("End: {} Surahs".format(summary_counts["End"]))
     logger.log_result("Throughout: {} Surahs".format(summary_counts["Throughout"]))
+    summary_lines.append("Throughout: {} Surahs".format(summary_counts["Throughout"]))
+    return "\n".join(summary_lines)
 
 def analyze_muqattaat_sequences(text):
     '''Analyze Muqatta'at sequences in the Quran text.
@@ -940,17 +953,18 @@ def analyze_muqattaat_numerical_values(text):
         text (str): The preprocessed Quran text.
 
     Returns:
-        None
+        str: A summary report of the Muqatta'at numerical analysis.
     '''
     import re
     from src import logger
+    summary_lines = []
     # Define Abjad mapping - Comprehensive mapping
     abjad = {
         'ا': 1, 'أ': 1, 'إ': 1, 'آ': 1, 'ب': 2, 'ج': 3, 'د': 4, 'ه': 5, 'و': 6, 'ؤ': 6, 'ز': 7, 'ح': 8, 'ط': 9,
         'ي': 10, 'ى': 10, 'ك': 20, 'ل': 30, 'م': 40, 'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90, 'ق': 100,
         'ر': 200, 'ش': 300, 'ت': 400, 'ث': 500, 'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900, 'غ': 1000,
         'ء': 1, 'ئ': 1, 'ة': 5, 'ۀ': 5, 'ی': 10, 'ے': 10, 'ە': 5, 'ھ': 5, 'ہ': 5, 'ۃ': 5,
-        'ٱ': 1, 'ٲ': 1, 'ٳ': 1, 'ٴ': 1, 'ٵ': 1, 'ٶ': 6, 'ٷ': 6, 'ں': 50, 'ڻ': 50, 'ټ': 400, 'ھ': 5, 'ۀ': 5, 'ہ': 5, 'ۂ': 5, 'ۃ': 5, 'ة': 5, 'ڀ': 2, 'پ': 2, 'ٿ': 400, 'ڃ': 3, 'ڄ': 3, 'ڃ': 3, 'څ': 600, 'چ': 3, 'ڇ': 3, 'ڈ': 4, 'ډ': 4, 'ڊ': 4, 'ڌ': 700, 'ڍ': 5, 'ڎ': 700, 'ڏ': 4, 'ڐ': 4, 'ڑ': 200, 'ڒ': 200, 'ړ': 200, 'ڔ': 200, 'ڕ': 200, 'ږ': 200, 'ڗ': 7, 'ژ': 7, 'ڙ': 200, 'ښ': 300, 'ڛ': 60, 'ڜ': 300, 'ڝ': 90, 'ڞ': 900, 'ڟ': 9, 'ڠ': 1000, 'ۄ': 6, 'ۅ': 6, 'ۆ': 6, 'ۈ': 6, 'ۉ': 6, 'ۊ': 6, 'ۋ': 6, 'ی': 10, 'ۍ': 10, 'ې': 10, 'ۑ': 10, 'ے': 10, 'ۓ': 10, '۔': 0, '؟': 0, '،': 0, '؛': 0, 'ء': 1, 'ٮ': 400, 'ٯ': 80, 'ٰ': 1, ' opening hamza': 1, 'tanwin fatha': 1, 'kasra': 0, 'fatha': 0, 'damma': 0, 'sukun': 0, 'shadda': 0, 'hamza below': 1, 'hamza above': 1, 'madda': 1, 'hamza': 1, 'alif': 1, 'alif maqsurah': 10, 'ya': 10, 'ta marbuta': 5
+        'ٱ': 1, 'ٲ': 1, 'ٳ': 1, 'ٴ': 1, 'ٵ': 1, 'ٶ': 6, 'ٷ': 6, 'ں': 50, 'ڻ': 50, 'ټ': 400
     }
     # Predefined Surahs with Muqatta'at - Surah 1 removed
     predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
@@ -979,21 +993,137 @@ def analyze_muqattaat_numerical_values(text):
         return True
 
     logger.log_result("#################### Muqatta'at Numerical Analysis ####################")
+    summary_lines.append("#################### Muqatta'at Numerical Analysis ####################")
     for surah, letters in sorted(muqattaat_numerical.items(), key=lambda x: int(x[0])):
         letters_list = list(letters)
         letter_values = {letter: abjad.get(letter, 0) for letter in letters_list}
         total_sum = sum(letter_values.values())
-        logger.log_result(f"Surah {surah} - Muqatta'at: {letters}")
-        logger.log_result(f"  Letters: {letters_list}")
-        logger.log_result(f"  Abjad Values: {letter_values}")
-        logger.log_result(f"  Total Abjad Sum: {total_sum}")
+        line1 = f"Surah {surah} - Muqatta'at: {letters}"
+        line2 = f"  Letters: {letters_list}"
+        line3 = f"  Abjad Values: {letter_values}"
+        line4 = f"  Total Abjad Sum: {total_sum}"
+        logger.log_result(line1)
+        logger.log_result(line2)
+        logger.log_result(line3)
+        logger.log_result(line4)
+        summary_lines.extend([line1, line2, line3, line4])
         if total_sum != 0:
             if total_sum % 19 == 0:
                 secret_msg = f"Abjad sum {total_sum} is a multiple of 19"
                 logger.log_secret_found(secret_msg)
+                summary_lines.append("  SECRET: " + secret_msg)
             elif total_sum % 7 == 0:
                 secret_msg = f"Abjad sum {total_sum} is a multiple of 7"
                 logger.log_secret_found(secret_msg)
+                summary_lines.append("  SECRET: " + secret_msg)
             elif is_prime(total_sum):
                 secret_msg = f"Abjad sum {total_sum} is a prime number"
                 logger.log_secret_found(secret_msg)
+                summary_lines.append("  SECRET: " + secret_msg)
+    return "\n".join(summary_lines)
+
+def analyze_correlations(text, verse_lengths=None, muqattaat_data=None, word_frequency_result=None, flagged_words=None, verse_repetitions_data=None, enhanced_symmetry_data=None, abjad_anomalies=None, verse_length_diff_threshold=2, semantic_symmetry_diff_threshold=0.1):
+    '''Perform correlation analysis across multiple analytical dimensions.
+    
+    This function integrates the results from various analysis functions including:
+    verse length distribution, word frequency, verse repetition, semantic symmetry,
+    and Muqatta'at analyses. It attempts to identify significant correlations such as:
+    
+    - Correlation between Muqatta'at presence/sequences/Abjad values and verse length distributions in Surahs.
+    - Correlation between Muqatta'at presence/sequences/Abjad values and semantic symmetry scores of Surahs.
+    - Relationship between unusual word frequencies and verse repetition patterns.
+    - Association between Abjad numeral anomalies and flagged word frequencies.
+    
+    The thresholds for determining significance can be configured via parameters.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+        verse_lengths (dict, optional): Precomputed verse length analysis.
+        muqattaat_data (dict, optional): Precomputed Muqatta'at analysis data.
+        word_frequency_result (tuple, optional): Output from word frequency analysis.
+        flagged_words (list, optional): List of flagged words from frequency analysis.
+        verse_repetitions_data (dict, optional): Precomputed verse repetition analysis.
+        enhanced_symmetry_data (dict, optional): Precomputed enhanced semantic symmetry analysis.
+        abjad_anomalies (list, optional): Precomputed Abjad numeral anomalies.
+        verse_length_diff_threshold (float, optional): Threshold for average verse length difference.
+        semantic_symmetry_diff_threshold (float, optional): Threshold for semantic symmetry score difference.
+    
+    Returns:
+        list: A list of strings each representing a potential secret found.
+    '''
+    secrets = []
+    from src.logger import log_secret_found
+    if verse_lengths is None:
+        verse_lengths = analyze_verse_lengths_distribution(text)
+    if muqattaat_data is None:
+        muqattaat_data, _ = analyze_muqattaat(text)
+    if word_frequency_result is None:
+        word_frequency_result = analyze_word_frequency(text)
+    if flagged_words is None:
+        flagged_words = word_frequency_result[1]
+    if verse_repetitions_data is None:
+        verse_repetitions_data = analyze_verse_repetitions(text)
+    if enhanced_symmetry_data is None:
+        enhanced_symmetry_data = analyze_enhanced_semantic_symmetry(text)
+    if abjad_anomalies is None:
+        abjad_anomalies = analyze_abjad_numerals(text)
+    
+    # Correlation 1: Muqatta'at vs Verse Length
+    muq_surahs = set(muqattaat_data.keys())
+    lengths_with_muq = []
+    lengths_without_muq = []
+    for surah, stats in verse_lengths.items():
+        if surah in muq_surahs:
+            lengths_with_muq.append(stats.get("average", 0))
+        else:
+            lengths_without_muq.append(stats.get("average", 0))
+    if lengths_with_muq and lengths_without_muq:
+        avg_with = sum(lengths_with_muq) / len(lengths_with_muq)
+        avg_without = sum(lengths_without_muq) / len(lengths_without_muq)
+        diff = avg_with - avg_without
+        if abs(diff) >= verse_length_diff_threshold:
+            direction = "higher" if diff > 0 else "lower"
+            message = ("POTENTIAL SECRET FOUND: Surahs with Muqatta'at have an average verse length of {:.2f} words compared to "
+                       "{:.2f} words in Surahs without Muqatta'at (difference: {:.2f}, {} correlation)").format(avg_with, avg_without, abs(diff), direction)
+            log_secret_found(message)
+            secrets.append(message)
+    
+    # Correlation 2: Muqatta'at vs Enhanced Semantic Symmetry
+    symmetry_with_muq = []
+    symmetry_without_muq = []
+    for surah, data in enhanced_symmetry_data.items():
+        score = data.get("symmetry_score", 0)
+        if surah in muq_surahs:
+            symmetry_with_muq.append(score)
+        else:
+            symmetry_without_muq.append(score)
+    if symmetry_with_muq and symmetry_without_muq:
+        avg_sym_with = sum(symmetry_with_muq) / len(symmetry_with_muq)
+        avg_sym_without = sum(symmetry_without_muq) / len(symmetry_without_muq)
+        diff_sym = avg_sym_with - avg_sym_without
+        if abs(diff_sym) >= semantic_symmetry_diff_threshold:
+            direction = "higher" if diff_sym > 0 else "lower"
+            message = ("POTENTIAL SECRET FOUND: Surahs with Muqatta'at have a semantic symmetry score of {:.2f} compared to "
+                       "{:.2f} in Surahs without (difference: {:.2f}, {} correlation)").format(avg_sym_with, avg_sym_without, abs(diff_sym), direction)
+            log_secret_found(message)
+            secrets.append(message)
+    
+    # Correlation 3: Word Frequency Flags vs Verse Repetition
+    repetition_count = len(verse_repetitions_data.get("across_quran", []))
+    flagged_count = len(flagged_words)
+    if flagged_count > 0 and repetition_count > 0:
+        ratio = flagged_count / repetition_count
+        message = ("POTENTIAL SECRET FOUND: Detected {} flagged word frequency anomalies correlating with {} instances of verse repetitions "
+                   "(ratio: {:.2f}) across the Quran. [Note: Further statistical analysis is recommended]").format(flagged_count, repetition_count, ratio)
+        log_secret_found(message)
+        secrets.append(message)
+    
+    # Correlation 4: Abjad Anomalies vs Word Frequency Flags
+    if len(abjad_anomalies) > 0 and flagged_count > 0:
+        ratio_abjad = len(abjad_anomalies) / flagged_count
+        message = ("POTENTIAL SECRET FOUND: Detected {} abjad numeral anomalies alongside {} flagged word frequency anomalies "
+                   "(ratio: {:.2f}), suggesting a potential interplay between numerical values and word usage.").format(len(abjad_anomalies), flagged_count, ratio_abjad)
+        log_secret_found(message)
+        secrets.append(message)
+    
+    return secrets
