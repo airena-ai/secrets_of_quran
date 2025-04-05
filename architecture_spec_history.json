@@ -23,5 +23,10 @@
         "iteration": 4,
         "date": "2025-04-04",
         "iteration_goal": "A new function `search_word_group_in_surah` is added to the `QuranSearch` module. This function allows searching for a specific word group within a specified Surah, enhancing the search capabilities of the application. The architecture remains modular and testable, with a new test case added to ensure the functionality of the new feature. No new modules are introduced; the change is contained within the existing `QuranSearch` module."
+    },
+    {
+        "iteration": 5,
+        "date": "2025-04-04",
+        "iteration_goal": "A new function `count_word_occurrences` is added to the `QuranSearch` module to count the total occurrences of a word in the entire Quran, case-insensitively. A new test case `test_count_word_occurrences` is also added to validate this functionality. This enhancement is within the existing modular architecture and improves the analytical capabilities of the `QuranSearch` module."
     }
 ]

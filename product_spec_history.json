@@ -23,5 +23,10 @@
         "iteration": 4,
         "date": "2025-04-04",
         "iteration_goal": "This increment focuses on enhancing the Quran Secrets Analyzer by enabling users to search for specific word groups (phrases) within a particular Surah (chapter) of the Quran.  A new function `search_word_group_in_surah` will be added to `quran_search.py` to facilitate this.  Correspondingly, a new pytest test case `test_search_word_group_in_surah` will be created to validate the functionality, ensuring accurate and case-insensitive (and optionally case-sensitive) searches for phrases within specified Surahs. This feature expands the search precision and allows for more targeted analysis of Quranic text by chapter."
+    },
+    {
+        "iteration": 5,
+        "date": "2025-04-04",
+        "iteration_goal": "This increment adds the functionality to count the total occurrences of a specific word in the entire Quran. A new function `count_word_occurrences` will be implemented in `quran_search.py` and tested using pytest. This feature will allow for analyzing word frequency across the entire Quranic text, providing a new dimension for secret analysis."
     }
 ]

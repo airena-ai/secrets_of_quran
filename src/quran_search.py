@@ -115,3 +115,26 @@ def search_word_group_in_surah(quran_data, word_group, surah_number, case_sensit
                 if word_group.lower() in verse_text.lower():
                     results.append(verse)
     return results
+
+def count_word_occurrences(quran_data, word):
+    """
+    Count the total number of occurrences of a word in the entire Quran text data.
+
+    The search is performed in a case-insensitive manner by default, counting all occurrences
+    of the specified word as a substring within each verse.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran data.
+        word (str): The word whose occurrences need to be counted.
+
+    Returns:
+        int: The total number of occurrences of the word in the Quran data.
+    """
+    if not word:
+        return 0
+    word_lower = word.lower()
+    total_count = 0
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        total_count += verse_text.lower().count(word_lower)
+    return total_count

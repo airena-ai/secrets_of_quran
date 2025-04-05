@@ -4,7 +4,8 @@ from src.quran_search import (
     search_word_in_quran, 
     search_word_group, 
     search_word_in_surah,
-    search_word_group_in_surah
+    search_word_group_in_surah,
+    count_word_occurrences
 )
 
 class TestQuranSearch(unittest.TestCase):
@@ -174,6 +175,27 @@ class TestQuranSearch(unittest.TestCase):
         # Scenario 5: Search in a surah number with no matching entries
         results_wrong_surah = search_word_group_in_surah(quran_data, "Test Phrase", 5)
         self.assertEqual(results_wrong_surah, [], "Expect empty list for surah 5 with no entries.")
+
+    def test_count_word_occurrences(self):
+        """
+        Test the count_word_occurrences function to ensure it correctly counts the total occurrences
+        of a given word in the Quran data, handling case-insensitivity.
+        """
+        self.maxDiff = None
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'Allah is the Creator.'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'The mercy of ALLAH is boundless.'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'Allahu Akbar.'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'Some text without the word.'},
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'Allah, Allah, and again Allah.'}
+        ]
+        expected_count = 6  # 1 + 1 + 1 + 0 + 3 = 6 occurrences of "Allah"
+        actual_count = count_word_occurrences(quran_data, 'Allah')
+        self.assertEqual(actual_count, expected_count, "The count of 'Allah' occurrences should be {}.".format(expected_count))
+        
+        # Test with different casing for the search word
+        actual_count_mixed_case = count_word_occurrences(quran_data, 'aLLaH')
+        self.assertEqual(actual_count_mixed_case, expected_count, "The count should be case-insensitive and match {} occurrences.".format(expected_count))
 
 if __name__ == '__main__':
     unittest.main()
