@@ -15,8 +15,8 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = ("1:1: بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
-                       "1:2: بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
+        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
+                       "1|2| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -53,8 +53,8 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = ("2:1: الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\n"
-                       "2:2: الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ")
+        sample_text = ("2|1| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\n"
+                       "2|2| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         

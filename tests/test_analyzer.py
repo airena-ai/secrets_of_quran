@@ -102,7 +102,7 @@ class TestAnalyzer(unittest.TestCase):
         original_log = src.logger.log_secret_found
         captured = []
         src.logger.log_secret_found = lambda msg: captured.append(msg)
-        sample_text = "1:1: ب\n1:2: ز"
+        sample_text = "1|1| ب\n1|2| ز"
         results = analyze_abjad_numerals(sample_text)
         src.logger.log_secret_found = original_log
         pattern_detected = any("[Abjad Numerical Pattern]" in msg for msg in captured)
@@ -118,7 +118,7 @@ class TestAnalyzer(unittest.TestCase):
         captured_result = []
         src.logger.log_secret_found = lambda msg: captured_secret.append(msg)
         src.logger.log_result = lambda msg: captured_result.append(msg)
-        sample_text = "1:1: كلمة كلمة كلمة كلمة"
+        sample_text = "1|1| كلمة كلمة كلمة كلمة"
         results = analyze_semantic_symmetry(sample_text)
         src.logger.log_secret_found = original_log_secret
         src.logger.log_result = original_log_result
