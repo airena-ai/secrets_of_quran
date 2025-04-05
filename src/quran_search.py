@@ -418,6 +418,39 @@ def search_verses_by_word_count_multiple(quran_data, multiple_of):
             results.append(verse)
     return results
 
+def search_verses_by_word_count_equals_first_word_gematrical_value(quran_data, case_sensitive=False):
+    """
+    Search for Quran verses where the total number of words in the verse
+    equals the gematrical (Abjad) value of the first word of that verse.
+
+    This function iterates over the provided Quran data and checks, for each verse,
+    whether the number of words in the verse matches the gematrical value computed
+    from its first word using the calculate_gematrical_value function. The first word
+    is processed according to the case_sensitive flag.
+
+    Args:
+        quran_data (list): A list of dictionaries representing Quran verses.
+        case_sensitive (bool): If True, the first word is used as-is for gematrical value calculation;
+                               if False, it is converted to lower-case before calculation.
+                               Defaults to False.
+
+    Returns:
+        list: A list of dictionaries for verses where the word count equals the gematrical value of the first word.
+    """
+    results = []
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        words = verse_text.split()
+        if not words:
+            continue
+        first_word = words[0]
+        if not case_sensitive:
+            first_word = first_word.lower()
+        gem_value = calculate_gematrical_value(first_word)
+        if len(words) == gem_value:
+            results.append(verse)
+    return results
+
 def calculate_gematrical_value(text: str) -> int:
     """
     Calculate the gematrical (Abjad) value of a given Arabic word or phrase.

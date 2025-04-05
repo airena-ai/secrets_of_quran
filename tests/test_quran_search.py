@@ -23,7 +23,8 @@ from src.quran_search import (
     search_word_at_position,
     search_word_group_at_position,
     search_verses_by_word_gematrical_value_equals_verse_number,
-    search_verses_by_word_gematrical_value_equals_surah_number
+    search_verses_by_word_gematrical_value_equals_surah_number,
+    search_verses_by_verse_gematrical_value_equals
 )
 
 class TestQuranSearch(unittest.TestCase):
@@ -843,6 +844,41 @@ class TestQuranSearch(unittest.TestCase):
         result = search_verses_by_verse_gematrical_value_equals(quran_data, 100)
         expected = []
         self.assertEqual(result, expected, "Expected no verses for target gematrical value 100.")
+
+    def test_search_verses_by_word_count_equals_first_word_gematrical_value(self):
+        """
+        Test that the search_verses_by_word_count_equals_first_word_gematrical_value function returns
+        the verses where the total number of words equals the gematrical value of the first word.
+        
+        Uses a dummy dataset:
+          - Verse "ا" qualifies because gem(ا)=1 and word count=1.
+          - Verse "ب extra" qualifies because gem(ب)=2 and word count=2.
+          - Verse "ا extra" does not qualify because gem(ا)=1 but word count=2.
+          - Verse "ب" does not qualify because gem(ب)=2 but word count=1.
+          - Verse "ج one two" qualifies because gem(ج)=3 and word count=3.
+        Tests are done for both case_sensitive True and False.
+        """
+        self.maxDiff = None
+        from src.quran_search import search_verses_by_word_count_equals_first_word_gematrical_value
+        dummy_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'ا'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'ب extra'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'ا extra'},
+            {'surah_number': '1', 'ayah_number': '4', 'verse_text': 'ب'},
+            {'surah_number': '1', 'ayah_number': '5', 'verse_text': 'ج one two'}
+        ]
+        # Test with default case_sensitive=False
+        results = search_verses_by_word_count_equals_first_word_gematrical_value(dummy_data)
+        expected = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'ا'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'ب extra'},
+            {'surah_number': '1', 'ayah_number': '5', 'verse_text': 'ج one two'}
+        ]
+        self.assertEqual(results, expected, "Case-insensitive search result mismatch.")
+        
+        # Test with case_sensitive=True (should yield same results in this dummy dataset)
+        results_cs = search_verses_by_word_count_equals_first_word_gematrical_value(dummy_data, case_sensitive=True)
+        self.assertEqual(results_cs, expected, "Case-sensitive search result mismatch.")
 
 if __name__ == '__main__':
     unittest.main()
