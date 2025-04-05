@@ -407,5 +407,54 @@ class TestQuranSearch(unittest.TestCase):
         # Test with non-Arabic characters; they should be ignored.
         self.assertEqual(calculate_gematrical_value("123"), 0, "Non-mapped characters should contribute 0 to the gematrical value.")
 
+    def test_search_words_by_gematrical_value(self):
+        """
+        Test the search_words_by_gematrical_value function with various scenarios,
+        ensuring that words are correctly identified based on their gematrical value.
+
+        Scenarios tested:
+        - Target gematrical value of 66 for the word 'الله'.
+        - Target gematrical value of 10 for the word 'ابجد'.
+        - Target gematrical value of 0 for words with no mapped values (e.g., 'test').
+        - Target gematrical value of 571 for the word 'مثال'.
+        """
+        self.maxDiff = None
+        from src.quran_search import search_words_by_gematrical_value
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'الله ابجد test'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'مثال الله'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'ابجد ابجد'}
+        ]
+        # Test for gematrical value 66 ("الله")
+        results_66 = search_words_by_gematrical_value(quran_data, 66)
+        expected_66 = [
+            {'word': 'الله', 'surah_number': '1', 'ayah_number': '1'},
+            {'word': 'الله', 'surah_number': '1', 'ayah_number': '2'}
+        ]
+        self.assertEqual(results_66, expected_66, "Should return words with gematrical value 66 (for 'الله').")
+
+        # Test for gematrical value 10 ("ابجد")
+        results_10 = search_words_by_gematrical_value(quran_data, 10)
+        expected_10 = [
+            {'word': 'ابجد', 'surah_number': '1', 'ayah_number': '1'},
+            {'word': 'ابجد', 'surah_number': '2', 'ayah_number': '1'},
+            {'word': 'ابجد', 'surah_number': '2', 'ayah_number': '1'}
+        ]
+        self.assertEqual(results_10, expected_10, "Should return words with gematrical value 10 (for 'ابجد') occurring three times.")
+
+        # Test for gematrical value 0 ("test")
+        results_0 = search_words_by_gematrical_value(quran_data, 0)
+        expected_0 = [
+            {'word': 'test', 'surah_number': '1', 'ayah_number': '1'}
+        ]
+        self.assertEqual(results_0, expected_0, "Should return words with gematrical value 0 (for 'test').")
+
+        # Test for gematrical value 571 ("مثال")
+        results_571 = search_words_by_gematrical_value(quran_data, 571)
+        expected_571 = [
+            {'word': 'مثال', 'surah_number': '1', 'ayah_number': '2'}
+        ]
+        self.assertEqual(results_571, expected_571, "Should return words with gematrical value 571 (for 'مثال').")
+
 if __name__ == '__main__':
     unittest.main()

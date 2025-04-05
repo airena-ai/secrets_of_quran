@@ -334,3 +334,32 @@ def calculate_gematrical_value(text: str) -> int:
     for char in text:
         total += ABJAD_VALUES.get(char, 0)
     return total
+
+def search_words_by_gematrical_value(quran_data, target_value: int) -> list:
+    """
+    Search for words in the Quran that have the specified gematrical value.
+
+    This function iterates over each verse in the provided Quran data. It splits the verse text into individual words,
+    calculates the gematrical value of each word using the calculate_gematrical_value function,
+    and returns a list of dictionaries for words that match the specified target gematrical value.
+    Each dictionary contains the matching word and its location (surah and ayah numbers).
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran verses.
+        target_value (int): The target gematrical value to match.
+
+    Returns:
+        list: A list of dictionaries. Each dictionary has the keys 'word', 'surah_number', and 'ayah_number' for each matching word.
+    """
+    results = []
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        words = verse_text.split()
+        for word in words:
+            if calculate_gematrical_value(word) == target_value:
+                results.append({
+                    'word': word,
+                    'surah_number': verse.get('surah_number'),
+                    'ayah_number': verse.get('ayah_number')
+                })
+    return results

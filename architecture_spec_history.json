@@ -58,5 +58,10 @@
         "iteration": 11,
         "date": "2025-04-04",
         "iteration_goal": "The architecture is enhanced by adding a `calculate_gematrical_value` function to the `QuranSearch` module. This function enables the calculation of gematrical values for Arabic words and phrases. A new test case is included to validate this functionality. This addition expands the analytical capabilities of the `Quran Secrets Analyzer` within the existing modular structure."
+    },
+    {
+        "iteration": 12,
+        "date": "2025-04-04",
+        "iteration_goal": "A new function `search_words_by_gematrical_value` is added to the `QuranSearch` module. This function allows searching for Quranic words based on their gematrical value. It reuses the `calculate_gematrical_value` function and integrates seamlessly into the existing architecture, enhancing the analytical capabilities of the Quran Secrets Analyzer."
     }
 ]

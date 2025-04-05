@@ -58,5 +58,10 @@
         "iteration": 11,
         "date": "2025-04-04",
         "iteration_goal": "Implement a function `calculate_gematrical_value` in `quran_search.py` to calculate the gematrical value of Arabic words or phrases. Add a pytest test case `test_calculate_gematrical_value` to validate the function. This feature supports numerical analysis of Quranic text."
+    },
+    {
+        "iteration": 12,
+        "date": "2025-04-04",
+        "iteration_goal": "Implement a function `search_words_by_gematrical_value` in `quran_search.py` to search for words in the Quran that match a given gematrical value. Add a pytest test case to validate this functionality. This feature enables searching for words based on their numerical values, enhancing numerical analysis capabilities."
     }
 ]

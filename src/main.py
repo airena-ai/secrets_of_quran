@@ -77,6 +77,16 @@ def main():
     from src.quran_search import calculate_gematrical_value
     gem_value = calculate_gematrical_value("بسم الله الرحمن الرحيم")
     print("\nGematrical value for 'بسم الله الرحمن الرحيم':", gem_value)
+    
+    # Demonstration of search_words_by_gematrical_value function
+    from src.quran_search import search_words_by_gematrical_value
+    target_gem_value = 66  # Gematrical value for 'الله'
+    results_gem = search_words_by_gematrical_value(quran_data, target_gem_value)
+    print("\nSearch results for words with gematrical value {}:".format(target_gem_value))
+    for entry in results_gem:
+        print("Surah: {} Ayah: {} - Word: {}".format(
+            entry.get('surah_number'), entry.get('ayah_number'), entry.get('word')
+        ))
 
 if __name__ == '__main__':
     main()
