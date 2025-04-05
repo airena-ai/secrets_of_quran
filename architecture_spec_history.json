@@ -28,5 +28,10 @@
         "iteration": 5,
         "date": "2025-04-04",
         "iteration_goal": "A new function `count_word_occurrences` is added to the `QuranSearch` module to count the total occurrences of a word in the entire Quran, case-insensitively. A new test case `test_count_word_occurrences` is also added to validate this functionality. This enhancement is within the existing modular architecture and improves the analytical capabilities of the `QuranSearch` module."
+    },
+    {
+        "iteration": 6,
+        "date": "2025-04-04",
+        "iteration_goal": "The architecture is updated by adding a `count_word_group_occurrences` function to the `QuranSearch` module. This new function counts the total occurrences of a specified word group in the entire Quran, case-insensitively. A new test case is also added to validate this functionality, maintaining modularity and testability."
     }
 ]

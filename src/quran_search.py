@@ -138,3 +138,27 @@ def count_word_occurrences(quran_data, word):
         verse_text = verse.get('verse_text', '')
         total_count += verse_text.lower().count(word_lower)
     return total_count
+
+def count_word_group_occurrences(quran_data, word_group):
+    """
+    Count the total number of occurrences of a word group (phrase) in the entire Quran text data.
+
+    This function iterates over each verse in the provided Quran data and counts all non-overlapping
+    occurrences of the specified word group, performing a case-insensitive search by default.
+    If the word_group is an empty string, the function returns 0.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran data.
+        word_group (str): The word group (phrase) to count occurrences of.
+
+    Returns:
+        int: The total number of occurrences of the word group in the Quran data.
+    """
+    if not word_group:
+        return 0
+    word_group_lower = word_group.lower()
+    total_count = 0
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        total_count += verse_text.lower().count(word_group_lower)
+    return total_count

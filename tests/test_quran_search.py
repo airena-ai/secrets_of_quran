@@ -5,7 +5,8 @@ from src.quran_search import (
     search_word_group, 
     search_word_in_surah,
     search_word_group_in_surah,
-    count_word_occurrences
+    count_word_occurrences,
+    count_word_group_occurrences
 )
 
 class TestQuranSearch(unittest.TestCase):
@@ -196,6 +197,29 @@ class TestQuranSearch(unittest.TestCase):
         # Test with different casing for the search word
         actual_count_mixed_case = count_word_occurrences(quran_data, 'aLLaH')
         self.assertEqual(actual_count_mixed_case, expected_count, "The count should be case-insensitive and match {} occurrences.".format(expected_count))
+
+    def test_count_word_group_occurrences(self):
+        """
+        Test the count_word_group_occurrences function to ensure it correctly counts the total occurrences
+        of a given word group (phrase) in the Quran data, handling case-insensitivity and multiple occurrences.
+        """
+        self.maxDiff = None
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'Bismillah Ar-Rahman Ar-Rahim, Ar-Rahman Ar-Rahim'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'Ar-Rahman Ar-Rahim is mentioned here. Again, Ar-Rahman Ar-Rahim appears.'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'No matching phrase here.'}
+        ]
+        # Count occurrences of the phrase "Ar-Rahman Ar-Rahim" (case-insensitive)
+        expected_count = 4  # 2 in the first verse and 2 in the second verse
+        actual_count = count_word_group_occurrences(quran_data, 'Ar-Rahman Ar-Rahim')
+        self.assertEqual(actual_count, expected_count, "The count of 'Ar-Rahman Ar-Rahim' occurrences should be {}.".format(expected_count))
+        
+        # Test with different casing for the search phrase
+        actual_count_case = count_word_group_occurrences(quran_data, 'ar-rahman ar-rahim')
+        self.assertEqual(actual_count_case, expected_count, "The count should be case-insensitive and match {} occurrences.".format(expected_count))
+        
+        # Test with an empty word group should return 0
+        self.assertEqual(count_word_group_occurrences(quran_data, ''), 0, "An empty word group should return 0 occurrences.")
 
 if __name__ == '__main__':
     unittest.main()

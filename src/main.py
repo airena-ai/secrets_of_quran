@@ -3,7 +3,7 @@ Main entry point for the Quran search application.
 """
 
 from src.quran_data_loader import load_quran_text
-from src.quran_search import search_word_in_quran, search_word_group_in_surah
+from src.quran_search import search_word_in_quran, search_word_group_in_surah, count_word_group_occurrences
 
 def main():
     """
@@ -33,6 +33,10 @@ def main():
         print("Surah: {} Ayah: {} - {}".format(
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))
+    
+    # Demonstration of new count_word_group_occurrences function
+    total_count = count_word_group_occurrences(quran_data, word_group)
+    print("\nTotal occurrences of phrase '{}': {}".format(word_group, total_count))
 
 if __name__ == '__main__':
     main()
