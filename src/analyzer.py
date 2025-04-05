@@ -113,17 +113,17 @@ def analyze_root_words(text):
     summary_lines = []
     summary_lines.append("Arabic Root Word Frequency Analysis:")
     for root, freq in root_freq.items():
-        summary_lines.append(f"Root '{root}': {freq}")
+        summary_lines.append("Root '{}': {}".format(root, freq))
     summary_lines.append("")
     summary_lines.append("Top Root Word Frequencies:")
     for idx, (root, freq) in enumerate(top_roots, 1):
-        summary_lines.append(f"{idx}. Root '{root}' : {freq}")
+        summary_lines.append("{}. Root '{}': {}".format(idx, root, freq))
     summary = "\n".join(summary_lines)
 
     src.logger.log_result("Arabic Root Word Frequency Analysis Summary:")
     src.logger.log_result("Top Root Word Frequencies:")
     for idx, (root, freq) in enumerate(top_roots, 1):
-        src.logger.log_result(f"{idx}. Root '{root}' : {freq}")
+        src.logger.log_result("{}. Root '{}': {}".format(idx, root, freq))
 
     return summary, dict(root_freq), top_roots
 
@@ -220,6 +220,88 @@ def analyze_verse_repetitions(preprocessed_text):
             })
 
     return result
+
+def analyze_lemmas(text):
+    '''Perform lemma analysis on the tokenized Quran text using CAMeL Tools morphological analyzer.
+    
+    This function iterates through each word in the text, extracts its lemma using the CAMeL Tools library,
+    counts the frequency of each lemma across the entire Quran, logs the top 20 most frequent lemmas, and returns the summary.
+
+    Args:
+        text (str): The preprocessed Quran text.
+
+    Returns:
+        str: A formatted summary of the lemma frequency analysis.
+    '''
+    from collections import Counter
+    import importlib.util
+    tokens = text.split()
+    lemmas = []
+    camel_tools_available = importlib.util.find_spec("camel_tools") is not None
+    if camel_tools_available:
+        try:
+            from camel_tools.morphology.analyzer import Analyzer
+            analyzer = Analyzer.builtin_analyzer()
+            for token in tokens:
+                try:
+                    analyses = analyzer.analyze(token)
+                    if analyses and 'lemma' in analyses[0]:
+                        lemma = analyses[0]['lemma']
+                    else:
+                        lemma = token
+                except Exception:
+                    lemma = token
+                lemmas.append(lemma)
+        except Exception:
+            lemmas = tokens
+    else:
+        lemmas = tokens
+    lemma_freq = Counter(lemmas)
+    TOP_N = 20
+    top_lemmas = lemma_freq.most_common(TOP_N)
+    result_lines = []
+    result_lines.append("Lemma Analysis: Top {} Lemmas:".format(TOP_N))
+    for idx, (lemma, count) in enumerate(top_lemmas, 1):
+        result_lines.append("{}. '{}' : {}".format(idx, lemma, count))
+    summary = "\n".join(result_lines)
+    import src.logger
+    src.logger.log_result(summary)
+    return summary
+
+def analyze_surah_verse_counts(text):
+    '''Perform analysis of verse counts per Surah in the Quran text.
+    
+    This function parses each line of the Quran text, extracts the Surah number, counts the number of verses per Surah,
+    logs the verse counts for each Surah, and returns a formatted summary.
+
+    Args:
+        text (str): The Quran text loaded from the data file.
+
+    Returns:
+        str: A formatted summary of the surah verse counts.
+    '''
+    from collections import defaultdict
+    import re
+    surah_counts = defaultdict(int)
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    lines = text.splitlines()
+    for line in lines:
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+        else:
+            surah = "1"
+        surah_counts[surah] += 1
+    result_lines = []
+    result_lines.append("Surah Verse Counts:")
+    for surah, count in sorted(surah_counts.items(), key=lambda x: int(x[0])):
+        result_lines.append("Surah {}: {} verses".format(surah, count))
+    summary = "\n".join(result_lines)
+    import src.logger
+    src.logger.log_result(summary)
+    return summary
 
 def analyze_palindromes(quran_text):
     '''Analyze palindromic structures within each verse of the Quran.

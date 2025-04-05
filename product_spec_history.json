@@ -38,5 +38,10 @@
         "iteration": 7,
         "date": "2025-04-05",
         "iteration_goal": "This increment adds verse repetition analysis to the Quran Secrets application. It involves creating a function `analyze_verse_repetitions()` to identify and count repeated verses within and across Surahs. The function will process the preprocessed Quran text, log the repeated verses with their counts and locations to `results.log`, and the integration test will be updated to verify this new functionality. This step allows the application to analyze structural patterns at the verse level, building upon the foundational text processing and analysis capabilities established in the previous increment."
+    },
+    {
+        "iteration": 8,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment focuses on enhancing the Quran Secrets application with lemma analysis and surah verse count analysis. It includes implementing functions to perform lemma analysis using CAMeL Tools to find frequent lemmas, calculate verse counts for each Surah, and log these results to `results.log`. The `main()` function is updated to call these new functions, and the integration test is enhanced to verify their correct execution and output. The logging format is also reviewed and refined for better clarity and structure, ensuring all analysis results are well-organized in the `results.log` file. This step adds more linguistic depth and structural overview to the Quran analysis."
     }
 ]

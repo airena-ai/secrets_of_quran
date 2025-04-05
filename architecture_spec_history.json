@@ -38,5 +38,10 @@
         "iteration": 7,
         "date": "2025-04-05",
         "iteration_goal": "Introduce `analyze_verse_repetitions()` function in the `analysis` module to perform intra-Surah and inter-Surah verse repetition analysis. The `main()` function will be updated to call this new function and the results will be logged using the existing `logging` module. This enhancement adds verse repetition analysis capability to the Quran analyzer without requiring new modules, focusing on modular extension of the `analysis` functionalities."
+    },
+    {
+        "iteration": 8,
+        "date": "2025-04-05",
+        "iteration_goal": "Two new analysis functions, `analyze_lemmas()` and `analyze_surah_verse_counts()`, are added to the `analysis` module. The `main()` function is updated to call them, and the integration test is enhanced to verify their execution and logging to `results.log`. The log format will be reviewed for clarity and consistency across all analysis sections."
     }
 ]

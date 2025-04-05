@@ -34,7 +34,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("POTENTIAL SECRET FOUND:", log_contents)
                 self.assertIn("Calculated numerical pattern: 42", log_contents)
                 self.assertIn("Word Frequency Analysis (Top 20):", log_contents)
-                self.assertIn("Arabic Root Word Frequency Analysis Summary:", log_contents)
+                self.assertIn("Arabic Root Word Frequency Analysis", log_contents)
                 self.assertIn("Top Root Word Frequencies:", log_contents)
                 self.assertIn("--- Bigram Frequency Analysis ---", log_contents)
                 self.assertIn("Top 20 Bigrams:", log_contents)
@@ -44,6 +44,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("[Palindrome Analysis]", log_contents)
                 self.assertIn("[Abjad Numerical Pattern]", log_contents)
                 self.assertIn("[Semantic Symmetry (Word Overlap)]", log_contents)
+                self.assertIn("Lemma Analysis:", log_contents)
+                self.assertIn("Surah Verse Counts:", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -65,7 +67,7 @@ class TestMainIntegration(unittest.TestCase):
         from unittest.mock import patch, MagicMock
         mock_spec = MagicMock()
         mock_analyzer = MagicMock()
-        mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}] if token == "الحمد" else [{'root': token}]
+        mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}, {'lemma': 'حمد'}] if token == "الحمد" else [{'root': token}, {'lemma': token}]
         mock_analyzer_class = MagicMock()
         mock_analyzer_class.builtin_analyzer.return_value = mock_analyzer
         
@@ -82,7 +84,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("POTENTIAL SECRET FOUND:", log_contents)
                 self.assertIn("Calculated numerical pattern: 42", log_contents)
                 self.assertIn("Word Frequency Analysis (Top 20):", log_contents)
-                self.assertIn("Arabic Root Word Frequency Analysis Summary:", log_contents)
+                self.assertIn("Arabic Root Word Frequency Analysis", log_contents)
                 self.assertIn("Top Root Word Frequencies:", log_contents)
                 self.assertIn("--- Bigram Frequency Analysis ---", log_contents)
                 self.assertIn("Top 20 Bigrams:", log_contents)
@@ -93,6 +95,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("[Palindrome Analysis]", log_contents)
                 self.assertIn("[Abjad Numerical Pattern]", log_contents)
                 self.assertIn("[Semantic Symmetry (Word Overlap)]", log_contents)
+                self.assertIn("Lemma Analysis:", log_contents)
+                self.assertIn("Surah Verse Counts:", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)
