@@ -338,23 +338,23 @@
     {
       "path": "tests/test_analyzer.py",
       "language": "python",
-      "description": "Unit tests for the analyzer module. Contains tests for verifying anomaly detection, word frequency analysis, Arabic root word analysis, bigram generation, palindrome detection, abjad numeral analysis, and semantic symmetry.",
+      "description": "This file contains unit tests for the analyzer module. It verifies the behavior of various text analysis functions such as analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, and analyze_verse_repetitions. The tests cover both typical and edge case scenarios to ensure robust functionality.",
       "classes": [
         {
           "name": "TestAnalyzer",
-          "description": "Unit tests for functions in the analyzer module using the unittest framework.",
+          "description": "A unittest.TestCase subclass that encapsulates a suite of tests for verifying the analyzer module's functionality. It includes tests for non-empty and empty texts, word frequency analysis, root word analysis, bigram generation, palindrome detection, abjad numeral patterns, semantic symmetry, and verse repetition detection.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "setUp",
-              "description": "Set up test environment and initial configurations.",
+              "description": "Initializes test fixtures and environment settings before each test method is executed.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -365,8 +365,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -377,8 +377,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -389,8 +389,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -401,8 +401,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -413,8 +413,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -425,20 +425,20 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_bigrams_empty",
-              "description": "Test that analyze_bigrams returns an empty dictionary for empty or insufficient tokenized text.",
+              "description": "Test that analyze_bigrams returns an empty dictionary when provided an empty tokenized text or insufficient tokens.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -449,8 +449,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -461,8 +461,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -473,8 +473,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"
@@ -485,8 +485,20 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "Instance of TestAnalyzer."
+                  "type": "",
+                  "description": ""
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_verse_repetitions",
+              "description": "Test that analyze_verse_repetitions correctly identifies repetitions both intra-surah and across the Quran.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "",
+                  "description": ""
                 }
               ],
               "return_type": "None"

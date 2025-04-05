@@ -2,7 +2,7 @@
 
 import unittest
 from unittest.mock import MagicMock
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_repetitions
 import importlib.util
 import src.logger
 
@@ -125,6 +125,22 @@ class TestAnalyzer(unittest.TestCase):
         symmetry_detected = any("[Semantic Symmetry (Word Overlap)]" in msg for msg in captured_secret)
         self.assertTrue(symmetry_detected)
         self.assertGreaterEqual(len(results), 1)
+        
+    def test_analyze_verse_repetitions(self):
+        '''Test that analyze_verse_repetitions correctly identifies repetitions both intra-surah and across the Quran.'''
+        sample_text = "1|1|VerseA\n1|2|VerseB\n1|3|VerseA\n2|1|VerseA\n2|2|VerseC"
+        result = analyze_verse_repetitions(sample_text)
+        self.assertEqual(len(result["within_surah"]), 1)
+        within = result["within_surah"][0]
+        self.assertEqual(within["surah"], "1")
+        self.assertEqual(within["verse"], "VerseA")
+        self.assertEqual(within["ayah_numbers"], [1, 3])
+        self.assertEqual(within["repetition"], 2)
+        self.assertEqual(len(result["across_quran"]), 1)
+        across = result["across_quran"][0]
+        self.assertEqual(across["verse"], "VerseA")
+        self.assertEqual(across["occurrences"], [{'surah': '1', 'ayah': 1}, {'surah': '1', 'ayah': 3}, {'surah': '2', 'ayah': 1}])
+        self.assertEqual(across["repetition"], 3)
 
 if __name__ == '__main__':
     unittest.main()
