@@ -8,6 +8,7 @@ from src.quran_search import (
     count_word_occurrences,
     count_word_group_occurrences,
     count_word_occurrences_in_surah,
+    count_word_occurrences_in_verse_range,
     search_word_in_verse_range,
     search_word_group_in_verse_range,
     search_verses_by_word_count
@@ -238,7 +239,6 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'Allah appears in surah 2.'},
             {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'Multiple ALLAH ALLAH occurrences here.'},
         ]
-        from src.quran_search import count_word_occurrences_in_surah
         count_surah1 = count_word_occurrences_in_surah(quran_data, 'Allah', 1)
         self.assertEqual(count_surah1, 2, "Expected 2 occurrences of 'Allah' in Surah 1.")
 
@@ -251,32 +251,36 @@ class TestQuranSearch(unittest.TestCase):
         count_empty = count_word_occurrences_in_surah(quran_data, '', 1)
         self.assertEqual(count_empty, 0, "Expected 0 occurrences when searching for an empty word.")
 
-    def test_count_word_group_occurrences_in_surah(self):
+    def test_count_word_occurrences_in_verse_range(self):
         """
-        Test the count_word_group_occurrences_in_surah function by ensuring it correctly counts occurrences of a word group
-        within a specific Surah, using case-insensitive matching.
+        Test the count_word_occurrences_in_verse_range function to ensure it correctly counts occurrences
+        of a word within a specified verse range, handling both case-sensitive and case-insensitive modes.
         """
         self.maxDiff = None
-        from src.quran_search import count_word_group_occurrences_in_surah
-        quran_data = [
-            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'Bismillah Ar-Rahman Ar-Rahim, Ar-Rahman Ar-Rahim'},
-            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'Ar-Rahman Ar-Rahim is mentioned here. Again, Ar-Rahman Ar-Rahim appears.'},
-            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'No matching phrase here.'},
-            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'Ar-Rahman Ar-Rahim in surah 2.'}
+        dummy_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'Alpha Beta Gamma'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'Alpha Alpha Beta'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'Gamma Alpha'},
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'alpha beta'},
+            {'surah_number': '3', 'ayah_number': '1', 'verse_text': 'Alpha Alpha Alpha'}
         ]
-        expected_count = 4  # 2 occurrences in verse 1 and 2 in verse 2 for Surah 1
-        actual_count = count_word_group_occurrences_in_surah(quran_data, 'Ar-Rahman Ar-Rahim', 1)
-        self.assertEqual(actual_count, expected_count, "Expected {} occurrences of the phrase in Surah 1.".format(expected_count))
-        
-        # Test with different casing for the phrase
-        actual_count_case = count_word_group_occurrences_in_surah(quran_data, 'aR-RAhman ar-Rahim', 1)
-        self.assertEqual(actual_count_case, expected_count, "Case-insensitive search should yield {} occurrences.".format(expected_count))
-        
-        # Test with empty word group
-        self.assertEqual(count_word_group_occurrences_in_surah(quran_data, '', 1), 0, "Empty word group should return 0 occurrences.")
-        
-        # Test for a Surah with no matching entries
-        self.assertEqual(count_word_group_occurrences_in_surah(quran_data, 'Ar-Rahman Ar-Rahim', 3), 0, "No occurrences should be found for non-existent surah.")
+        # Case-insensitive tests:
+        # Range (1,1) to (1,2): include verses 1 and 2 -> counts: 1 + 2 = 3
+        count1 = count_word_occurrences_in_verse_range(dummy_data, 'alpha', (1,1), (1,2))
+        self.assertEqual(count1, 3, "Should count 3 occurrences of 'alpha' in verses (1,1) to (1,2) case-insensitively.")
+        # Range (1,1) to (2,1): include verses 1, 2, and 3 -> counts: 1 + 2 + 1 = 4
+        count2 = count_word_occurrences_in_verse_range(dummy_data, 'alpha', (1,1), (2,1))
+        self.assertEqual(count2, 4, "Should count 4 occurrences of 'alpha' in verses (1,1) to (2,1) case-insensitively.")
+        # Case-sensitive test:
+        # For verse at (2,2) with text 'alpha beta', searching for 'Alpha' in a case-sensitive manner should yield 0.
+        count3 = count_word_occurrences_in_verse_range(dummy_data, 'Alpha', (2,2), (2,2), case_sensitive=True)
+        self.assertEqual(count3, 0, "Case-sensitive search should count 0 occurrences if cases do not match.")
+        # For verse at (3,1) with text 'Alpha Alpha Alpha', searching for 'Alpha' in a case-sensitive manner should yield 3.
+        count4 = count_word_occurrences_in_verse_range(dummy_data, 'Alpha', (3,1), (3,1), case_sensitive=True)
+        self.assertEqual(count4, 3, "Case-sensitive search should count 3 occurrences in verse (3,1) with correct case.")
+        # Test empty word returns 0.
+        count_empty = count_word_occurrences_in_verse_range(dummy_data, '', (1,1), (3,1))
+        self.assertEqual(count_empty, 0, "Empty search word should return 0 occurrences.")
 
     def test_search_word_in_verse_range(self):
         """

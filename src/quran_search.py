@@ -332,6 +332,43 @@ def search_word_group_in_verse_range(quran_data, word_group: str, start_verse: t
                 results.append(verse)
     return results
 
+def count_word_occurrences_in_verse_range(quran_data, word: str, start_verse: tuple[int, int], end_verse: tuple[int, int], case_sensitive: bool = False) -> int:
+    """
+    Count the total occurrences of a specific word within a defined verse range in the Quran data.
+    
+    This function iterates over the provided Quran data and selects verses whose (surah_number, ayah_number)
+    falls within the inclusive range defined by start_verse and end_verse. It then counts all non-overlapping
+    occurrences of the specified word in each verse, using either case-sensitive or case-insensitive matching.
+    
+    Args:
+        quran_data (list): List of dictionaries representing Quran data.
+        word (str): The word to be counted.
+        start_verse (tuple[int, int]): The starting verse as a tuple (surah_number, ayah_number).
+        end_verse (tuple[int, int]): The ending verse as a tuple (surah_number, ayah_number).
+        case_sensitive (bool, optional): Whether the count operation should be case-sensitive. Defaults to False.
+    
+    Returns:
+        int: The cumulative count of the word in the verses within the specified range.
+    """
+    if not word:
+        return 0
+    total_count = 0
+    for verse in quran_data:
+        try:
+            surah_num = int(verse.get('surah_number'))
+            ayah_num = int(verse.get('ayah_number'))
+        except (ValueError, TypeError):
+            continue
+        current_verse = (surah_num, ayah_num)
+        if current_verse < start_verse or current_verse > end_verse:
+            continue
+        verse_text = verse.get('verse_text', '')
+        if case_sensitive:
+            total_count += verse_text.count(word)
+        else:
+            total_count += verse_text.lower().count(word.lower())
+    return total_count
+
 def search_verses_by_word_count(quran_data, word_count):
     """
     Search Quran verses that contain exactly the specified number of words.
