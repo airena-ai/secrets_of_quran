@@ -500,6 +500,31 @@ def search_word_groups_by_gematrical_value(quran_data, word_group, target_value,
     logger.info("Found %d verses containing word group '%s'", len(results), word_group)
     return results
 
+def search_verses_by_word_gematrical_value_equals_word_count(quran_data, target_word):
+    """
+    Search for Quran verses where the gematrical value of the target word is equal to the total number of words in the verse.
+
+    This function computes the gematrical value of the target word using the calculate_gematrical_value function.
+    It then iterates over each verse in quran_data, splitting the verse text into words, and collects verses where
+    the number of words exactly equals the computed gematrical value.
+
+    Args:
+        quran_data (list): A list of dictionaries representing Quran verses.
+        target_word (str): The target word whose gematrical value is used for comparison.
+
+    Returns:
+        list: A list of dictionaries for verses where the word count equals the gematrical value of the target word.
+    """
+    logger.info("Searching for verses where word count equals gematrical value of '%s'", target_word)
+    results = []
+    gem_value = calculate_gematrical_value(target_word)
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        word_count = len(verse_text.split())
+        if word_count == gem_value:
+            results.append(verse)
+    return results
+
 def calculate_surah_gematrical_value(quran_data, surah_number: int) -> int:
     """
     Calculate the total gematrical value of all words within a specified Surah.

@@ -113,5 +113,10 @@
         "iteration": 22,
         "date": "2025-04-04",
         "iteration_goal": "A new function `search_word_group_at_position` is added to the `QuranSearch` module, enhancing search capabilities to find word groups at specific positions in verses. This change is modular and testable, with a new test case added. No new modules are introduced, and the existing architecture is maintained."
+    },
+    {
+        "iteration": 23,
+        "date": "2025-04-04",
+        "iteration_goal": "Added `search_verses_by_word_gematrical_value_equals_word_count` function to `QuranSearch` module. This function searches for verses where the gematrical value of a specified word matches the verse's word count. It reuses `calculate_gematrical_value` and maintains modularity. A new test case is added to ensure testability and validate the new functionality."
     }
 ]
