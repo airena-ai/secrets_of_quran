@@ -88,5 +88,10 @@
         "iteration": 17,
         "date": "2025-04-04",
         "iteration_goal": "Implement `count_word_occurrences_in_surah` function in `quran_search.py` to count word occurrences within a specific Surah. Create `test_count_word_occurrences_in_surah` in `test_quran_search.py` to validate the new function. This feature enables analysis of word frequency within specific Quran chapters."
+    },
+    {
+        "iteration": 18,
+        "date": "2025-04-04",
+        "iteration_goal": "Implement `count_word_group_occurrences_in_surah` function in `quran_search.py` to count phrase occurrences within a specific Surah. Create `test_count_word_group_occurrences_in_surah` in `test_quran_search.py` to validate the new function. This feature enables analysis of phrase frequency within specific Quran chapters."
     }
 ]

@@ -88,5 +88,10 @@
         "iteration": 17,
         "date": "2025-04-04",
         "iteration_goal": "Added `count_word_occurrences_in_surah` function to `QuranSearch` module to count word occurrences within a specific Surah. This enhancement is modular, testable, and reuses existing components, maintaining the system's architecture. A new test case is also included to ensure functionality."
+    },
+    {
+        "iteration": 18,
+        "date": "2025-04-04",
+        "iteration_goal": "Added `count_word_group_occurrences_in_surah` function to the `QuranSearch` module. This function counts how many times a specific word group appears within a given Surah. A new test case is also added to ensure the functionality of the new function. This is a modular enhancement within the `QuranSearch` module."
     }
 ]

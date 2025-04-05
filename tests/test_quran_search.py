@@ -7,6 +7,7 @@ from src.quran_search import (
     search_word_group_in_surah,
     count_word_occurrences,
     count_word_group_occurrences,
+    count_word_occurrences_in_surah,
     search_word_in_verse_range,
     search_word_group_in_verse_range,
     search_verses_by_word_count
@@ -249,6 +250,33 @@ class TestQuranSearch(unittest.TestCase):
 
         count_empty = count_word_occurrences_in_surah(quran_data, '', 1)
         self.assertEqual(count_empty, 0, "Expected 0 occurrences when searching for an empty word.")
+
+    def test_count_word_group_occurrences_in_surah(self):
+        """
+        Test the count_word_group_occurrences_in_surah function by ensuring it correctly counts occurrences of a word group
+        within a specific Surah, using case-insensitive matching.
+        """
+        self.maxDiff = None
+        from src.quran_search import count_word_group_occurrences_in_surah
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'Bismillah Ar-Rahman Ar-Rahim, Ar-Rahman Ar-Rahim'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'Ar-Rahman Ar-Rahim is mentioned here. Again, Ar-Rahman Ar-Rahim appears.'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'No matching phrase here.'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'Ar-Rahman Ar-Rahim in surah 2.'}
+        ]
+        expected_count = 4  # 2 occurrences in verse 1 and 2 in verse 2 for Surah 1
+        actual_count = count_word_group_occurrences_in_surah(quran_data, 'Ar-Rahman Ar-Rahim', 1)
+        self.assertEqual(actual_count, expected_count, "Expected {} occurrences of the phrase in Surah 1.".format(expected_count))
+        
+        # Test with different casing for the phrase
+        actual_count_case = count_word_group_occurrences_in_surah(quran_data, 'aR-RAhman ar-Rahim', 1)
+        self.assertEqual(actual_count_case, expected_count, "Case-insensitive search should yield {} occurrences.".format(expected_count))
+        
+        # Test with empty word group
+        self.assertEqual(count_word_group_occurrences_in_surah(quran_data, '', 1), 0, "Empty word group should return 0 occurrences.")
+        
+        # Test for a Surah with no matching entries
+        self.assertEqual(count_word_group_occurrences_in_surah(quran_data, 'Ar-Rahman Ar-Rahim', 3), 0, "No occurrences should be found for non-existent surah.")
 
     def test_search_word_in_verse_range(self):
         """
