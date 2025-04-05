@@ -31,3 +31,22 @@ def log_result(message):
             log_file.write(f"{timestamp} - RESULT: {message}\n")
     except Exception as e:
         print(f"Logging failed: {e}")
+
+def log_bigram_frequencies(bigram_frequencies, top_n=20):
+    '''Log the top N most frequent bigrams to the results log file.
+
+    The function logs a header indicating the start of bigram analysis,
+    followed by the top N bigrams and their frequency counts.
+
+    Args:
+        bigram_frequencies (dict): A dictionary mapping bigram tuples to frequency counts.
+        top_n (int): The number of top bigrams to log.
+    '''
+    lines = []
+    lines.append("--- Bigram Frequency Analysis ---")
+    lines.append("Top {} Bigrams:".format(top_n))
+    sorted_bigrams = sorted(bigram_frequencies.items(), key=lambda item: item[1], reverse=True)
+    for idx, (bigram, count) in enumerate(sorted_bigrams[:top_n], start=1):
+        lines.append("{}. {}: {}".format(idx, bigram, count))
+    for line in lines:
+        log_result(line)

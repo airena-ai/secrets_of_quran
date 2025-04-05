@@ -13,5 +13,10 @@
         "iteration": 2,
         "date": "2025-04-05",
         "iteration_goal": "The architecture is updated to include root word analysis functionality. A new `analyze_root_words()` function is added to the 'analysis' module, which will use an Arabic NLP library to identify root words, calculate their frequencies, and log the results. The integration test will be updated to ensure the new functionality is correctly integrated into the analysis pipeline and that root word frequencies are properly logged."
+    },
+    {
+        "iteration": 3,
+        "date": "2025-04-05",
+        "iteration_goal": "Introduce bigram frequency analysis feature. Add `analyze_bigrams` function to the analysis module. Integrate it into the `main()` function in `quran_analyzer.py`. Update the logging module to include bigram frequency results in `results.log`. Enhance integration tests in `test_quran_analyzer.py` to verify the new bigram analysis functionality and its logging."
     }
 ]

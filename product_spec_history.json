@@ -13,5 +13,10 @@
         "iteration": 2,
         "date": "2025-04-05",
         "iteration_goal": "This increment focuses on enhancing the Quran Secrets application with Arabic root word analysis. It involves integrating an Arabic linguistic library (like CAMeL Tools), developing a function to extract root words from the Quran text, calculating and logging the frequencies of these root words, and updating the integration test to ensure the new functionality is correctly implemented and tested. This step provides a more linguistically nuanced analysis of the Quran compared to simple word frequency counting from the previous iteration."
+    },
+    {
+        "iteration": 3,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment focuses on adding bigram (2-word group) frequency analysis to the Quran Secrets application. It involves developing a new function `analyze_bigrams` to generate and count bigrams from the tokenized Quran text. The `main()` function is updated to call this new function and log the top N most frequent bigrams to `results.log`. The integration test is also updated to ensure the new bigram analysis functionality is correctly implemented and tested. This enhancement allows for the analysis of word combinations, providing a more nuanced linguistic analysis of the Quran beyond single word frequencies."
     }
 ]

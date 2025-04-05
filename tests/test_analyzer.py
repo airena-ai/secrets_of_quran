@@ -2,7 +2,7 @@
 
 import unittest
 from unittest.mock import patch, MagicMock
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams
 import importlib.util
 
 class TestAnalyzer(unittest.TestCase):
@@ -76,6 +76,19 @@ class TestAnalyzer(unittest.TestCase):
             self.assertIn("Root 'كتب': 2", summary)
             self.assertIn("Root 'درس': 1", summary)
             self.assertEqual(top_roots[0], ('كتب', 2))
+            
+    def test_analyze_bigrams_empty(self):
+        '''Test that analyze_bigrams returns an empty dictionary when provided an empty tokenized text or insufficient tokens.'''
+        self.assertEqual(analyze_bigrams([]), {})
+        self.assertEqual(analyze_bigrams(["word"]), {})
+        
+    def test_analyze_bigrams_sample(self):
+        '''Test analyze_bigrams with a sample tokenized text for correct bigram generation and frequency counting.'''
+        tokens = ['a', 'b', 'a', 'b']
+        # Expected bigrams: ('a', 'b'), ('b', 'a'), ('a', 'b')
+        result = analyze_bigrams(tokens)
+        expected = {('a', 'b'): 2, ('b', 'a'): 1}
+        self.assertEqual(result, expected)
 
 if __name__ == '__main__':
     unittest.main()

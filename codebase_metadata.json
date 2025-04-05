@@ -26,13 +26,13 @@
     },
     {
       "path": "src/main.py",
-      "language": "Python",
-      "description": "Main driver for the Quran Secrets application. Initiates file reading, text preprocessing, and analysis routines while logging output and anomalies. Handles errors gracefully.",
+      "language": "python",
+      "description": "Main driver for the Quran Secrets application. Orchestrates reading and preprocessing of Quran text, analysis using various functions from the analyzer module, and logging of results.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main entry point for the Quran Secrets analysis. Reads input text, preprocesses it, runs anomaly and word frequency analyses, logs results, and outputs a completion message.",
+          "description": "Main entry point for the Quran Secrets analysis. Reads Quran text, preprocesses it, runs various analyses, logs results, and prints completion message.",
           "parameters": [],
           "return_type": "None"
         }
@@ -102,63 +102,77 @@
     },
     {
       "path": "src/analyzer.py",
-      "language": "Python",
-      "description": "This module provides functionality for analyzing Quran text to detect patterns, anomalies, and perform linguistic analysis. It includes functions for basic text analysis, word frequency analysis, and Arabic root word analysis using CAMeL Tools when available, with graceful fallbacks when the library is not present.",
+      "language": "python",
+      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Contains functions to analyze text for numerical patterns, word frequency, Arabic root words, and bigrams.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_text",
-          "description": "Analyzes the given text for hidden numerical patterns and anomalies. This function simulates pattern detection by returning a predefined anomaly message for non-empty text input.",
+          "description": "Analyze the given text for hidden numerical patterns and anomalies. This function simulates pattern detection and returns anomaly messages when the text is non-empty.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
-              "description": "The preprocessed text of the Quran to analyze."
+              "description": "The preprocessed text of the Quran."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "analyze_word_frequency",
-          "description": "Performs word frequency analysis on the given text by tokenizing it, counting word occurrences, and identifying unusual frequency patterns. It identifies words with frequencies significantly higher or lower than the average of top words.",
+          "description": "Perform word frequency analysis on the given preprocessed Quran text. Tokenizes the text, counts word occurrences, produces a summary and flags unusual frequencies.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
-              "description": "The preprocessed Quran text to analyze."
+              "description": "The preprocessed Quran text."
             }
           ],
           "return_type": "tuple"
         },
         {
           "name": "analyze_root_words",
-          "description": "Performs Arabic root word analysis on the given text using CAMeL Tools morphological analyzer when available. It extracts and counts root words, then returns frequency analysis and logs the results. Includes fallback behavior when CAMeL Tools is not available.",
+          "description": "Perform Arabic root word analysis on the given preprocessed Quran text using CAMeL Tools if available, counts frequency of root words, and logs the analysis.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
-              "description": "The preprocessed Quran text to analyze."
+              "description": "The preprocessed Quran text."
             }
           ],
           "return_type": "tuple"
+        },
+        {
+          "name": "analyze_bigrams",
+          "description": "Perform bigram frequency analysis on the given tokenized text. Generates n-grams, counts their occurrences, and returns a dictionary of bigrams with counts.",
+          "parameters": [
+            {
+              "name": "tokenized_text",
+              "type": "list",
+              "description": "A list of preprocessed tokens from the Quran text."
+            },
+            {
+              "name": "n",
+              "type": "int",
+              "description": "The number of words in each n-gram (default is 2 for bigrams)."
+            }
+          ],
+          "return_type": "dict"
         }
       ],
       "dependencies": [
-        "collections.Counter",
-        "datetime",
-        "importlib.util",
-        "src.logger"
+        "src/logger.py"
       ]
     },
     {
       "path": "src/logger.py",
-      "language": "Python",
-      "description": "Module for logging analysis outputs of the Quran Secrets application. Provides functions to log secret findings and results with timestamps to a log file.",
+      "language": "python",
+      "description": "Module for logging analysis outputs of the Quran Secrets application. Provides functions to log secret findings, results, and bigram frequencies into a log file with timestamps.",
       "classes": [],
       "functions": [
         {
           "name": "log_secret_found",
-          "description": "Logs a secret finding to the results.log file with a timestamp and a special tag. Handles exceptions while logging.",
+          "description": "Logs a secret finding to the results.log file with a special tag and a timestamp.",
           "parameters": [
             {
               "name": "message",
@@ -170,12 +184,29 @@
         },
         {
           "name": "log_result",
-          "description": "Logs a result message to the results.log file with a timestamp. Handles exceptions while logging.",
+          "description": "Logs a result message to the results.log file with a timestamp.",
           "parameters": [
             {
               "name": "message",
               "type": "str",
               "description": "The result message to log."
+            }
+          ],
+          "return_type": "None"
+        },
+        {
+          "name": "log_bigram_frequencies",
+          "description": "Logs the top N most frequent bigrams to the results log file including header and frequency counts for the top N bigrams.",
+          "parameters": [
+            {
+              "name": "bigram_frequencies",
+              "type": "dict",
+              "description": "A dictionary mapping bigram tuples to frequency counts."
+            },
+            {
+              "name": "top_n",
+              "type": "int",
+              "description": "The number of top bigrams to log (default is 20)."
             }
           ],
           "return_type": "None"
@@ -257,98 +288,62 @@
     },
     {
       "path": "tests/test_analyzer.py",
-      "language": "Python",
-      "description": "Unit test suite for the analyzer module. Contains test cases for the analyze_text, analyze_word_frequency, and analyze_root_words functions, including tests with mocked dependencies for the CAMeL Tools library.",
+      "language": "python",
+      "description": "Unit tests for the analyzer module. Contains test cases validating functionalities such as anomaly detection, word frequency analysis, Arabic root word analysis, and bigram generation.",
       "classes": [
         {
           "name": "TestAnalyzer",
-          "description": "Test class containing unit tests for the analyzer module functions. Includes tests for empty and non-empty text inputs, word frequency analysis, and Arabic root word analysis with mocked dependencies.",
+          "description": "Unit tests for the analyzer module functions.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
-              "name": "setUp",
-              "description": "Sets up the test environment by configuring the maximum difference for test assertions.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "The test class instance."
-                }
-              ],
-              "return_type": "None"
-            },
-            {
               "name": "test_analyze_non_empty",
-              "description": "Tests that analyze_text returns a simulated anomaly for non-empty text input.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "The test class instance."
-                }
-              ],
+              "description": "Test that a non-empty text returns a simulated anomaly.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_analyze_empty",
-              "description": "Tests that analyze_text returns an empty list for empty text input.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "The test class instance."
-                }
-              ],
+              "description": "Test that an empty text returns no anomalies.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_analyze_word_frequency_summary",
-              "description": "Tests that analyze_word_frequency returns a proper summary and flagged list.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "The test class instance."
-                }
-              ],
+              "description": "Test that the word frequency analysis returns a proper summary and flagged list.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_analyze_word_frequency_with_flags",
-              "description": "Tests that analyze_word_frequency correctly flags unusual word frequencies.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "The test class instance."
-                }
-              ],
+              "description": "Test that the word frequency analysis flags unusual word frequencies correctly.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_analyze_root_words_empty",
-              "description": "Tests Arabic root word analysis on empty text with mocked dependencies.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "The test class instance."
-                }
-              ],
+              "description": "Test Arabic root word analysis on empty text.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_analyze_root_words_sample",
-              "description": "Tests Arabic root word analysis on sample text with mocked CAMeL Tools analyzer.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestAnalyzer",
-                  "description": "The test class instance."
-                }
-              ],
+              "description": "Test Arabic root word analysis on sample text with mocked CAMeL Tools analyzer.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_bigrams_empty",
+              "description": "Test that analyze_bigrams returns an empty dictionary when input is empty or insufficient tokens.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_bigrams_sample",
+              "description": "Test analyze_bigrams with a sample tokenized text for correct bigram generation and count.",
+              "parameters": [],
               "return_type": "None"
             }
           ]
@@ -356,10 +351,7 @@
       ],
       "functions": [],
       "dependencies": [
-        "unittest",
-        "unittest.mock",
-        "src.analyzer",
-        "importlib.util"
+        "src/analyzer.py"
       ]
     },
     {
@@ -437,31 +429,25 @@
     },
     {
       "path": "tests/test_main.py",
-      "language": "Python",
-      "description": "Integration test module for the main module that tests the end-to-end functionality of the Arabic text analysis system. It contains tests for both scenarios: when CAMeL Tools is available and when it's not available (fallback mode). The tests create sample Arabic text files, execute the main function, and verify that the expected analysis results are present in the output log file.",
+      "language": "python",
+      "description": "Integration test for the main module to execute end-to-end analysis. Validates main application flow under different conditions including with and without CAMeL Tools.",
       "classes": [
         {
           "name": "TestMainIntegration",
-          "description": "Test class that contains integration tests for the main module. It tests the full execution flow of the main function in different scenarios, including with and without CAMeL Tools available for Arabic root word analysis.",
+          "description": "Integration tests for the main module's end-to-end execution.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
-              "name": "setUp",
-              "description": "Setup method that runs before each test to configure the test environment, specifically setting maxDiff to None to allow for full diff display in test failures.",
-              "parameters": [],
-              "return_type": "None"
-            },
-            {
               "name": "test_main_integration_fallback",
-              "description": "Tests the main function's execution when CAMeL Tools is not available, verifying that the fallback mechanism works correctly. It creates a sample Arabic text file, mocks the import check to simulate CAMeL Tools being unavailable, runs the main function, and verifies expected log outputs.",
+              "description": "Test the full execution of main() function end-to-end with CAMeL Tools fallback.",
               "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_with_camel_tools",
-              "description": "Tests the main function's execution when CAMeL Tools is available, verifying that Arabic root word analysis is performed correctly. It creates a sample Arabic text file, mocks CAMeL Tools and its analyzer to return predefined root words, runs the main function, and verifies expected log outputs including the specific roots returned by the mock analyzer.",
+              "description": "Test the full execution of main() function end-to-end with CAMeL Tools available.",
               "parameters": [],
               "return_type": "None"
             }
@@ -470,11 +456,7 @@
       ],
       "functions": [],
       "dependencies": [
-        "os",
-        "unittest",
-        "unittest.mock",
-        "importlib.util",
-        "src.main"
+        "src/main.py"
       ]
     },
     {

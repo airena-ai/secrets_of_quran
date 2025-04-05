@@ -2,8 +2,8 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words
-from src.logger import log_secret_found, log_result
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams
+from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
     '''Main entry point for the Quran Secrets analysis.'''
@@ -23,6 +23,11 @@ def main():
     
     # Execute Arabic root word frequency analysis.
     root_summary, root_freq, top_roots = analyze_root_words(text)
+    
+    # Perform bigram frequency analysis.
+    tokenized_text = text.split()
+    bigram_frequencies = analyze_bigrams(tokenized_text)
+    log_bigram_frequencies(bigram_frequencies, top_n=20)
     
     # Log the word frequency analysis summary with a timestamp.
     log_result(freq_summary)

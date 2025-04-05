@@ -131,3 +131,22 @@ def analyze_root_words(text):
         log_result(f"{idx}. Root '{root}' : {freq}")
 
     return summary, dict(root_freq), top_roots
+
+def analyze_bigrams(tokenized_text, n=2):
+    '''Perform bigram frequency analysis on the given tokenized text.
+
+    This function generates n-grams (bigrams by default) from the tokenized text,
+    counts the frequency of each n-gram, and returns a dictionary where keys are n-gram tuples
+    and values are their respective occurrence counts.
+
+    Args:
+        tokenized_text (list): A list of preprocessed tokens from the Quran text.
+        n (int): The number of words in each n-gram (default is 2 for bigrams).
+
+    Returns:
+        dict: A dictionary with n-gram tuples as keys and their frequency counts as values.
+    '''
+    if not tokenized_text or len(tokenized_text) < n:
+        return {}
+    ngrams = [tuple(tokenized_text[i:i+n]) for i in range(len(tokenized_text)-n+1)]
+    return dict(Counter(ngrams))

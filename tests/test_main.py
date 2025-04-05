@@ -35,6 +35,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Word Frequency Analysis (Top 20):", log_contents)
                 self.assertIn("Arabic Root Word Frequency Analysis:", log_contents)
                 self.assertIn("Top Root Word Frequencies:", log_contents)
+                self.assertIn("--- Bigram Frequency Analysis ---", log_contents)
+                self.assertIn("Top 20 Bigrams:", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)
@@ -83,6 +85,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Word Frequency Analysis (Top 20):", log_contents)
                 self.assertIn("Arabic Root Word Frequency Analysis:", log_contents)
                 self.assertIn("Top Root Word Frequencies:", log_contents)
+                self.assertIn("--- Bigram Frequency Analysis ---", log_contents)
+                self.assertIn("Top 20 Bigrams:", log_contents)
                 
                 # Verify that the root analysis was performed using CAMeL Tools
                 # We should see the roots that our mock analyzer returned
