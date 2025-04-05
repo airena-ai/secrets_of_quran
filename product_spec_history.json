@@ -3,5 +3,10 @@
         "iteration": 0,
         "date": "2025-04-04",
         "iteration_goal": "This first increment focuses on building the foundational components for the Quran Secrets Analyzer. It involves creating two Python modules: `quran_data_loader.py` to load Quran data from the specified text file into a list of dictionaries, and `quran_search.py` to implement a basic function that searches for a given word within the loaded Quran text.  A pytest test case `test_search_allah_word` is also included to verify the basic word search functionality for the word 'Allah'. This step ensures the application can read the Quran data and perform a simple search, setting the stage for more advanced features in subsequent iterations."
+    },
+    {
+        "iteration": 1,
+        "date": "2025-04-04",
+        "iteration_goal": "This increment focuses on enhancing the Quran Secrets Analyzer by adding the capability to search for word groups (phrases). A new function `search_word_group` will be implemented in `quran_search.py` to find exact word sequences within the Quran text.  A new pytest test case `test_search_word_group` will be created to validate this functionality, ensuring the application can now search for phrases in addition to individual words. This step expands the search capabilities and prepares the ground for more complex analyses in future iterations."
     }
 ]

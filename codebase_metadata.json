@@ -47,13 +47,13 @@
     },
     {
       "path": "src/quran_search.py",
-      "language": "Python",
-      "description": "Module for searching words in the loaded Quran data. Implements functionality to iterate over Quran verses and return those that contain a specified search word.",
+      "language": "python",
+      "description": "Module for searching words in the loaded Quran data. This file provides two functions: one to search for a word in the Quran verses and another to search for a word group (exact phrase). It iterates over the provided Quran data to return verses that match the search criteria in a case-sensitive manner.",
       "classes": [],
       "functions": [
         {
           "name": "search_word_in_quran",
-          "description": "Search for a word in the Quran verses. Iterates through the provided Quran data list and returns verses that contain the search word. The search is case-sensitive.",
+          "description": "Searches for a word in the provided Quran data. Iterates over a list of Quran verses and returns those verses containing the specified search word. The function uses a case-sensitive search.",
           "parameters": [
             {
               "name": "quran_data",
@@ -64,6 +64,23 @@
               "name": "search_word",
               "type": "str",
               "description": "The word to search for in the verse text."
+            }
+          ],
+          "return_type": "list"
+        },
+        {
+          "name": "search_word_group",
+          "description": "Searches for a specific word group (exact phrase) in the provided Quran data. Iterates through the verses and returns those that contain the given phrase while preserving word order and ensuring case sensitivity.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data."
+            },
+            {
+              "name": "word_group",
+              "type": "str",
+              "description": "The exact phrase to search for in the verse text."
             }
           ],
           "return_type": "list"
@@ -99,26 +116,26 @@
     },
     {
       "path": "tests/test_quran_search.py",
-      "language": "Python",
-      "description": "Unit tests for the Quran search functionality using the unittest framework. Verifies that searching for the word 'اللَّهِ' returns expected results.",
+      "language": "python",
+      "description": "Test file for verifying the functionalities of the Quran search module. Contains unit tests that check the correct behavior of word and phrase search functions using sample Quran data.",
       "classes": [
         {
           "name": "TestQuranSearch",
-          "description": "Unit test class for testing Quran search functionality.",
+          "description": "Unit test class for testing the Quran search module. It verifies that the search functions return expected results for given search criteria including both existing and non-existing words/phrases.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_search_allah_word",
-              "description": "Test that searching for the word 'اللَّهِ' returns at least one verse from the loaded Quran data.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
-                }
-              ],
+              "description": "Tests that searching for the word 'اللَّهِ' returns at least one verse from the Quran data, ensuring that the search function correctly identifies matching verses.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_search_word_group",
+              "description": "Tests the search_word_group function with two scenarios: one where an existing word group is present in the Quran data and one where a non-existing group is searched, verifying both correct match and no-match outcomes.",
+              "parameters": [],
               "return_type": "None"
             }
           ]

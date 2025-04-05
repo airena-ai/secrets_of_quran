@@ -3,5 +3,10 @@
         "iteration": 0,
         "date": "2025-04-04",
         "iteration_goal": "Initial architecture is defined with `QuranDataLoader` module for loading Quran data and `QuranSearch` module for word search. Data is structured as a list of dictionaries. Pytest is integrated for testing. This modular approach sets the foundation for scalable and maintainable future enhancements by separating data handling from search logic and ensuring testability from the outset."
+    },
+    {
+        "iteration": 1,
+        "date": "2025-04-04",
+        "iteration_goal": "The architecture is extended by adding a `search_word_group` function to the `QuranSearch` module. This function enables searching for exact word phrases within the Quran data, which is loaded by the existing `QuranDataLoader`. A new test case is introduced to verify the `search_word_group` functionality, ensuring modularity and testability are maintained as new features are added."
     }
 ]
