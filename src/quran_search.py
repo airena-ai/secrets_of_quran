@@ -402,3 +402,34 @@ def search_word_groups_by_gematrical_value(quran_data, word_group, target_value,
                 results.append(verse)
     logger.info("Found %d verses containing word group '%s'", len(results), word_group)
     return results
+
+def calculate_surah_gematrical_value(quran_data, surah_number: int) -> int:
+    """
+    Calculate the total gematrical value of all words within a specified Surah.
+    
+    This function filters the Quran data for verses that belong to the given Surah number,
+    then splits each verse's text into individual words. The gematrical value of each word is computed
+    using the calculate_gematrical_value function, and these values are summed to obtain the total value for the Surah.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran data.
+        surah_number (int): The Surah number to calculate the gematrical value for.
+
+    Returns:
+        int: The total gematrical value of all words in the specified Surah.
+    """
+    logger.info("Calculating gematrical value for Surah %d", surah_number)
+    total_value = 0
+    for verse in quran_data:
+        try:
+            current_surah = int(verse.get('surah_number'))
+        except (ValueError, TypeError):
+            continue
+        if current_surah != surah_number:
+            continue
+        verse_text = verse.get('verse_text', '')
+        # Split the verse text into words based on whitespace.
+        words = verse_text.split()
+        for word in words:
+            total_value += calculate_gematrical_value(word)
+    return total_value

@@ -358,11 +358,11 @@ class TestQuranSearch(unittest.TestCase):
         """
         self.maxDiff = None
         dummy_data = [
-            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'word1 word2'},  # 2 words
-            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'word1 word2 word3'},  # 3 words
-            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'word1 word2 word3 word4'},  # 4 words
-            {'surah_number': '1', 'ayah_number': '4', 'verse_text': 'word1'},  # 1 word
-            {'surah_number': '1', 'ayah_number': '5', 'verse_text': 'word1 word2 word3 word4 word5 word6'}  # 6 words
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'word1 word2'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'word1 word2 word3'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'word1 word2 word3 word4'},
+            {'surah_number': '1', 'ayah_number': '4', 'verse_text': 'word1'},
+            {'surah_number': '1', 'ayah_number': '5', 'verse_text': 'word1 word2 word3 word4 word5 word6'}
         ]
         from src.quran_search import search_verses_by_word_count_multiple
         # Positive test: multiple_of = 2 should select verses with 2, 4, and 6 words.
@@ -493,6 +493,30 @@ class TestQuranSearch(unittest.TestCase):
         absent_computed = calculate_gematrical_value(absent_phrase)
         results_absent = search_word_groups_by_gematrical_value(dummy_data, absent_phrase, absent_computed)
         self.assertEqual(results_absent, [], "Expected empty result for phrase '{}' that is not present in any verse.".format(absent_phrase))
+
+    def test_calculate_surah_gematrical_value(self):
+        """
+        Test the calculate_surah_gematrical_value function by using a dummy Quran data set.
+        This test includes verses from different Surahs, ensuring that only verses from the specified Surah contribute
+        to the calculated gematrical value.
+        """
+        self.maxDiff = None
+        from src.quran_search import calculate_surah_gematrical_value
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'بسم الله الرحمن الرحيم'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'الله'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'Some non-Arabic text'}
+        ]
+        # Expected for Surah 1:
+        # "بسم الله الرحمن الرحيم" splits into ["بسم", "الله", "الرحمن", "الرحيم"]
+        # Gematrical values: 102 + 66 + 329 + 289 = 786, and then adding "الله" = 66, total = 852.
+        expected_total = 852
+        calculated_total = calculate_surah_gematrical_value(quran_data, 1)
+        self.assertEqual(calculated_total, expected_total, "Calculated gematrical value for Surah 1 should be {}.".format(expected_total))
+        
+        # For Surah 2, the non-Arabic text should yield a gematrical value of 0.
+        calculated_total_surah2 = calculate_surah_gematrical_value(quran_data, 2)
+        self.assertEqual(calculated_total_surah2, 0, "Calculated gematrical value for Surah 2 should be 0 since no mapped Arabic letters.")
 
 if __name__ == '__main__':
     unittest.main()

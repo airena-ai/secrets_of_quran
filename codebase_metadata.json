@@ -59,13 +59,13 @@
     },
     {
       "path": "src/quran_search.py",
-      "language": "Python",
-      "description": "Module for searching words in the loaded Quran data. It provides multiple functions to perform diverse search operations on Quran data including word searches, phrase (word group) searches, verse range searches, word count based searches, and gematrical value calculations.",
+      "language": "python",
+      "description": "Module for searching words in the loaded Quran data. Contains functions to search for words and phrases, count their occurrences, perform verse range searches, and calculate gematrical values based on Abjad numeral mapping of Arabic letters.",
       "classes": [],
       "functions": [
         {
           "name": "search_word_in_quran",
-          "description": "Search for a word in the Quran verses. Iterates over the provided Quran data and returns a list of verses containing the search word. Supports both case-sensitive and case-insensitive search modes.",
+          "description": "Searches for a word in the Quran verses by iterating through the provided Quran data and returns verses that contain the search word, with an option for case-sensitive search.",
           "parameters": [
             {
               "name": "quran_data",
@@ -74,20 +74,20 @@
             },
             {
               "name": "search_word",
-              "type": "str",
+              "type": "string",
               "description": "The word to search for in the verse text."
             },
             {
               "name": "case_sensitive",
               "type": "bool",
-              "description": "If True, performs case-sensitive search; otherwise, case-insensitive search. Defaults to False."
+              "description": "Flag indicating if search is case-sensitive; defaults to False."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "search_word_group",
-          "description": "Search for a specific word group (phrase) in the Quran verses. Iterates over the Quran data to find verses that contain the exact phrase, with support for case-sensitive and case-insensitive searches.",
+          "description": "Searches for a specific word group (exact phrase) in the Quran verses, supporting both case-sensitive and case-insensitive searches.",
           "parameters": [
             {
               "name": "quran_data",
@@ -96,24 +96,24 @@
             },
             {
               "name": "word_group",
-              "type": "str",
+              "type": "string",
               "description": "The word group (exact phrase) to search for in the verse text."
             },
             {
               "name": "case_sensitive",
               "type": "bool",
-              "description": "If True, performs case-sensitive search; otherwise, case-insensitive search. Defaults to False."
+              "description": "Flag indicating if search is case-sensitive; defaults to False."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "search_word_in_surah",
-          "description": "Search for a word within a specific Surah in the Quran data by filtering based on the surah number and then checking if the word appears in the verse text.",
+          "description": "Searches for a word within a specific Surah in the Quran data.",
           "parameters": [
             {
               "name": "word",
-              "type": "str",
+              "type": "string",
               "description": "The word to search for (case-insensitive)."
             },
             {
@@ -124,14 +124,14 @@
             {
               "name": "quran_data",
               "type": "list",
-              "description": "The loaded Quran data."
+              "description": "List of dictionaries representing Quran data."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "search_word_group_in_surah",
-          "description": "Search for a word group (phrase) within a specific Surah by filtering the Quran data based on surah number and then checking for the phrase in the verse text with an option for case sensitivity.",
+          "description": "Searches for a word group (exact phrase) within a specified Surah in the Quran data, with an option for case-sensitive search.",
           "parameters": [
             {
               "name": "quran_data",
@@ -140,8 +140,8 @@
             },
             {
               "name": "word_group",
-              "type": "str",
-              "description": "The word group (exact phrase) to search for in the verse text."
+              "type": "string",
+              "description": "The word group to search for in the verse text."
             },
             {
               "name": "surah_number",
@@ -151,14 +151,14 @@
             {
               "name": "case_sensitive",
               "type": "bool",
-              "description": "If True, performs case-sensitive search; otherwise, case-insensitive search. Defaults to False."
+              "description": "Flag indicating if the search is case-sensitive; defaults to False."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "count_word_occurrences",
-          "description": "Count the total number of occurrences of a given word in the Quran data. The search is performed in a case-insensitive manner.",
+          "description": "Counts the total number of occurrences of a given word in the Quran data in a case-insensitive manner.",
           "parameters": [
             {
               "name": "quran_data",
@@ -167,7 +167,7 @@
             },
             {
               "name": "word",
-              "type": "str",
+              "type": "string",
               "description": "The word whose occurrences need to be counted."
             }
           ],
@@ -175,7 +175,7 @@
         },
         {
           "name": "count_word_group_occurrences",
-          "description": "Count the total number of occurrences of a word group (phrase) in the Quran data in a case-insensitive manner.",
+          "description": "Counts the total number of occurrences of a word group (phrase) in the Quran data in a case-insensitive manner.",
           "parameters": [
             {
               "name": "quran_data",
@@ -184,7 +184,7 @@
             },
             {
               "name": "word_group",
-              "type": "str",
+              "type": "string",
               "description": "The word group (phrase) to count occurrences of."
             }
           ],
@@ -192,7 +192,7 @@
         },
         {
           "name": "search_word_in_verse_range",
-          "description": "Search for a word within a specified verse range in the Quran. It checks verses that fall within the given start and end verse (as tuples of surah and ayah numbers) and supports case-sensitive or case-insensitive search.",
+          "description": "Searches for a word within a specified verse range in the Quran data, allowing for case-sensitive or case-insensitive comparison.",
           "parameters": [
             {
               "name": "quran_data",
@@ -201,30 +201,30 @@
             },
             {
               "name": "word",
-              "type": "str",
-              "description": "The word to search for."
+              "type": "string",
+              "description": "The word to search for in the verse text."
             },
             {
               "name": "start_verse",
               "type": "tuple[int, int]",
-              "description": "The starting verse of the range as a tuple (surah_number, ayah_number)."
+              "description": "The starting verse as (surah_number, ayah_number)."
             },
             {
               "name": "end_verse",
               "type": "tuple[int, int]",
-              "description": "The ending verse of the range as a tuple (surah_number, ayah_number)."
+              "description": "The ending verse as (surah_number, ayah_number)."
             },
             {
               "name": "case_sensitive",
               "type": "bool",
-              "description": "Whether the search is case-sensitive. Defaults to False."
+              "description": "Flag indicating whether the search is case-sensitive; defaults to False."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "search_word_group_in_verse_range",
-          "description": "Search for a word group within a specified verse range in the Quran. It returns verses where the word group is found within the given range, with support for case-sensitive or case-insensitive search.",
+          "description": "Searches for a word group within a specified verse range in the Quran data, with an option for case-sensitive comparison.",
           "parameters": [
             {
               "name": "quran_data",
@@ -233,30 +233,30 @@
             },
             {
               "name": "word_group",
-              "type": "str",
-              "description": "The word group (phrase) to search for."
+              "type": "string",
+              "description": "The word group (phrase) to search for in the verse text."
             },
             {
               "name": "start_verse",
               "type": "tuple[int, int]",
-              "description": "The starting verse of the range as a tuple (surah_number, ayah_number)."
+              "description": "The starting verse as (surah_number, ayah_number)."
             },
             {
               "name": "end_verse",
               "type": "tuple[int, int]",
-              "description": "The ending verse of the range as a tuple (surah_number, ayah_number)."
+              "description": "The ending verse as (surah_number, ayah_number)."
             },
             {
               "name": "case_sensitive",
               "type": "bool",
-              "description": "Whether the search is case-sensitive. Defaults to False."
+              "description": "Flag indicating whether the search is case-sensitive; defaults to False."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "search_verses_by_word_count",
-          "description": "Search for Quran verses that contain exactly the specified number of words.",
+          "description": "Returns Quran verses that contain exactly the specified number of words.",
           "parameters": [
             {
               "name": "quran_data",
@@ -266,14 +266,14 @@
             {
               "name": "word_count",
               "type": "int",
-              "description": "The desired number of words in a verse."
+              "description": "The exact number of words that a verse must contain."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "search_verses_by_word_count_multiple",
-          "description": "Search for Quran verses where the number of words is a multiple of a specified number. Raises ValueError if the provided multiple is zero.",
+          "description": "Searches for Quran verses where the word count is a multiple of a specified number. Raises ValueError if the multiple is zero.",
           "parameters": [
             {
               "name": "quran_data",
@@ -283,26 +283,26 @@
             {
               "name": "multiple_of",
               "type": "int",
-              "description": "The integer multiple to check against. Must be a non-zero integer."
+              "description": "The integer multiple that the verse word count must conform to; must be non-zero."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "calculate_gematrical_value",
-          "description": "Calculate the gematrical (Abjad) value of a given Arabic word or phrase by summing the numerical values of its characters based on a predefined mapping.",
+          "description": "Calculates the gematrical (Abjad) value of a given Arabic word or phrase by summing the numerical values of its letters.",
           "parameters": [
             {
               "name": "text",
-              "type": "str",
-              "description": "An Arabic word or phrase."
+              "type": "string",
+              "description": "An Arabic word or phrase for which the gematrical value is calculated."
             }
           ],
           "return_type": "int"
         },
         {
           "name": "search_words_by_gematrical_value",
-          "description": "Search for individual words in the Quran that have a specified gematrical value by calculating the value for each word and matching it to the target.",
+          "description": "Searches for words in the Quran that have a specified gematrical value and returns their occurrences with location details.",
           "parameters": [
             {
               "name": "quran_data",
@@ -312,14 +312,14 @@
             {
               "name": "target_value",
               "type": "int",
-              "description": "The target gematrical value to match."
+              "description": "The target gematrical value to match for words."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "search_word_groups_by_gematrical_value",
-          "description": "Search for verses in the Quran where a specific word group is found and its gematrical value matches a target value. Supports both case-sensitive and case-insensitive search.",
+          "description": "Searches for word groups in the Quran that have a specific gematrical value, returning verses where the group is found if its computed value matches the target.",
           "parameters": [
             {
               "name": "quran_data",
@@ -328,24 +328,43 @@
             },
             {
               "name": "word_group",
-              "type": "str",
+              "type": "string",
               "description": "The word group (phrase) to search for."
             },
             {
               "name": "target_value",
               "type": "int",
-              "description": "The target gematrical value to match for the word group."
+              "description": "The target gematrical value that the word group must match."
             },
             {
               "name": "case_sensitive",
               "type": "bool",
-              "description": "If True, performs a case-sensitive search; otherwise, performs case-insensitive search. Defaults to False."
+              "description": "Flag indicating whether the search is case-sensitive; defaults to False."
             }
           ],
           "return_type": "list"
+        },
+        {
+          "name": "calculate_surah_gematrical_value",
+          "description": "Calculates the total gematrical value of all words within a specified Surah by summing the gematrical values of each word.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data."
+            },
+            {
+              "name": "surah_number",
+              "type": "int",
+              "description": "The Surah number for which to calculate the total gematrical value."
+            }
+          ],
+          "return_type": "int"
         }
       ],
-      "dependencies": []
+      "dependencies": [
+        "tests/test_quran_search.py"
+      ]
     },
     {
       "path": "src/main.py",
@@ -375,216 +394,228 @@
     },
     {
       "path": "tests/test_quran_search.py",
-      "language": "Python",
-      "description": "Unit tests for the Quran search module. This file contains a comprehensive suite of tests to validate the search functions and gematrical value calculations across various scenarios and edge cases.",
+      "language": "python",
+      "description": "Unit tests for the Quran search functionality. Contains a TestQuranSearch class with methods that validate various search scenarios, verse range queries, and gematrical computations.",
       "classes": [
         {
           "name": "TestQuranSearch",
-          "description": "Test suite class for validating the functions in the quran_search module using the unittest framework.",
+          "description": "Contains unit tests for functions defined in the quran_search module, validating search operations, word counts, verse range queries, and gematrical value calculations.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_search_allah_word",
-              "description": "Tests that searching for the word 'اللَّهِ' returns at least one verse in a case-insensitive search.",
+              "description": "Tests that searching for the word 'اللَّهِ' returns at least one verse using case-insensitive search.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_search_word_group",
-              "description": "Tests the search_word_group function for both existing and non-existing word groups across different scenarios.",
+              "description": "Tests the search_word_group function for both an existing word group and a non-existent one.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_case_insensitive_search_word",
-              "description": "Tests the search_word_in_quran function in case-insensitive mode using a dummy dataset.",
+              "description": "Tests the case-insensitive behavior of search_word_in_quran using a dummy dataset.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_case_sensitive_search_word",
-              "description": "Tests the search_word_in_quran function in case-sensitive mode using a dummy dataset.",
+              "description": "Tests the case-sensitive behavior of search_word_in_quran using a dummy dataset.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_case_insensitive_search_word_group",
-              "description": "Tests the search_word_group function in case-insensitive mode using a dummy dataset.",
+              "description": "Tests the case-insensitive behavior of search_word_group using a dummy dataset.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_case_sensitive_search_word_group",
-              "description": "Tests the search_word_group function in case-sensitive mode to ensure it matches only exact case occurrences.",
+              "description": "Tests the case-sensitive behavior of search_word_group using a dummy dataset.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_search_word_in_surah",
-              "description": "Tests the search_word_in_surah function for retrieving verses from a specific Surah based on a word search.",
+              "description": "Tests the search_word_in_surah function for a specific Surah, checking for existing and non-existent words.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_search_word_group_in_surah",
-              "description": "Tests the search_word_group_in_surah function across various scenarios including case-sensitive and case-insensitive searches in different Surahs.",
+              "description": "Tests the search_word_group_in_surah function for various scenarios including multiple occurrences and case-sensitivity.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_count_word_occurrences",
-              "description": "Tests the count_word_occurrences function to ensure correct counting of word occurrences in Quran data.",
+              "description": "Tests that count_word_occurrences correctly counts the occurrences of a given word in the Quran data.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_count_word_group_occurrences",
-              "description": "Tests the count_word_group_occurrences function to verify correct counting of phrase occurrences in the Quran data.",
+              "description": "Tests that count_word_group_occurrences correctly counts the occurrences of a word group in the Quran data.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_search_word_in_verse_range",
-              "description": "Tests the search_word_in_verse_range function for finding verses within a specified range using various search criteria.",
+              "description": "Tests the search_word_in_verse_range function across different verse ranges and search parameters.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_search_word_group_in_verse_range",
-              "description": "Tests the search_word_group_in_verse_range function for locating word groups within a defined verse range under different conditions.",
+              "description": "Tests the search_word_group_in_verse_range function across different verse ranges and search parameters.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_search_verses_by_word_count",
-              "description": "Tests the search_verses_by_word_count function to ensure only verses with the exact specified word count are returned.",
+              "description": "Tests that search_verses_by_word_count returns only verses with the exact specified word count.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_search_verses_by_word_count_multiple",
-              "description": "Tests the search_verses_by_word_count_multiple function for selecting verses with word counts that are multiples of a given number, including error handling for invalid input.",
+              "description": "Tests that search_verses_by_word_count_multiple returns verses with word counts that are multiples of a specified number and raises a ValueError when multiple_of is zero.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_calculate_gematrical_value",
-              "description": "Tests the calculate_gematrical_value function with various inputs including empty strings, known Arabic words, and non-mapped characters to validate correct computations.",
+              "description": "Tests that calculate_gematrical_value computes the correct gematrical values for various Arabic words and phrases.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_search_words_by_gematrical_value",
-              "description": "Tests the search_words_by_gematrical_value function to verify that words with a specified gematrical value are correctly identified.",
+              "description": "Tests that search_words_by_gematrical_value returns words with the specified gematrical value along with their location details.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_search_word_groups_by_gematrical_value",
-              "description": "Tests the search_word_groups_by_gematrical_value function to ensure that verses containing a word group with a matching gematrical value are returned appropriately.",
+              "description": "Tests that search_word_groups_by_gematrical_value returns verses where the word group has the target gematrical value.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestQuranSearch",
-                  "description": "Instance of the TestQuranSearch class."
+                  "description": "Instance of TestQuranSearch."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_surah_gematrical_value",
+              "description": "Tests that calculate_surah_gematrical_value correctly computes the total gematrical value for a specified Surah.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestQuranSearch",
+                  "description": "Instance of TestQuranSearch."
                 }
               ],
               "return_type": "None"
@@ -594,8 +625,8 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/quran_data_loader.py",
-        "src/quran_search.py"
+        "src/quran_search.py",
+        "src/quran_data_loader.py"
       ]
     },
     {
