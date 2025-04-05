@@ -724,12 +724,12 @@ def analyze_muqattaat(text):
     from collections import Counter
     import src.logger as logger
 
-    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
+    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15",
                            "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
                            "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
     surah_names = {
         "2": "البقرة", "3": "آل عمران", "7": "الأعراف", "10": "يونس", "11": "هود", "12": "يوسف",
-        "13": "الرعد", "14": "ابراهيم", "15": "الحجر", "16": "النحل", "19": "مريم", "20": "طه",
+        "13": "الرعد", "14": "ابراهيم", "15": "الحجر", "19": "مريم", "20": "طه",
         "26": "الشعراء", "27": "النمل", "28": "القصص", "29": "العنكبوت", "30": "الروم",
         "31": "لقمان", "32": "السجدة", "36": "يس", "38": "الصافات", "40": "غافر",
         "41": "فصلت", "42": "الشورى", "43": "الزخرف", "44": "الدخان", "45": "الجاثية",
@@ -747,7 +747,12 @@ def analyze_muqattaat(text):
             surah = m.group(1)
             verse_text = m.group(3).strip()
             if surah in predefined_surahs and surah not in muqattaat_results:
-                m_letters = re.match(r'^([\u0621-\u064A]+)', verse_text)
+                # Remove Basmalah if present
+                basmalah_pattern = re.compile(r'^بِسمِ\s+اللَّهِ\s+الرَّحمٰنِ\s+الرَّحيمِ\s*', re.UNICODE)
+                verse_text_cleaned = basmalah_pattern.sub('', verse_text).strip()
+
+                # Match Muqattaʿat letters now that Basmalah is gone
+                m_letters = re.match(r'^([\u0621-\u064A]+)', verse_text_cleaned)
                 if m_letters:
                     muqattaat_results[surah] = m_letters.group(1)
     

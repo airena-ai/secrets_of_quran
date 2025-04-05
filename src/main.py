@@ -7,7 +7,7 @@ from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
     '''Main entry point for the Quran Secrets analysis.'''
-    file_path = "data/quran-uthmani-min.txt"
+    file_path = "data/quran-uthmani-min-only-fatiha-with-bism.txt"
     try:
         text = read_quran_text(file_path)
     except Exception as e:
