@@ -87,6 +87,17 @@ def main():
         print("Surah: {} Ayah: {} - Word: {}".format(
             entry.get('surah_number'), entry.get('ayah_number'), entry.get('word')
         ))
+        
+    # Demonstration of search_word_groups_by_gematrical_value function (New Feature)
+    from src.quran_search import search_word_groups_by_gematrical_value
+    phrase = "الرحمن الرحيم"
+    target_phrase_gem_value = 618  # Gematrical value for 'الرحمن الرحيم'
+    results_phrase_gem = search_word_groups_by_gematrical_value(quran_data, phrase, target_phrase_gem_value)
+    print("\nSearch results for word group '{}' with gematrical value {}:".format(phrase, target_phrase_gem_value))
+    for verse in results_phrase_gem:
+        print("Surah: {} Ayah: {} - {}".format(
+            verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
+        ))
 
 if __name__ == '__main__':
     main()

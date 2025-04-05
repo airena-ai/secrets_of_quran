@@ -2,6 +2,10 @@
 Module for searching words in the loaded Quran data.
 """
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 ABJAD_VALUES = {
     'ا': 1,
     'ب': 2,
@@ -362,4 +366,39 @@ def search_words_by_gematrical_value(quran_data, target_value: int) -> list:
                     'surah_number': verse.get('surah_number'),
                     'ayah_number': verse.get('ayah_number')
                 })
+    return results
+
+def search_word_groups_by_gematrical_value(quran_data, word_group, target_value, case_sensitive=False):
+    """
+    Search for word groups in the Quran that have a specific gematrical value.
+
+    This function iterates over the provided Quran data. For each verse, it performs a case-(in)sensitive search for the 
+    specified word group (phrase). If the word group is found in the verse, its gematrical value is calculated using 
+    calculate_gematrical_value. If the calculated gematrical value matches the target value, the verse is added to the results.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran verses.
+        word_group (str): The word group (phrase) to search for.
+        target_value (int): The target gematrical value to match for the word group.
+        case_sensitive (bool, optional): If True, performs a case-sensitive search; otherwise, performs case-insensitive search.
+                                         Defaults to False.
+
+    Returns:
+        list: A list of dictionaries representing verses where the word group is found and its gematrical value matches target_value.
+    """
+    logger.info("Searching for word group '%s' with target gematrical value %d", word_group, target_value)
+    computed_value = calculate_gematrical_value(word_group)
+    if computed_value != target_value:
+        logger.info("Computed gematrical value %d does not match target %d", computed_value, target_value)
+        return []
+    results = []
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        if case_sensitive:
+            if word_group in verse_text:
+                results.append(verse)
+        else:
+            if word_group.lower() in verse_text.lower():
+                results.append(verse)
+    logger.info("Found %d verses containing word group '%s'", len(results), word_group)
     return results

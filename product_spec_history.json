@@ -63,5 +63,10 @@
         "iteration": 12,
         "date": "2025-04-04",
         "iteration_goal": "Implement a function `search_words_by_gematrical_value` in `quran_search.py` to search for words in the Quran that match a given gematrical value. Add a pytest test case to validate this functionality. This feature enables searching for words based on their numerical values, enhancing numerical analysis capabilities."
+    },
+    {
+        "iteration": 13,
+        "date": "2025-04-04",
+        "iteration_goal": "Implement `search_word_groups_by_gematrical_value` in `quran_search.py` to find word groups in the Quran whose gematrical value matches a given target value. Create a corresponding pytest test case `test_search_word_groups_by_gematrical_value` to validate this functionality. This feature enables searching for phrases based on their numerical values, further enhancing the numerical analysis capabilities of the Quran Secrets Analyzer."
     }
 ]

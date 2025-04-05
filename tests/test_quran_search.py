@@ -456,5 +456,43 @@ class TestQuranSearch(unittest.TestCase):
         ]
         self.assertEqual(results_571, expected_571, "Should return words with gematrical value 571 (for 'مثال').")
 
+    def test_search_word_groups_by_gematrical_value(self):
+        """
+        Test the search_word_groups_by_gematrical_value function with various scenarios,
+        ensuring that it returns verses where the specified word group is found and its gematrical value matches the target.
+        
+        Scenarios:
+        - When the word group gem value matches the target and occurs in verses.
+        - When the target gem value does not match, should return an empty result.
+        - When the word group does not occur in any verse, should return an empty list.
+        """
+        self.maxDiff = None
+        from src.quran_search import search_word_groups_by_gematrical_value, calculate_gematrical_value
+        dummy_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'The opening has الرحمن الرحيم as a sign.'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'This verse does not include the phrase.'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'In this verse, we again see الرحمن الرحيم in full.'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'No matching phrase here.'}
+        ]
+        phrase = "الرحمن الرحيم"
+        target_value = 618  # Gematrical value for "الرحمن الرحيم"
+        results = search_word_groups_by_gematrical_value(dummy_data, phrase, target_value)
+        expected = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'The opening has الرحمن الرحيم as a sign.'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'In this verse, we again see الرحمن الرحيم in full.'}
+        ]
+        self.assertEqual(results, expected, "Expected to find verses containing the phrase '{}' with gem value {}.".format(phrase, target_value))
+        
+        # Test scenario: target gem value does not match computed value; expect empty result even if phrase appears.
+        wrong_target = 600
+        results_wrong = search_word_groups_by_gematrical_value(dummy_data, phrase, wrong_target)
+        self.assertEqual(results_wrong, [], "Expected empty result when target gem value {} does not match computed value for '{}'.".format(wrong_target, phrase))
+        
+        # Test scenario: phrase that does not appear in any verse.
+        absent_phrase = "غير موجود"
+        absent_computed = calculate_gematrical_value(absent_phrase)
+        results_absent = search_word_groups_by_gematrical_value(dummy_data, absent_phrase, absent_computed)
+        self.assertEqual(results_absent, [], "Expected empty result for phrase '{}' that is not present in any verse.".format(absent_phrase))
+
 if __name__ == '__main__':
     unittest.main()
