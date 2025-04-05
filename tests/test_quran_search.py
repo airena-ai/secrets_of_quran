@@ -221,5 +221,49 @@ class TestQuranSearch(unittest.TestCase):
         # Test with an empty word group should return 0
         self.assertEqual(count_word_group_occurrences(quran_data, ''), 0, "An empty word group should return 0 occurrences.")
 
+    def test_search_word_in_verse_range(self):
+        """
+        Test the search_word_in_verse_range function for various scenarios:
+        
+        - Searching for a word that exists within a specific verse range.
+        - Searching for a word that does not exist within the range.
+        - Searching with different verse ranges spanning multiple surahs and within a single surah.
+        - Testing both case-sensitive and case-insensitive searches.
+        - Testing edge case where start_verse and end_verse are the same.
+        """
+        self.maxDiff = None
+        dummy_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'Alpha beta gamma'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'Alpha beta delta'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'Beta gamma'},
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'alpha Beta gamma'},
+            {'surah_number': '3', 'ayah_number': '1', 'verse_text': 'Gamma delta'},
+        ]
+        from src.quran_search import search_word_in_verse_range
+
+        # Test case 1: Search for "alpha" in range (1,1) to (1,2) case-insensitive
+        results = search_word_in_verse_range(dummy_data, "alpha", (1,1), (1,2))
+        self.assertEqual(len(results), 2, "Should find 2 verses in surah 1 containing 'alpha' with case-insensitive search.")
+
+        # Test case 2: Search for "beta" in range (1,2) to (2,2) case-insensitive
+        results = search_word_in_verse_range(dummy_data, "beta", (1,2), (2,2))
+        self.assertEqual(len(results), 3, "Should find 3 verses in the specified range containing 'beta' case-insensitively.")
+
+        # Test case 3: Search for "gamma" in range (2,1) to (3,1) case-insensitive
+        results = search_word_in_verse_range(dummy_data, "gamma", (2,1), (3,1))
+        self.assertEqual(len(results), 3, "Should find 3 verses in the specified range containing 'gamma'.")
+
+        # Test case 4: Case-sensitive search: Search for "Alpha" in range (1,1) to (2,2)
+        results = search_word_in_verse_range(dummy_data, "Alpha", (1,1), (2,2), case_sensitive=True)
+        self.assertEqual(len(results), 2, "Case-sensitive search for 'Alpha' should match only 2 verses.")
+
+        # Test case 5: Edge case where start_verse and end_verse are the same.
+        results = search_word_in_verse_range(dummy_data, "beta", (2,1), (2,1))
+        self.assertEqual(len(results), 1, "Edge case: range with same start and end should return 1 matching verse.")
+
+        # Test case 6: Search for a word not present in the range.
+        results = search_word_in_verse_range(dummy_data, "nonexistent", (1,1), (3,1))
+        self.assertEqual(results, [], "Search for a nonexistent word should return an empty list.")
+
 if __name__ == '__main__':
     unittest.main()

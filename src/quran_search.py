@@ -162,3 +162,40 @@ def count_word_group_occurrences(quran_data, word_group):
         verse_text = verse.get('verse_text', '')
         total_count += verse_text.lower().count(word_group_lower)
     return total_count
+
+def search_word_in_verse_range(quran_data, word: str, start_verse: tuple[int, int], end_verse: tuple[int, int], case_sensitive: bool = False) -> list[dict]:
+    """
+    Searches for a word within a specified verse range in the Quran.
+
+    This function searches the provided quran_data list for verses within the given range
+    (inclusive) that contain the specified word. The search is performed in a case-sensitive or
+    case-insensitive manner based on the case_sensitive flag.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran data.
+        word (str): The word to search for.
+        start_verse (tuple[int, int]): The starting verse of the range as (surah_number, ayah_number).
+        end_verse (tuple[int, int]): The ending verse of the range as (surah_number, ayah_number).
+        case_sensitive (bool, optional): Whether the search is case-sensitive. Defaults to False.
+
+    Returns:
+        list[dict]: A list of dictionaries, each containing verse details where the word is found within the specified range.
+    """
+    results = []
+    for verse in quran_data:
+        try:
+            surah_num = int(verse.get('surah_number'))
+            ayah_num = int(verse.get('ayah_number'))
+        except (ValueError, TypeError):
+            continue
+        current_verse = (surah_num, ayah_num)
+        if current_verse < start_verse or current_verse > end_verse:
+            continue
+        verse_text = verse.get('verse_text', '')
+        if case_sensitive:
+            if word in verse_text:
+                results.append(verse)
+        else:
+            if word.lower() in verse_text.lower():
+                results.append(verse)
+    return results

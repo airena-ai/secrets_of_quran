@@ -37,6 +37,18 @@ def main():
     # Demonstration of new count_word_group_occurrences function
     total_count = count_word_group_occurrences(quran_data, word_group)
     print("\nTotal occurrences of phrase '{}': {}".format(word_group, total_count))
+    
+    # Demonstration of new search_word_in_verse_range function
+    from src.quran_search import search_word_in_verse_range
+    verse_range_start = (1, 1)
+    verse_range_end = (1, 5)
+    results_range = search_word_in_verse_range(quran_data, "اللَّهِ", verse_range_start, verse_range_end)
+    
+    print("\nSearch results for word 'اللَّهِ' in verse range {} to {}:".format(verse_range_start, verse_range_end))
+    for verse in results_range:
+        print("Surah: {} Ayah: {} - {}".format(
+            verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
+        ))
 
 if __name__ == '__main__':
     main()

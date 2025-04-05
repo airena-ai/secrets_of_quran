@@ -33,5 +33,10 @@
         "iteration": 6,
         "date": "2025-04-04",
         "iteration_goal": "The architecture is updated by adding a `count_word_group_occurrences` function to the `QuranSearch` module. This new function counts the total occurrences of a specified word group in the entire Quran, case-insensitively. A new test case is also added to validate this functionality, maintaining modularity and testability."
+    },
+    {
+        "iteration": 7,
+        "date": "2025-04-04",
+        "iteration_goal": "Added `search_word_in_verse_range` function to `QuranSearch` module, enabling word search within a specified verse range. This function reuses existing modules and logic. A new test case is also added to validate the functionality. The change is modular and enhances search capability without altering existing architecture."
     }
 ]
