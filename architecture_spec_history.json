@@ -123,5 +123,10 @@
         "iteration": 24,
         "date": "2025-04-04",
         "iteration_goal": "A new function `search_verses_by_word_group_gematrical_value_equals_word_count` is added to `QuranSearch` module. This function searches verses where the gematrical value of a word group equals the verse word count. It reuses `calculate_gematrical_value` and existing verse data loading. A new test case is also added, maintaining modularity and enhancing search capabilities."
+    },
+    {
+        "iteration": 25,
+        "date": "2025-04-04",
+        "iteration_goal": "A new function `search_verses_by_word_gematrical_value_equals_verse_number` is added to the `QuranSearch` module to search verses where the gematrical value of a word equals the verse number. This reuses existing `calculate_gematrical_value` function and data loading mechanisms. A new test case is also added to ensure functionality, maintaining modularity and testability without introducing new modules."
     }
 ]

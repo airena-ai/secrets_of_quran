@@ -663,3 +663,44 @@ def search_word_group_at_position(quran_data, word_group, position, case_sensiti
                 if [w.lower() for w in slice_words] == [w.lower() for w in group_words]:
                     results.append(verse)
     return results
+
+def search_verses_by_word_gematrical_value_equals_verse_number(quran_data, word, case_sensitive=False):
+    """
+    Search for Quran verses where the gematrical value of the specified word equals the verse number (ayah_number).
+
+    This function iterates over each verse in the provided quran_data. For each verse, it checks if the given word
+    is present in the verse text (using case-sensitive or case-insensitive comparison based on the flag). If present,
+    it calculates the gematrical value of the word using calculate_gematrical_value, and compares it with the verse's
+    ayah number. Verses where the gematrical value of the word equals the verse number are returned.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran verses.
+        word (str): The word for which the gematrical value is calculated.
+        case_sensitive (bool, optional): If True, performs case-sensitive matching; otherwise, performs case-insensitive matching.
+                                         Defaults to False.
+
+    Returns:
+        list: A list of dictionaries containing 'surah_number', 'ayah_number', and 'verse_text' for each verse satisfying the condition.
+    """
+    results = []
+    processed_word = word if case_sensitive else word.lower()
+    gem_value = calculate_gematrical_value(processed_word)
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        if case_sensitive:
+            if word not in verse_text:
+                continue
+        else:
+            if word.lower() not in verse_text.lower():
+                continue
+        try:
+            verse_num = int(verse.get('ayah_number'))
+        except (ValueError, TypeError):
+            continue
+        if gem_value == verse_num:
+            results.append({
+                'surah_number': verse.get('surah_number'),
+                'ayah_number': verse.get('ayah_number'),
+                'verse_text': verse_text
+            })
+    return results

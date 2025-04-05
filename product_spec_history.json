@@ -123,5 +123,10 @@
         "iteration": 24,
         "date": "2025-04-04",
         "iteration_goal": "This increment introduces a new search function to the Quran Secrets Analyzer: `search_verses_by_word_group_gematrical_value_equals_word_count`. This function identifies verses where the gematrical value of a specified word group is equal to the number of words in the verse. This feature extends the analytical capabilities by combining gematrical value calculation for word groups with verse word count analysis. A new test case will be implemented to ensure the function works correctly for both case-sensitive and case-insensitive searches."
+    },
+    {
+        "iteration": 25,
+        "date": "2025-04-04",
+        "iteration_goal": "This increment adds a new search function `search_verses_by_word_gematrical_value_equals_verse_number` to `quran_search.py`. This function finds verses where the gematrical value of a given word is equal to the verse number. A new test case is also created to validate this functionality. This feature enhances the numerical analysis capabilities of the Quran Analyzer by allowing users to search for verses based on this specific numerical relationship."
     }
 ]
