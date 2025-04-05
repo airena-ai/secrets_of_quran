@@ -1,0 +1,142 @@
+{
+  "files": [
+    {
+      "path": "setup.py",
+      "language": "Python",
+      "description": "This file contains the setup configuration for packaging the application using setuptools. It specifies package metadata including name, version, packages, install requirements, and console script entry points.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "requirements.txt",
+      "language": "None",
+      "description": "This file lists the dependencies required for the application, such as pytest.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "src/__init__.py",
+      "language": "Python",
+      "description": "Initializer file for the src package. Ensures the directory is treated as a Python package.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "src/quran_data_loader.py",
+      "language": "Python",
+      "description": "Module for loading Quran data from a text file. Parses each line into a dictionary containing surah number, ayah number, and verse text, and handles file not found errors gracefully.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "load_quran_text",
+          "description": "Load Quran text from a file. Reads the file line by line, parses lines formatted as 'surah_number|ayah_number|verse_text' into dictionaries, and returns a list of these dictionaries. Handles FileNotFoundError by printing an error message.",
+          "parameters": [
+            {
+              "name": "file_path",
+              "type": "str",
+              "description": "Path to the Quran text file."
+            }
+          ],
+          "return_type": "list"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "src/quran_search.py",
+      "language": "Python",
+      "description": "Module for searching words in the loaded Quran data. Implements functionality to iterate over Quran verses and return those that contain a specified search word.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "search_word_in_quran",
+          "description": "Search for a word in the Quran verses. Iterates through the provided Quran data list and returns verses that contain the search word. The search is case-sensitive.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data."
+            },
+            {
+              "name": "search_word",
+              "type": "str",
+              "description": "The word to search for in the verse text."
+            }
+          ],
+          "return_type": "list"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "src/main.py",
+      "language": "Python",
+      "description": "Main entry point for the Quran search application. Loads Quran text from a file, performs a search for the word 'اللَّهِ', and prints the search results to the console.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "main",
+          "description": "Main function that orchestrates loading Quran data, searching for the word 'اللَّهِ', and printing the search results. Acts as the primary entry point for the application.",
+          "parameters": [],
+          "return_type": "None"
+        }
+      ],
+      "dependencies": [
+        "src/quran_data_loader.py",
+        "src/quran_search.py"
+      ]
+    },
+    {
+      "path": "tests/__init__.py",
+      "language": "Python",
+      "description": "Initializer file for the tests package. Marks the directory as a Python package for unit tests.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "tests/test_quran_search.py",
+      "language": "Python",
+      "description": "Unit tests for the Quran search functionality using the unittest framework. Verifies that searching for the word 'اللَّهِ' returns expected results.",
+      "classes": [
+        {
+          "name": "TestQuranSearch",
+          "description": "Unit test class for testing Quran search functionality.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_search_allah_word",
+              "description": "Test that searching for the word 'اللَّهِ' returns at least one verse from the loaded Quran data.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestQuranSearch",
+                  "description": "Instance of the TestQuranSearch class."
+                }
+              ],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/quran_data_loader.py",
+        "src/quran_search.py"
+      ]
+    },
+    {
+      "path": "data/quran-uthmani-min.txt",
+      "language": "None",
+      "description": "Data file containing Quran text in Uthmani script. Each line is formatted as 'surah_number|ayah_number|verse_text'.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    }
+  ]
+}

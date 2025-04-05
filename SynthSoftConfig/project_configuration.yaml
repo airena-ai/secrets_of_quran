@@ -1,0 +1,43 @@
+product_spec_northstar: >
+  Project Name: Quran Secrets Analyzer
+  Purpose: Develop a Python application to search secrets of Quran. 
+  
+  Analyze whole Quranic text and find interesting words such as Allah, day, moon, sun, and special word groups such as bismillahirrahmanirrahim.
+  Think and generate ideas about possible divine secrets and messages hidden, including but not limited to number 19. 
+  This program will continue to be developed indefinetly to search an infinite space of secrets in Quran. 
+  Start with word and word groups but as you advanced look for more advanced patterns and search unthinkable secrets. 
+  There's no limit or restriction on what kind of search you can do on seeking the ultimate secrets of Quran. Use your imagination.
+
+  Data Source:
+  You are given {project_root}/data/quran-uthmani-min.txt Do NOT modify this file. It is the source of truth and assume this file will always be there.
+  Use this file in your program to do search and run analysis.
+  Each line in the file represents a unique verse and specifies surah and ayah numbers. Here are the first three lines:
+  1|1|بِسمِ اللَّهِ الرَّحمٰنِ الرَّحيمِ
+  1|2|الحَمدُ لِلَّهِ رَبِّ العٰلَمينَ
+  1|3|الرَّحمٰنِ الرَّحيمِ
+
+  Analysis and Search Strategy:
+  You will leverage Python's pytest framework to run the analysis and log the results. Each test case will focus on a specific search area. 
+  Again the unittests will be used to run the search and analysis runtime in addition to test the validation of production code.
+  Search focus can include but not be limited to words, word groups, verses, surahs or innovative new search patterns of Quran.
+  
+  Results:
+  Not all tests and analysis will yield to a secret but the goal is to search as much search space as possible within infinte possiblities. 
+  In rare circumstances, if you find a secret make sure you tag it explicitly in the output or do it in a way that is easily discovrable among possibly millions of test results. 
+
+
+project_root_folder: C:\Github\secrets_of_quran
+product_spec_history_filename: product_spec_history.json
+architecture_spec_history_filename: architecture_spec_history.json
+codebase_metadata_filename: codebase_metadata.json
+total_runs_to_build_northstar: 10
+max_test_attempts_per_iteration: 5
+programming_languages:
+  - python
+development_os: "Windows 11"
+run_tests: True
+auto_commit: True
+auto_revert: False
+use_local_llm: False
+
+
