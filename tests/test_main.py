@@ -7,7 +7,9 @@ import importlib.util
 from src import main
 
 class TestMainIntegration(unittest.TestCase):
+    '''Test cases for end-to-end integration of the Quran Secrets application.'''
     def setUp(self):
+        '''Set maximum diff for assertions.'''
         self.maxDiff = None
 
     def test_main_integration_fallback(self):
@@ -51,6 +53,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Enhanced semantic symmetry (lemma overlap) detected", log_contents)
                 self.assertIn("#################### Muqatta'at Analysis ####################", log_contents)
                 self.assertIn("MUQATTA'AT POSITION ANALYSIS:", log_contents)
+                self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -60,8 +63,11 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = ("2|1| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين\n"
-                       "2|2| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين")
+        # Updated sample text to include a Surah with a proper Muqatta'at sequence for testing.
+        sample_text = ("2|1|الم الحمد لله رب العالمين\n"
+                       "2|2|الم الحمد لله رب العالمين\n"
+                       "3|1| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين\n"
+                       "3|2| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -72,6 +78,7 @@ class TestMainIntegration(unittest.TestCase):
         from unittest.mock import patch, MagicMock
         mock_spec = MagicMock()
         mock_analyzer = MagicMock()
+        # For token "الحمد", return a root of 'حمد'; for other tokens, return the token itself.
         mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}, {'lemma': 'حمد'}] if token == "الحمد" else [{'root': token}, {'lemma': token}]
         mock_analyzer_class = MagicMock()
         mock_analyzer_class.builtin_analyzer.return_value = mock_analyzer
@@ -107,6 +114,10 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Enhanced semantic symmetry (lemma overlap) detected", log_contents)
                 self.assertIn("#################### Muqatta'at Analysis ####################", log_contents)
                 self.assertIn("MUQATTA'AT POSITION ANALYSIS:", log_contents)
+                self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
+                # Verify that the proper Muqatta'at sequences and their frequencies are logged.
+                self.assertIn("Sequence 'الم' occurred 1 times", log_contents)
+                self.assertIn("Sequence 'الحمد' occurred 1 times", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)

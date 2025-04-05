@@ -26,13 +26,13 @@
     },
     {
       "path": "src/main.py",
-      "language": "Python",
-      "description": "Main driver for the Quran Secrets application. Orchestrates reading the Quran text, executing various analysis functions from the analyzer module, and logging detected secret patterns.",
+      "language": "python",
+      "description": "Main driver for the Quran Secrets application. Contains the main() function which serves as the entry point to read, preprocess, analyze the Quran text using various analysis functions, and log results and anomalies.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main entry point for the Quran Secrets analysis. Reads the Quran text file, preprocesses the text, executes various analytical functions, logs results, and prints a completion message.",
+          "description": "Main entry point for the Quran Secrets analysis. Reads the Quran text, applies preprocessing functions, invokes multiple analysis functions (such as word frequency, root word analysis, bigrams, verse repetitions, palindromes, abjad numerals, semantic symmetry, and more) and logs the outcomes.",
           "parameters": [],
           "return_type": "None"
         }
@@ -102,13 +102,13 @@
     },
     {
       "path": "src/analyzer.py",
-      "language": "Python",
-      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Provides multiple functions for text analysis including detection of anomalies, word frequency analysis, root word extraction, bigram analysis, palindrome detection, abjad numeral analysis, semantic symmetry evaluation, verse length distribution analysis, and Muqatta'at analysis.",
+      "language": "python",
+      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Contains multiple functions to perform text analysis including numerical pattern detection, word frequency, root word extraction, bigrams, verse repetition analysis, palindrome detection, abjad numeral evaluation, semantic and length symmetry assessments, lemma analysis, surah verse counts, and Muqatta'at related analyses.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_text",
-          "description": "Analyzes the provided Quran text for hidden numerical patterns and anomalies. Returns a list of anomaly messages if the text is non-empty.",
+          "description": "Analyze the given text for hidden numerical patterns and anomalies. Simulates pattern detection based on non-empty input.",
           "parameters": [
             {
               "name": "text",
@@ -120,7 +120,7 @@
         },
         {
           "name": "analyze_word_frequency",
-          "description": "Performs word frequency analysis on the preprocessed Quran text, returning a summary and a list of flagged anomalies.",
+          "description": "Perform word frequency analysis on the preprocessed Quran text, tokenize the text, count word occurrences, and flag unusual frequencies.",
           "parameters": [
             {
               "name": "text",
@@ -132,7 +132,7 @@
         },
         {
           "name": "analyze_root_words",
-          "description": "Extracts Arabic root words from the preprocessed Quran text and returns a summary, a frequency dictionary of roots, and a list of the top roots.",
+          "description": "Perform Arabic root word analysis on the preprocessed Quran text using a morphological analyzer if available, and return frequency analysis results.",
           "parameters": [
             {
               "name": "text",
@@ -144,36 +144,36 @@
         },
         {
           "name": "analyze_bigrams",
-          "description": "Generates n-grams (bigrams by default) from a list of tokens and returns their frequency counts.",
+          "description": "Perform bigram frequency analysis on tokenized text, generating n-grams and counting their frequency.",
           "parameters": [
             {
               "name": "tokenized_text",
               "type": "list",
-              "description": "A list of preprocessed tokens from the Quran text."
+              "description": "A list of tokens from the Quran text."
             },
             {
               "name": "n",
               "type": "int",
-              "description": "The number of words in each n-gram (default is 2 for bigrams)."
+              "description": "The number of words in each n-gram; default is 2 for bigrams."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_verse_repetitions",
-          "description": "Analyzes repetition of verses within each Surah and across the entire Quran, returning a dictionary of repeated verses.",
+          "description": "Analyze verse repetitions within each Surah and across the entire Quran by parsing verses for duplicate occurrences.",
           "parameters": [
             {
               "name": "preprocessed_text",
               "type": "str",
-              "description": "The preprocessed Quran text data."
+              "description": "The preprocessed Quran text where each line represents a verse."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_lemmas",
-          "description": "Performs lemma analysis on the preprocessed Quran text using CAMeL Tools and returns a formatted summary of lemma frequencies.",
+          "description": "Perform lemma analysis on the preprocessed Quran text using a morphological analyzer to extract and count lemmas.",
           "parameters": [
             {
               "name": "text",
@@ -185,36 +185,36 @@
         },
         {
           "name": "analyze_surah_verse_counts",
-          "description": "Counts the number of verses per Surah in the Quran text and returns a formatted summary.",
+          "description": "Count the number of verses per Surah in the Quran text and return a summary of the verse counts.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
-              "description": "The Quran text loaded from the data file."
+              "description": "The Quran text data."
             }
           ],
           "return_type": "str"
         },
         {
           "name": "analyze_verse_lengths_distribution",
-          "description": "Analyzes the distribution of verse lengths for each Surah and returns the average, standard deviation, and a consistency flag.",
+          "description": "Analyze the distribution of verse lengths across Surahs by calculating averages and standard deviations, and flagging consistent verse length patterns.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
-              "description": "The preprocessed Quran text, where each line represents a verse."
+              "description": "The preprocessed Quran text with each line representing a verse."
             },
             {
               "name": "threshold",
               "type": "int",
-              "description": "The standard deviation threshold to consider verse lengths as consistent (default is 2)."
+              "description": "Standard deviation threshold for consistency; default is 2."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_palindromes",
-          "description": "Identifies palindromic words and phrases within each verse of the Quran and logs the findings.",
+          "description": "Identify palindromic words and phrases within each verse of the Quran and log detected palindromes.",
           "parameters": [
             {
               "name": "quran_text",
@@ -226,7 +226,7 @@
         },
         {
           "name": "analyze_abjad_numerals",
-          "description": "Calculates Abjad numeral sums for verses in the Quran text and logs significant numerical patterns.",
+          "description": "Perform Abjad numeral analysis on the Quran text by calculating the numerical sum of verses and logging notable numerical patterns.",
           "parameters": [
             {
               "name": "quran_text",
@@ -238,7 +238,7 @@
         },
         {
           "name": "analyze_semantic_symmetry",
-          "description": "Analyzes semantic symmetry by evaluating word overlap between two halves of the Quran text for each Surah.",
+          "description": "Analyze semantic symmetry between two halves of each Surah based on token overlap and log the common word counts.",
           "parameters": [
             {
               "name": "quran_text",
@@ -250,46 +250,46 @@
         },
         {
           "name": "analyze_verse_length_symmetry",
-          "description": "Compares verse length metrics between two halves of each Surah and flags symmetry if differences are within defined thresholds.",
+          "description": "Analyze the symmetry of verse lengths between two halves of each Surah by comparing average lengths and standard deviations.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
-              "description": "The preprocessed Quran text, with each line representing a verse."
+              "description": "The preprocessed Quran text with verses separated by lines."
             },
             {
               "name": "avg_threshold",
               "type": "float",
-              "description": "Maximum allowed difference in average verse length between halves (default is 1.0)."
+              "description": "Maximum allowed difference in average verse length between halves; default is 1.0."
             },
             {
               "name": "stddev_threshold",
               "type": "float",
-              "description": "Maximum allowed difference in standard deviation of verse lengths between halves (default is 1.0)."
+              "description": "Maximum allowed difference in verse length standard deviation between halves; default is 1.0."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_enhanced_semantic_symmetry",
-          "description": "Performs enhanced analysis of semantic symmetry using lemma overlap between two halves of each Surah.",
+          "description": "Enhanced analysis of semantic symmetry using lemma overlap between two halves of each Surah.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
-              "description": "The preprocessed Quran text, with each line representing a verse."
+              "description": "The preprocessed Quran text with each line representing a verse."
             },
             {
               "name": "symmetry_threshold",
               "type": "float",
-              "description": "The minimum normalized overlap required to consider semantic symmetry (default is 0.3)."
+              "description": "The minimum normalized overlap required to consider semantic symmetry; default is 0.3."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_muqattaat",
-          "description": "Analyzes Muqatta'at (mysterious letters) in the Quran text, returning a mapping of Surahs to extracted letters and their frequency counts.",
+          "description": "Identify Surahs that begin with Muqatta'at, extract the sequence of letters, and compute frequency counts.",
           "parameters": [
             {
               "name": "text",
@@ -301,7 +301,7 @@
         },
         {
           "name": "analyze_muqattaat_positions",
-          "description": "Analyzes the positional distribution of Muqatta'at within each Surah and logs their occurrence categories.",
+          "description": "Analyze the positional distribution of Muqatta'at within Surahs and log the occurrence category (Beginning, Middle, End, or Throughout).",
           "parameters": [
             {
               "name": "text",
@@ -310,6 +310,18 @@
             }
           ],
           "return_type": "None"
+        },
+        {
+          "name": "analyze_muqattaat_sequences",
+          "description": "Identify and count the frequency of unique Muqatta'at sequences from the Quran text.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "The preprocessed Quran text."
+            }
+          ],
+          "return_type": "dict"
         }
       ],
       "dependencies": [
@@ -753,32 +765,50 @@
     },
     {
       "path": "tests/test_main.py",
-      "language": "Python",
-      "description": "Integration tests for the Quran Secrets main module, ensuring end-to-end functionality and correct logging of secret analysis outputs using unittest.",
+      "language": "python",
+      "description": "Integration test for the main module to execute end-to-end analysis. This file contains tests that set up input data, run the main module, and verify that log outputs meet expected analysis patterns and file handling procedures.",
       "classes": [
         {
           "name": "TestMainIntegration",
-          "description": "Integration test class for the main module to execute end-to-end analysis tests using unittest.",
+          "description": "Test cases for end-to-end integration of the Quran Secrets application. Validates main execution paths with both fallback and CAMeL Tools enabled scenarios.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "setUp",
-              "description": "Initializes test configurations and environment before each test run.",
-              "parameters": [],
+              "description": "Set maximum diff for assertions, ensuring full output is displayed for differences.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestMainIntegration",
+                  "description": "Instance of TestMainIntegration."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_fallback",
-              "description": "Tests full execution of main() with CAMeL Tools fallback scenario and verifies expected log outputs.",
-              "parameters": [],
+              "description": "Test the full execution of main() function end-to-end with CAMeL Tools fallback, simulating file input and verifying log output patterns for numerical and frequency analyses.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestMainIntegration",
+                  "description": "Instance of TestMainIntegration."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_with_camel_tools",
-              "description": "Tests full execution of main() with CAMeL Tools available using mocks to simulate analyzer behavior and verifies expected log outputs.",
-              "parameters": [],
+              "description": "Test the full execution of main() function end-to-end with CAMeL Tools available by patching module dependencies, verifying that log outputs include proper Muqatta'at and token processing information.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestMainIntegration",
+                  "description": "Instance of TestMainIntegration."
+                }
+              ],
               "return_type": "None"
             }
           ]

@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences
 from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
@@ -75,6 +75,14 @@ def main():
     # New analysis for Muqatta'at
     analyze_muqattaat(text)
     analyze_muqattaat_positions(text)
+    
+    # New analysis for Muqatta'at sequences
+    muqattaat_seq_freq = analyze_muqattaat_sequences(text)
+    log_result("Muqatta'at Sequences Frequency Analysis:")
+    for seq, freq in muqattaat_seq_freq.items():
+        log_result("Sequence '{}' occurred {} times".format(seq, freq))
+        if freq > 1:
+            log_secret_found("Sequence '{}' appears unusually often ({} times)".format(seq, freq))
     
     print("Quran Secrets Analysis Completed.")
 

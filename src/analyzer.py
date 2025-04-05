@@ -887,3 +887,37 @@ def analyze_muqattaat_positions(text):
     logger.log_result("Middle: {} Surahs".format(summary_counts["Middle"]))
     logger.log_result("End: {} Surahs".format(summary_counts["End"]))
     logger.log_result("Throughout: {} Surahs".format(summary_counts["Throughout"]))
+
+def analyze_muqattaat_sequences(text):
+    '''Analyze Muqatta'at sequences in the Quran text.
+
+    This function identifies Surahs recognized to contain Muqatta'at by checking if the Surah number is in a predefined list.
+    For each such Surah, it extracts the sequence of Muqatta'at letters from the beginning of the first verse.
+    It then counts the frequency of each unique sequence across all Surahs and returns the result.
+
+    Args:
+        text (str): The preprocessed Quran text.
+
+    Returns:
+        dict: A dictionary mapping each unique Muqatta'at sequence (str) to its frequency (int).
+    '''
+    import re
+    from collections import Counter
+    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
+                           "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
+                           "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
+    sequence_by_surah = {}
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            verse_text = m.group(3).strip()
+            if surah in predefined_surahs and surah not in sequence_by_surah:
+                m_seq = re.match(r'^([\u0621-\u064A]+)', verse_text)
+                if m_seq:
+                    sequence_by_surah[surah] = m_seq.group(1)
+    freq_counter = Counter(sequence_by_surah.values())
+    return dict(freq_counter)
