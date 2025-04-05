@@ -669,7 +669,7 @@ def search_verses_by_word_gematrical_value_equals_verse_number(quran_data, word,
     Search for Quran verses where the gematrical value of the specified word equals the verse number (ayah_number).
 
     This function iterates over each verse in the provided quran_data. For each verse, it checks if the given word
-    is present in the verse text (using case-sensitive or case-insensitive comparison based on the flag). If present,
+    is present in the verse text (using case-sensitive or case-insensitive matching based on the flag). If present,
     it calculates the gematrical value of the word using calculate_gematrical_value, and compares it with the verse's
     ayah number. Verses where the gematrical value of the word equals the verse number are returned.
 
@@ -692,6 +692,47 @@ def search_verses_by_word_gematrical_value_equals_verse_number(quran_data, word,
                 continue
         else:
             if word.lower() not in verse_text.lower():
+                continue
+        try:
+            verse_num = int(verse.get('ayah_number'))
+        except (ValueError, TypeError):
+            continue
+        if gem_value == verse_num:
+            results.append({
+                'surah_number': verse.get('surah_number'),
+                'ayah_number': verse.get('ayah_number'),
+                'verse_text': verse_text
+            })
+    return results
+
+def search_verses_by_word_group_gematrical_value_equals_verse_number(quran_data, word_group, case_sensitive=True):
+    """
+    Search for Quran verses where the gematrical value of the specified word group equals the verse number (ayah_number).
+
+    This function iterates over each verse in the provided quran_data. It checks if the given word group
+    is present in the verse text (using case-sensitive or case-insensitive matching based on the flag). If present,
+    it calculates the gematrical value of the word group using calculate_gematrical_value and compares it to the verse's
+    ayah number. Verses where the gematrical value equals the verse number are returned.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran verses.
+        word_group (str): The word group (phrase) for which the gematrical value is calculated.
+        case_sensitive (bool, optional): If True, performs case-sensitive search; otherwise, performs case-insensitive search.
+                                         Defaults to True.
+
+    Returns:
+        list: A list of dictionaries with keys 'surah_number', 'ayah_number', and 'verse_text' for each matching verse.
+    """
+    results = []
+    processed_word_group = word_group if case_sensitive else word_group.lower()
+    gem_value = calculate_gematrical_value(processed_word_group)
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        if case_sensitive:
+            if word_group not in verse_text:
+                continue
+        else:
+            if word_group.lower() not in verse_text.lower():
                 continue
         try:
             verse_num = int(verse.get('ayah_number'))
