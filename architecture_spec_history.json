@@ -38,5 +38,10 @@
         "iteration": 7,
         "date": "2025-04-04",
         "iteration_goal": "Added `search_word_in_verse_range` function to `QuranSearch` module, enabling word search within a specified verse range. This function reuses existing modules and logic. A new test case is also added to validate the functionality. The change is modular and enhances search capability without altering existing architecture."
+    },
+    {
+        "iteration": 8,
+        "date": "2025-04-04",
+        "iteration_goal": "A new function `search_word_group_in_verse_range` is introduced in the `QuranSearch` module to facilitate searching for word groups within a specified verse range.  A corresponding test case is added to ensure functionality. This enhancement maintains the modular design and leverages existing search capabilities."
     }
 ]

@@ -38,5 +38,10 @@
         "iteration": 7,
         "date": "2025-04-04",
         "iteration_goal": "This increment focuses on adding the capability to search for a specific word within a defined range of verses in the Quran. A new function `search_word_in_verse_range` will be implemented in `quran_search.py` to enable this feature.  A corresponding pytest test case `test_search_word_in_verse_range` will be created to validate the functionality. This enhancement allows for more focused and targeted analysis of Quranic text by allowing users to specify verse ranges for their searches."
+    },
+    {
+        "iteration": 8,
+        "date": "2025-04-04",
+        "iteration_goal": "This increment focuses on enhancing the Quran Secrets Analyzer by adding the capability to search for specific word groups (phrases) within a defined range of verses in the Quran. A new function `search_word_group_in_verse_range` will be implemented in `quran_search.py` to enable this feature.  A corresponding pytest test case `test_search_word_group_in_verse_range` will be created to validate the functionality. This enhancement allows for more focused and targeted analysis of Quranic text by allowing users to specify verse ranges for their phrase searches."
     }
 ]

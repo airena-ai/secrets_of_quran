@@ -49,6 +49,19 @@ def main():
         print("Surah: {} Ayah: {} - {}".format(
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))
+        
+    # Demonstration of new search_word_group_in_verse_range function
+    from src.quran_search import search_word_group_in_verse_range
+    verse_range_group_start = (1, 1)
+    verse_range_group_end = (1, 5)
+    group_phrase = "بسم الله"
+    results_group_range = search_word_group_in_verse_range(quran_data, group_phrase, verse_range_group_start, verse_range_group_end)
+    
+    print("\nSearch results for word group '{}' in verse range {} to {}:".format(group_phrase, verse_range_group_start, verse_range_group_end))
+    for verse in results_group_range:
+        print("Surah: {} Ayah: {} - {}".format(
+            verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
+        ))
 
 if __name__ == '__main__':
     main()

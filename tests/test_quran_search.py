@@ -265,5 +265,53 @@ class TestQuranSearch(unittest.TestCase):
         results = search_word_in_verse_range(dummy_data, "nonexistent", (1,1), (3,1))
         self.assertEqual(results, [], "Search for a nonexistent word should return an empty list.")
 
+    def test_search_word_group_in_verse_range(self):
+        """
+        Test the search_word_group_in_verse_range function for various scenarios:
+        
+        - Searching for an existing word group within a specific verse range.
+        - Searching using case-insensitive mode.
+        - Searching using case-sensitive mode.
+        - Searching across surah boundaries.
+        - Edge case where start_verse and end_verse are the same.
+        - Searching for a non-existent word group.
+        """
+        self.maxDiff = None
+        dummy_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'In the beginning bismillah and creation.'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'Bismillah is repeated in many verses.'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'In verse three bismillah God bless.'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'A different verse with no match.'},
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'Ending verse with bismillah again.'},
+            {'surah_number': '3', 'ayah_number': '1', 'verse_text': 'Verse in surah 3 but no match.'},
+        ]
+        from src.quran_search import search_word_group_in_verse_range
+
+        # Case-insensitive search in range (1,1) to (1,3)
+        results1 = search_word_group_in_verse_range(dummy_data, "bismillah", (1, 1), (1, 3))
+        self.assertEqual(len(results1), 3, "Should find 3 verses in surah 1 with 'bismillah' in case-insensitive search.")
+
+        # Case-sensitive search in the same range
+        results2 = search_word_group_in_verse_range(dummy_data, "Bismillah", (1, 1), (1, 3), case_sensitive=True)
+        self.assertEqual(len(results2), 1, "Case-sensitive search should find only 1 verse with exact 'Bismillah'.")
+        self.assertEqual(results2[0]['ayah_number'], '2', "Expected verse with ayah number '2' for case-sensitive match.")
+
+        # Search across surah boundaries: range (1,2) to (2,2) should include verses from surah 1 and 2.
+        results3 = search_word_group_in_verse_range(dummy_data, "bismillah", (1, 2), (2, 2))
+        self.assertEqual(len(results3), 3, "Should find 3 verses in range (1,2) to (2,2) containing 'bismillah'.")
+        expected_ayahs = ['2', '3', '2']
+        actual_ayahs = [res['ayah_number'] for res in results3]
+        self.assertEqual(actual_ayahs, expected_ayahs, "Ayah numbers should be {} but got {}.".format(expected_ayahs, actual_ayahs))
+
+        # Search for a non-existent word group
+        results4 = search_word_group_in_verse_range(dummy_data, "nonexistent", (1, 1), (3, 1))
+        self.assertEqual(results4, [], "Search for a non-existent word group should return an empty list.")
+
+        # Edge case: When start_verse and end_verse are the same.
+        results5 = search_word_group_in_verse_range(dummy_data, "bismillah", (2, 2), (2, 2))
+        self.assertEqual(len(results5), 1, "Edge case: range with the same start and end should return 1 matching verse.")
+        self.assertEqual(results5[0]['surah_number'], '2', "Expected surah number '2' for the matching verse.")
+        self.assertEqual(results5[0]['ayah_number'], '2', "Expected ayah number '2' for the matching verse.")
+
 if __name__ == '__main__':
     unittest.main()
