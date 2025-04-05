@@ -380,5 +380,32 @@ class TestQuranSearch(unittest.TestCase):
         with self.assertRaises(ValueError):
             search_verses_by_word_count_multiple(dummy_data, 0)
 
+    def test_calculate_gematrical_value(self):
+        """
+        Test the calculate_gematrical_value function with various scenarios,
+        including an empty string, known Arabic words/phrases, and non-mapping characters.
+        """
+        self.maxDiff = None
+        from src.quran_search import calculate_gematrical_value
+
+        # Test with an empty string.
+        self.assertEqual(calculate_gematrical_value(""), 0, "Empty string should return a gematrical value of 0.")
+
+        # Test with a known simple Arabic word: "ابجد"
+        # Mapping: ا=1, ب=2, ج=3, د=4. Sum=10.
+        self.assertEqual(calculate_gematrical_value("ابجد"), 10, "Gematrical value of 'ابجد' should be 10.")
+
+        # Test with the word "الله"
+        # Calculation: ا=1, ل=30, ل=30, ه=5. Sum=66.
+        self.assertEqual(calculate_gematrical_value("الله"), 66, "Gematrical value of 'الله' should be 66.")
+
+        # Test with the phrase "بسم الله الرحمن الرحيم"
+        # Expected calculation: بسم = 2+60+40 =102, الله = 1+30+30+5 =66,
+        # الرحمن = 1+30+200+8+40+50 =329, الرحيم = 1+30+200+8+10+40 =289, Total = 786.
+        self.assertEqual(calculate_gematrical_value("بسم الله الرحمن الرحيم"), 786, "Gematrical value of 'بسم الله الرحمن الرحيم' should be 786.")
+
+        # Test with non-Arabic characters; they should be ignored.
+        self.assertEqual(calculate_gematrical_value("123"), 0, "Non-mapped characters should contribute 0 to the gematrical value.")
+
 if __name__ == '__main__':
     unittest.main()

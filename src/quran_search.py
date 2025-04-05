@@ -2,6 +2,37 @@
 Module for searching words in the loaded Quran data.
 """
 
+ABJAD_VALUES = {
+    'ا': 1,
+    'ب': 2,
+    'ج': 3,
+    'د': 4,
+    'ه': 5,
+    'و': 6,
+    'ز': 7,
+    'ح': 8,
+    'ط': 9,
+    'ي': 10,
+    'ك': 20,
+    'ل': 30,
+    'م': 40,
+    'ن': 50,
+    'س': 60,
+    'ع': 70,
+    'ف': 80,
+    'ص': 90,
+    'ق': 100,
+    'ر': 200,
+    'ش': 300,
+    'ت': 400,
+    'ث': 500,
+    'خ': 600,
+    'ذ': 700,
+    'ض': 800,
+    'ظ': 900,
+    'غ': 1000
+}
+
 def search_word_in_quran(quran_data, search_word, case_sensitive=False):
     """
     Search for a word in the Quran verses.
@@ -285,3 +316,21 @@ def search_verses_by_word_count_multiple(quran_data, multiple_of):
         if len(words) % multiple_of == 0:
             results.append(verse)
     return results
+
+def calculate_gematrical_value(text: str) -> int:
+    """
+    Calculate the gematrical (Abjad) value of a given Arabic word or phrase.
+
+    This function computes the sum of the numerical values of the Arabic letters in the input
+    text based on the standard Abjad numeral mapping. Characters not present in the mapping are ignored.
+
+    Args:
+        text (str): An Arabic word or phrase.
+
+    Returns:
+        int: The gematrical value calculated by summing the Abjad numeral values of characters in the text.
+    """
+    total = 0
+    for char in text:
+        total += ABJAD_VALUES.get(char, 0)
+    return total

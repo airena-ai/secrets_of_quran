@@ -72,6 +72,11 @@ def main():
         print("Surah: {} Ayah: {} - {}".format(
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))
+    
+    # Demonstration of calculate_gematrical_value function
+    from src.quran_search import calculate_gematrical_value
+    gem_value = calculate_gematrical_value("بسم الله الرحمن الرحيم")
+    print("\nGematrical value for 'بسم الله الرحمن الرحيم':", gem_value)
 
 if __name__ == '__main__':
     main()
