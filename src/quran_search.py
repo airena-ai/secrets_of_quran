@@ -258,3 +258,30 @@ def search_verses_by_word_count(quran_data, word_count):
         if len(words) == word_count:
             results.append(verse)
     return results
+
+def search_verses_by_word_count_multiple(quran_data, multiple_of):
+    """
+    Search for Quran verses where the number of words is a multiple of a specified number.
+
+    Iterates over the provided quran_data, splitting each verse's verse_text into words, 
+    and collects verses where the number of words is an exact multiple of multiple_of.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran verses.
+        multiple_of (int): The integer multiple to check against. Must be a non-zero integer.
+
+    Returns:
+        list: A list of dictionaries, each containing a verse where the word count is a multiple of multiple_of.
+
+    Raises:
+        ValueError: If multiple_of is zero.
+    """
+    if multiple_of == 0:
+        raise ValueError("multiple_of must be non-zero")
+    results = []
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        words = verse_text.split()
+        if len(words) % multiple_of == 0:
+            results.append(verse)
+    return results

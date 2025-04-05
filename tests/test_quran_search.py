@@ -346,5 +346,39 @@ class TestQuranSearch(unittest.TestCase):
         finally:
             os.remove(tmp_file_path)
 
+    def test_search_verses_by_word_count_multiple(self):
+        """
+        Test that the search_verses_by_word_count_multiple function returns only verses with word counts 
+        that are multiples of the specified number.
+
+        This test includes:
+        - A positive test case using a dummy dataset where some verses have word counts that are multiples of the given number.
+        - A negative test case where a multiple_of value yields no matching verses.
+        - Verification that a ValueError is raised when multiple_of is zero.
+        """
+        self.maxDiff = None
+        dummy_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'word1 word2'},  # 2 words
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'word1 word2 word3'},  # 3 words
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'word1 word2 word3 word4'},  # 4 words
+            {'surah_number': '1', 'ayah_number': '4', 'verse_text': 'word1'},  # 1 word
+            {'surah_number': '1', 'ayah_number': '5', 'verse_text': 'word1 word2 word3 word4 word5 word6'}  # 6 words
+        ]
+        from src.quran_search import search_verses_by_word_count_multiple
+        # Positive test: multiple_of = 2 should select verses with 2, 4, and 6 words.
+        results_multiple_2 = search_verses_by_word_count_multiple(dummy_data, 2)
+        for verse in results_multiple_2:
+            word_count = len(verse['verse_text'].split())
+            self.assertEqual(word_count % 2, 0, "Verse word count should be a multiple of 2.")
+        self.assertEqual(len(results_multiple_2), 3, "Should return 3 verses with word count multiple of 2.")
+        
+        # Negative test: multiple_of = 5 should return an empty list as no verse has a word count that is a multiple of 5.
+        results_multiple_5 = search_verses_by_word_count_multiple(dummy_data, 5)
+        self.assertEqual(results_multiple_5, [], "Should return an empty list when no verse word count is a multiple of 5.")
+        
+        # Test that a ValueError is raised for multiple_of = 0.
+        with self.assertRaises(ValueError):
+            search_verses_by_word_count_multiple(dummy_data, 0)
+
 if __name__ == '__main__':
     unittest.main()
