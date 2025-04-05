@@ -2,14 +2,14 @@
 
 import os
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 import importlib.util
 from src import main
 
 class TestMainIntegration(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
-        
+
     def test_main_integration_fallback(self):
         '''Test the full execution of main() function end-to-end with CAMeL Tools fallback.'''
         data_dir = "data"
@@ -24,7 +24,7 @@ class TestMainIntegration(unittest.TestCase):
         if os.path.exists(log_file):
             os.remove(log_file)
         
-        # Mock importlib.util.find_spec to simulate CAMeL Tools not being available
+        from unittest.mock import patch
         with patch('importlib.util.find_spec', return_value=None):
             try:
                 main.main()
@@ -39,18 +39,14 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("--- Bigram Frequency Analysis ---", log_contents)
                 self.assertIn("Top 20 Bigrams:", log_contents)
                 self.assertIn("Verse Repetition Analysis:", log_contents)
-                # Additional assertions to verify the structure of verse repetition analysis output.
                 self.assertRegex(log_contents, r'Within Surah - Surah \d+: Verse \'.+\' repeated \d+ times at Ayahs \[.+\]')
                 self.assertRegex(log_contents, r'Across Quran - Verse \'.+\' repeated \d+ times at locations: \[.+\]')
+                self.assertIn("[Palindrome Analysis]", log_contents)
+                self.assertIn("[Abjad Numerical Pattern]", log_contents)
+                self.assertIn("[Semantic Symmetry (Word Overlap)]", log_contents)
             finally:
-                if os.path.exists(file_path):
-                    os.remove(file_path)
                 if os.path.exists(log_file):
                     os.remove(log_file)
-                try:
-                    os.rmdir(data_dir)
-                except OSError:
-                    pass
 
     def test_main_integration_with_camel_tools(self):
         '''Test the full execution of main() function end-to-end with CAMeL Tools available.'''
@@ -66,11 +62,10 @@ class TestMainIntegration(unittest.TestCase):
         if os.path.exists(log_file):
             os.remove(log_file)
         
-        # Create mock objects for CAMeL Tools
+        from unittest.mock import patch, MagicMock
         mock_spec = MagicMock()
         mock_analyzer = MagicMock()
         mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}] if token == "الحمد" else [{'root': token}]
-        
         mock_analyzer_class = MagicMock()
         mock_analyzer_class.builtin_analyzer.return_value = mock_analyzer
         
@@ -93,9 +88,11 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Top 20 Bigrams:", log_contents)
                 self.assertIn("Verse Repetition Analysis:", log_contents)
                 self.assertIn("Root 'حمد'", log_contents)
-                # Additional assertions to verify the structure of verse repetition analysis output.
                 self.assertRegex(log_contents, r'Within Surah - Surah \d+: Verse \'.+\' repeated \d+ times at Ayahs \[.+\]')
                 self.assertRegex(log_contents, r'Across Quran - Verse \'.+\' repeated \d+ times at locations: \[.+\]')
+                self.assertIn("[Palindrome Analysis]", log_contents)
+                self.assertIn("[Abjad Numerical Pattern]", log_contents)
+                self.assertIn("[Semantic Symmetry (Word Overlap)]", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)

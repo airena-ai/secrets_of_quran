@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry
 from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
@@ -55,6 +55,11 @@ def main():
         surahs = {occ["surah"] for occ in item["occurrences"]}
         if len(surahs) > 1:
             log_secret_found("Verse '{}' is repeated across multiple Surahs: {}".format(item["verse"], list(surahs)))
+    
+    # Advanced pattern analyses
+    analyze_palindromes(text)
+    analyze_abjad_numerals(text)
+    analyze_semantic_symmetry(text)
     
     print("Quran Secrets Analysis Completed.")
 

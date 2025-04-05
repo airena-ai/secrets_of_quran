@@ -26,13 +26,13 @@
     },
     {
       "path": "src/main.py",
-      "language": "Python",
-      "description": "Main driver for the Quran Secrets application. Coordinates reading the Quran text, preprocessing, various analyses (numerical patterns, word frequencies, root words, bigrams, and verse repetitions), and logging results with error handling.",
+      "language": "python",
+      "description": "Main driver for the Quran Secrets application. Coordinates file reading, text preprocessing, analysis functions, and logging to provide a complete analysis of the Quran text.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main entry point for the Quran Secrets analysis. Executes file reading, text preprocessing, analysis of word frequency, numerical patterns, root words, bigrams, and verse repetitions, and logs the respective results.",
+          "description": "Main entry point for the Quran Secrets analysis. Reads the Quran text, applies preprocessing, performs multiple analyses, logs the results, and handles errors.",
           "parameters": [],
           "return_type": "None"
         }
@@ -102,13 +102,13 @@
     },
     {
       "path": "src/analyzer.py",
-      "language": "Python",
-      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Contains various functions for text analysis including analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, and analyze_verse_repetitions. It imports standard libraries and project modules (src/logger.py and src/text_preprocessor.py) for logging and text preprocessing.",
+      "language": "python",
+      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. This module provides functionalities to perform various text analyses on the Quran, such as numerical pattern detection, word frequency analysis, root word analysis, bigram analysis, verse repetition analysis, palindrome analysis, Abjad numeral analysis, and semantic symmetry analysis. It is designed to identify potential hidden patterns and anomalies within the Quranic text.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_text",
-          "description": "Analyze the given text for hidden numerical patterns and anomalies. Simulates pattern detection by appending a calculated numerical pattern if the text is non-empty.",
+          "description": "Analyze the given text for hidden numerical patterns and anomalies.\n\n    This function simulates pattern detection. If the text is non-empty,\n    a simulated anomaly is detected and returned.\n\n    Args:\n        text (str): The preprocessed text of the Quran.\n\n    Returns:\n        list: A list of anomaly messages detected in the text.",
           "parameters": [
             {
               "name": "text",
@@ -120,7 +120,7 @@
         },
         {
           "name": "analyze_word_frequency",
-          "description": "Perform word frequency analysis. Tokenizes the text, counts word occurrences, composes a summary of top words, and flags words with non-typical frequencies based on a heuristic. Returns a formatted summary and a list of flagged messages.",
+          "description": "Perform word frequency analysis on the given preprocessed Quran text.\n\n    This function tokenizes the text using whitespace, counts the occurrences of each unique word,\n    and determines the top N most frequent words. It prepares a summary of the word frequency analysis\n    and identifies any words whose frequency is unusually high or low based on a simple heuristic.\n\n    The heuristic flags a word if its frequency is more than twice the average frequency of the top words\n    (and greater than 1), or if the frequency is less than half the average (provided the average is greater than 1).\n\n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        tuple: A tuple containing:\n            - summary (str): A formatted multiline string listing the top N words and their counts.\n            - flagged (list): A list of flagged messages for words deemed unusual.",
           "parameters": [
             {
               "name": "text",
@@ -132,7 +132,7 @@
         },
         {
           "name": "analyze_root_words",
-          "description": "Perform Arabic root word analysis on the given Quran text. Uses CAMeL Tools analyzer if available; otherwise falls back to a token-based approach. Returns a summary of the analysis, a dictionary of root frequencies, and the top N most frequent roots.",
+          "description": "Perform Arabic root word analysis on the given preprocessed Quran text.\n\n    This function uses the CAMeL Tools morphological analyzer to extract the root of each word in the text.\n    It counts the frequency of each identified root word and logs a concise summary of the analysis to the results log file.\n    Specifically, the function logs a summary of the Arabic root word frequency analysis along with the top N most frequent root words.\n\n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        tuple: A tuple containing:\n            - summary (str): A formatted summary of the root word frequency analysis.\n            - root_freq (dict): A dictionary mapping each root word to its frequency.\n            - top_roots (list): A list of tuples for the top N most frequent root words (root, frequency).",
           "parameters": [
             {
               "name": "text",
@@ -144,7 +144,7 @@
         },
         {
           "name": "analyze_bigrams",
-          "description": "Perform bigram (or n-gram) frequency analysis on the tokenized text. Generates n-grams from the token list and returns their frequency counts in a dictionary.",
+          "description": "Perform bigram frequency analysis on the given tokenized text.\n\n    This function generates n-grams (bigrams by default) from the tokenized text,\n    counts the frequency of each n-gram, and returns a dictionary where keys are n-gram tuples\n    and values are their respective occurrence counts.\n\n    Args:\n        tokenized_text (list): A list of preprocessed tokens from the Quran text.\n        n (int): The number of words in each n-gram (default is 2 for bigrams).\n\n    Returns:\n        dict: A dictionary with n-gram tuples as keys and their frequency counts as values.",
           "parameters": [
             {
               "name": "tokenized_text",
@@ -161,20 +161,59 @@
         },
         {
           "name": "analyze_verse_repetitions",
-          "description": "Analyze verse repetitions within each Surah and across the entire Quran. Normalizes verses and returns analysis including repetitions within surahs and across the Quran in a structured dictionary.",
+          "description": "Analyze verse repetitions within each Surah and across the entire Quran.\n    \n    This function expects the preprocessed Quran text as input where each line represents a verse.\n    It attempts to parse each line for Surah and Ayah numbers in formats such as \"Surah:Ayah: verse text\"\n    or \"Surah - Ayah - verse text\", allowing for variations in spacing and delimiters.\n    If the format is not found, the verse is assigned to a default Surah \"1\" with sequential Ayah numbers.\n    \n    The verse text is normalized using the existing text preprocessing functions before comparison.\n    It then identifies verses that are repeated within each Surah and across the entire Quran.\n    \n    Returns a dictionary with two keys:\n        \"within_surah\": A list of dictionaries each with keys: \"surah\", \"verse\", \"ayah_numbers\", \"repetition\"\n        \"across_quran\": A list of dictionaries each with keys: \"verse\", \"occurrences\" (list of {\"surah\", \"ayah\"}), \"repetition\"\n    \n    Args:\n        preprocessed_text (str): The preprocessed Quran text data.\n    \n    Returns:\n        dict: The analysis result of verse repetitions.",
           "parameters": [
             {
               "name": "preprocessed_text",
               "type": "str",
-              "description": "The preprocessed Quran text where each line represents a verse."
+              "description": "The preprocessed Quran text data."
             }
           ],
           "return_type": "dict"
+        },
+        {
+          "name": "analyze_palindromes",
+          "description": "Analyze palindromic structures within each verse of the Quran.\n    \n    This function identifies palindromic words and phrases at both the character level and word level.\n    It normalizes the text and parses each verse to extract Surah and Ayah information.\n    Detected palindromes are logged as potential secrets.\n    \n    Args:\n        quran_text (str): The preprocessed Quran text.\n    \n    Returns:\n        list: A list of tuples containing (surah, ayah, palindrome_text) for each detected palindrome.",
+          "parameters": [
+            {
+              "name": "quran_text",
+              "type": "str",
+              "description": "The preprocessed Quran text."
+            }
+          ],
+          "return_type": "list"
+        },
+        {
+          "name": "analyze_abjad_numerals",
+          "description": "Perform Abjad numeral analysis on the Quran text.\n    \n    This function calculates the Abjad numerical sum for each verse based on a mapping of Arabic letters to their numerical values.\n    It identifies verses with sums that are multiples of significant numbers (e.g., 19 or 7) or whose sum is prime, and logs these findings as potential secrets.\n    \n    Args:\n        quran_text (str): The preprocessed Quran text.\n    \n    Returns:\n        list: A list of tuples containing (surah, ayah, abjad_sum, pattern_description) for each verse with a notable numerical pattern.",
+          "parameters": [
+            {
+              "name": "quran_text",
+              "type": "str",
+              "description": "The preprocessed Quran text."
+            }
+          ],
+          "return_type": "list"
+        },
+        {
+          "name": "analyze_semantic_symmetry",
+          "description": "Analyze semantic symmetry (word overlap) between segments of each Surah.\n    \n    For each Surah, the function divides the content into two roughly equal halves.\n    For Surahs with only one verse that has enough words, the verse is split into two halves.\n    It calculates the overlap percentage between the two halves.\n    If the overlap exceeds a defined threshold, the finding is logged as a potential secret.\n    \n    Args:\n        quran_text (str): The preprocessed Quran text.\n    \n    Returns:\n        list: A list of tuples containing (surah, overlap_percentage, details) for each Surah with significant word overlap.",
+          "parameters": [
+            {
+              "name": "quran_text",
+              "type": "str",
+              "description": "The preprocessed Quran text."
+            }
+          ],
+          "return_type": "list"
         }
       ],
       "dependencies": [
-        "src/logger.py",
-        "src/text_preprocessor.py"
+        "collections",
+        "datetime",
+        "importlib.util",
+        "src.logger",
+        "src.text_preprocessor"
       ]
     },
     {
@@ -302,61 +341,157 @@
     {
       "path": "tests/test_analyzer.py",
       "language": "python",
-      "description": "Unit tests for the analyzer module. Contains test cases validating functionalities such as anomaly detection, word frequency analysis, Arabic root word analysis, and bigram generation.",
+      "description": "Unit tests for the analyzer module. Contains tests for verifying anomaly detection, word frequency analysis, Arabic root word analysis, bigram generation, palindrome detection, abjad numeral analysis, and semantic symmetry.",
       "classes": [
         {
           "name": "TestAnalyzer",
-          "description": "Unit tests for the analyzer module functions.",
+          "description": "Unit tests for functions in the analyzer module using the unittest framework.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
+              "name": "setUp",
+              "description": "Set up test environment and initial configurations.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
               "name": "test_analyze_non_empty",
               "description": "Test that a non-empty text returns a simulated anomaly.",
-              "parameters": [],
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_empty",
               "description": "Test that an empty text returns no anomalies.",
-              "parameters": [],
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_word_frequency_summary",
               "description": "Test that the word frequency analysis returns a proper summary and flagged list.",
-              "parameters": [],
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_word_frequency_with_flags",
-              "description": "Test that the word frequency analysis flags unusual word frequencies correctly.",
-              "parameters": [],
+              "description": "Test that the word frequency analysis flags unusual word frequencies.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_root_words_empty",
               "description": "Test Arabic root word analysis on empty text.",
-              "parameters": [],
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_root_words_sample",
               "description": "Test Arabic root word analysis on sample text with mocked CAMeL Tools analyzer.",
-              "parameters": [],
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_bigrams_empty",
-              "description": "Test that analyze_bigrams returns an empty dictionary when input is empty or insufficient tokens.",
-              "parameters": [],
+              "description": "Test that analyze_bigrams returns an empty dictionary for empty or insufficient tokenized text.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_bigrams_sample",
-              "description": "Test analyze_bigrams with a sample tokenized text for correct bigram generation and count.",
-              "parameters": [],
+              "description": "Test analyze_bigrams with a sample tokenized text for correct bigram generation and frequency counting.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_palindromes_detects_palindrome",
+              "description": "Test that analyze_palindromes detects palindromic words and phrases.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_abjad_numerals_detects_patterns",
+              "description": "Test that analyze_abjad_numerals detects notable numerical patterns.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_semantic_symmetry_detects_symmetry",
+              "description": "Test that analyze_semantic_symmetry detects significant word overlap.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             }
           ]
@@ -364,7 +499,8 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/analyzer.py"
+        "src/analyzer.py",
+        "src/logger.py"
       ]
     },
     {
@@ -442,31 +578,31 @@
     },
     {
       "path": "tests/test_main.py",
-      "language": "Python",
-      "description": "This file contains integration tests for the main module of the application. It tests the end-to-end execution of the main function with two scenarios: one where CAMeL Tools is not available (fallback mode) and another where CAMeL Tools is available. The tests verify that the application correctly processes Arabic text, performs various analyses (word frequency, root word analysis, bigram analysis, verse repetition), and logs the results appropriately. The file includes mocking of external dependencies to simulate different environments.",
+      "language": "python",
+      "description": "Integration test for the main module to execute end-to-end analysis. This test suite focuses on verifying the integration of the main functionalities of the application. It includes test cases to ensure the 'main' function executes correctly under different scenarios, such as with and without CAMeL Tools dependency, and that it produces the expected log outputs and analysis results. The tests cover core user flows and ensure the end-to-end functionality of the Quran analysis application.",
       "classes": [
         {
           "name": "TestMainIntegration",
-          "description": "A test class that contains integration tests for the main module. It verifies the end-to-end functionality of the application in different scenarios.",
+          "description": "",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "setUp",
-              "description": "Sets up the test environment before each test method is executed. Configures maxDiff to None to see full diff output in case of test failures.",
+              "description": "",
               "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_fallback",
-              "description": "Tests the full execution of the main() function when CAMeL Tools is not available. It creates a sample Quran text file, mocks the absence of CAMeL Tools, runs the main function, and verifies that the expected analysis results are present in the log file.",
+              "description": "Test the full execution of main() function end-to-end with CAMeL Tools fallback.",
               "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_with_camel_tools",
-              "description": "Tests the full execution of the main() function when CAMeL Tools is available. It creates a sample Quran text file, mocks the presence of CAMeL Tools and its analyzer functionality, runs the main function, and verifies that the expected analysis results (including root word analysis using CAMeL Tools) are present in the log file. The mock analyzer is configured to return 'حمد' as the root for the token 'الحمد' (after diacritics removal from 'الْحَمْدُ').",
+              "description": "Test the full execution of main() function end-to-end with CAMeL Tools available.",
               "parameters": [],
               "return_type": "None"
             }

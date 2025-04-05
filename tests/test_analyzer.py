@@ -1,14 +1,15 @@
 '''Unit tests for the analyzer module.'''
 
 import unittest
-from unittest.mock import patch, MagicMock
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams
+from unittest.mock import MagicMock
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry
 import importlib.util
+import src.logger
 
 class TestAnalyzer(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
-        
+
     def test_analyze_non_empty(self):
         '''Test that a non-empty text returns a simulated anomaly.'''
         text = "Some sample Quran text"
@@ -42,7 +43,7 @@ class TestAnalyzer(unittest.TestCase):
             
     def test_analyze_root_words_empty(self):
         '''Test Arabic root word analysis on empty text.'''
-        # Mock importlib.util.find_spec to return None for camel_tools
+        from unittest.mock import patch
         with patch('importlib.util.find_spec', return_value=None):
             summary, root_freq, top_roots = analyze_root_words("")
             self.assertIn("Arabic Root Word Frequency Analysis:", summary)
@@ -51,26 +52,19 @@ class TestAnalyzer(unittest.TestCase):
         
     def test_analyze_root_words_sample(self):
         '''Test Arabic root word analysis on sample text with mocked CAMeL Tools analyzer.'''
-        # Create a mock for importlib.util.find_spec to return a non-None value
+        from unittest.mock import patch, MagicMock
         mock_spec = MagicMock()
-        
-        # Mock the camel_tools module and its components
         mock_analyzer = MagicMock()
         mock_analyzer.analyze.side_effect = lambda token: [{'root': 'كتب'}] if token == "كتاب" else [{'root': 'درس'}] if token == "مدرسة" else [{'root': token}]
-        
         mock_analyzer_class = MagicMock()
         mock_analyzer_class.builtin_analyzer.return_value = mock_analyzer
-        
-        # Apply the mocks
         with patch('importlib.util.find_spec', return_value=mock_spec), \
              patch.dict('sys.modules', {'camel_tools': MagicMock(), 
-                                       'camel_tools.morphology': MagicMock(),
-                                       'camel_tools.morphology.analyzer': MagicMock()}), \
+                                          'camel_tools.morphology': MagicMock(),
+                                          'camel_tools.morphology.analyzer': MagicMock()}), \
              patch('camel_tools.morphology.analyzer.Analyzer', mock_analyzer_class):
-            
             sample_text = "كتاب مدرسة كتاب"
             summary, root_freq, top_roots = analyze_root_words(sample_text)
-            
             self.assertEqual(root_freq.get('كتب'), 2)
             self.assertEqual(root_freq.get('درس'), 1)
             self.assertIn("Root 'كتب': 2", summary)
@@ -85,10 +79,52 @@ class TestAnalyzer(unittest.TestCase):
     def test_analyze_bigrams_sample(self):
         '''Test analyze_bigrams with a sample tokenized text for correct bigram generation and frequency counting.'''
         tokens = ['a', 'b', 'a', 'b']
-        # Expected bigrams: ('a', 'b'), ('b', 'a'), ('a', 'b')
         result = analyze_bigrams(tokens)
         expected = {('a', 'b'): 2, ('b', 'a'): 1}
         self.assertEqual(result, expected)
+
+    def test_analyze_palindromes_detects_palindrome(self):
+        '''Test that analyze_palindromes detects palindromic words and phrases.'''
+        original_log = src.logger.log_secret_found
+        captured = []
+        src.logger.log_secret_found = lambda msg: captured.append(msg)
+        sample_text = "1:1: باب\n1:2: نور نور"
+        results = analyze_palindromes(sample_text)
+        src.logger.log_secret_found = original_log
+        palindrome_detected = any("[Palindrome Detected] - 1:1 - باب" in msg for msg in captured)
+        self.assertTrue(palindrome_detected)
+        word_level_detected = any("[Palindrome Detected] - 1:2 - نور نور" in msg for msg in captured)
+        self.assertTrue(word_level_detected)
+        self.assertGreaterEqual(len(results), 2)
+
+    def test_analyze_abjad_numerals_detects_patterns(self):
+        '''Test that analyze_abjad_numerals detects notable numerical patterns.'''
+        original_log = src.logger.log_secret_found
+        captured = []
+        src.logger.log_secret_found = lambda msg: captured.append(msg)
+        sample_text = "1:1: ب\n1:2: ز"
+        results = analyze_abjad_numerals(sample_text)
+        src.logger.log_secret_found = original_log
+        pattern_detected = any("[Abjad Numerical Pattern]" in msg for msg in captured)
+        self.assertTrue(pattern_detected)
+        self.assertTrue(any(r[2] == 2 for r in results))
+        self.assertTrue(any(r[2] == 7 for r in results))
+
+    def test_analyze_semantic_symmetry_detects_symmetry(self):
+        '''Test that analyze_semantic_symmetry detects significant word overlap.'''
+        original_log_secret = src.logger.log_secret_found
+        original_log_result = src.logger.log_result
+        captured_secret = []
+        captured_result = []
+        src.logger.log_secret_found = lambda msg: captured_secret.append(msg)
+        src.logger.log_result = lambda msg: captured_result.append(msg)
+        sample_text = "1:1: كلمة كلمة كلمة كلمة"
+        results = analyze_semantic_symmetry(sample_text)
+        src.logger.log_secret_found = original_log_secret
+        src.logger.log_result = original_log_result
+        symmetry_detected = any("[Semantic Symmetry (Word Overlap)]" in msg for msg in captured_secret)
+        self.assertTrue(symmetry_detected)
+        self.assertGreaterEqual(len(results), 1)
 
 if __name__ == '__main__':
     unittest.main()
