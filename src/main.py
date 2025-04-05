@@ -118,6 +118,16 @@ def main():
         print("Surah: {} Ayah: {} - {}".format(
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))
+    
+    # Demonstration of search_verses_by_word_gematrical_value_equals_surah_number function (New Feature)
+    from src.quran_search import search_verses_by_word_gematrical_value_equals_surah_number
+    word_target = "ب"
+    results_surah = search_verses_by_word_gematrical_value_equals_surah_number(quran_data, word_target, case_sensitive=False)
+    print("\nSearch results for verses where the gematrical value of word '{}' equals the surah number:".format(word_target))
+    for verse in results_surah:
+        print("Surah: {} Ayah: {} - {}".format(
+            verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
+        ))
         
 if __name__ == '__main__':
     main()

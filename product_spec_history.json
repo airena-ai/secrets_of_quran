@@ -133,5 +133,10 @@
         "iteration": 26,
         "date": "2025-04-04",
         "iteration_goal": "This increment adds the `search_verses_by_word_group_gematrical_value_equals_verse_number` function to `quran_search.py`. This function searches for Quran verses where the gematrical value of a given word group is equal to the verse number.  A new pytest test case `test_search_verses_by_word_group_gematrical_value_equals_verse_number` is also required to validate this functionality, including case-sensitive and case-insensitive searches. This feature expands the numerical analysis capabilities for word groups in relation to verse numbers."
+    },
+    {
+        "iteration": 27,
+        "date": "2025-04-04",
+        "iteration_goal": "This increment introduces the `search_verses_by_word_gematrical_value_equals_surah_number` function to `quran_search.py`. This function enhances the Quran Analyzer by enabling searches for verses where the gematrical value of a specific word matches the verse's Surah number. A new pytest test case is also required to validate this functionality, ensuring accurate results for both case-sensitive and case-insensitive searches. This feature expands the numerical analysis capabilities by exploring relationships between word gematrical values and Surah numbers."
     }
 ]

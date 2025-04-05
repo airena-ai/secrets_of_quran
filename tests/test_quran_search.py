@@ -754,5 +754,63 @@ class TestQuranSearch(unittest.TestCase):
         results_none = search_verses_by_word_group_gematrical_value_equals_verse_number(dummy_data, "ج")
         self.assertEqual(results_none, [], "Search for word group 'ج' should return an empty list when no verse matches the gematrical value condition.")
 
+    def test_search_verses_by_word_gematrical_value_equals_surah_number(self):
+        """
+        Test the search_verses_by_word_gematrical_value_equals_surah_number function for various scenarios:
+        
+        - Case-insensitive search: Searching for "test" (gematrical value from fake function = 1) should return verses with surah number 1.
+        - Case-sensitive search: Searching for "Test" should return no results if exact casing does not match.
+        - Additional tests for words "Alpha" and "beta" with gematrical values 2 and 3 respectively.
+        """
+        self.maxDiff = None
+        from src.quran_search import search_verses_by_word_gematrical_value_equals_surah_number, calculate_gematrical_value
+        import src.quran_search as qs
+        original_calc = qs.calculate_gematrical_value
+        def fake_calc(text):
+            t = text.lower()
+            if t == "test":
+                return 1
+            elif t == "alpha":
+                return 2
+            elif t == "beta":
+                return 3
+            else:
+                return 0
+        qs.calculate_gematrical_value = fake_calc
+
+        dummy_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'This verse contains test.'},
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'Alpha appears in this verse.'},
+            {'surah_number': '3', 'ayah_number': '3', 'verse_text': 'Beta is mentioned here.'},
+            {'surah_number': '2', 'ayah_number': '4', 'verse_text': 'This verse contains test too.'}
+        ]
+        # Case-insensitive search for "test" should return verses from surah 1 since fake_calc("test") = 1.
+        results_insensitive = search_verses_by_word_gematrical_value_equals_surah_number(dummy_data, "test", case_sensitive=False)
+        expected_insensitive = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'This verse contains test.'}
+        ]
+        self.assertEqual(results_insensitive, expected_insensitive, "Case-insensitive search for 'test' should return verses with surah number equal to 1.")
+
+        # Case-sensitive search for "Test" should return no results if exact case doesn't match.
+        results_sensitive = search_verses_by_word_gematrical_value_equals_surah_number(dummy_data, "Test", case_sensitive=True)
+        expected_sensitive = []
+        self.assertEqual(results_sensitive, expected_sensitive, "Case-sensitive search for 'Test' should return no results if case does not match exactly.")
+
+        # Test for "Alpha": fake_calc("alpha") returns 2, so matching surah number should be '2'.
+        results_alpha = search_verses_by_word_gematrical_value_equals_surah_number(dummy_data, "Alpha", case_sensitive=False)
+        expected_alpha = [
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'Alpha appears in this verse.'}
+        ]
+        self.assertEqual(results_alpha, expected_alpha, "Case-insensitive search for 'Alpha' should return verses with surah number equal to 2.")
+
+        # Test for "Beta": fake_calc("beta") returns 3, so matching surah number should be '3'.
+        results_beta = search_verses_by_word_gematrical_value_equals_surah_number(dummy_data, "beta", case_sensitive=False)
+        expected_beta = [
+            {'surah_number': '3', 'ayah_number': '3', 'verse_text': 'Beta is mentioned here.'}
+        ]
+        self.assertEqual(results_beta, expected_beta, "Case-insensitive search for 'beta' should return verses with surah number equal to 3.")
+        
+        qs.calculate_gematrical_value = original_calc
+
 if __name__ == '__main__':
     unittest.main()
