@@ -11,7 +11,8 @@ from src.quran_search import (
     count_word_occurrences_in_verse_range,
     search_word_in_verse_range,
     search_word_group_in_verse_range,
-    search_verses_by_word_count
+    search_verses_by_word_count,
+    search_word_at_position
 )
 
 class TestQuranSearch(unittest.TestCase):
@@ -631,6 +632,49 @@ class TestQuranSearch(unittest.TestCase):
             self.assertEqual(result, expected_total, "Total gematrical value for the dummy Quran data should be {}.".format(expected_total))
         finally:
             qs.calculate_gematrical_value = original_func
+
+    def test_search_word_at_position(self):
+        """
+        Test the search_word_at_position function for various scenarios:
+        
+        - When the target word appears at the specified position (case-insensitive).
+        - When the target word does not appear at that position.
+        - When the specified position is invalid (greater than number of words).
+        """
+        self.maxDiff = None
+        dummy_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'Hello world from Quran'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'Test Example Case'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'One two three four'},
+            {'surah_number': '1', 'ayah_number': '4', 'verse_text': 'Case insensitive test'}
+        ]
+        # Test 1: 'world' at position 2 in first verse
+        results = search_word_at_position(dummy_data, "world", 2)
+        self.assertEqual(len(results), 1, "Should find one verse with 'world' at position 2.")
+        self.assertEqual(results[0]['ayah_number'], '1')
+
+        # Test 2: 'test' at position 1 in second verse (case-insensitive)
+        results = search_word_at_position(dummy_data, "test", 1)
+        self.assertEqual(len(results), 1, "Should find one verse with 'test' at position 1 (case-insensitive).")
+        self.assertEqual(results[0]['ayah_number'], '2')
+
+        # Test 3: 'three' at position 3 in third verse
+        results = search_word_at_position(dummy_data, "three", 3)
+        self.assertEqual(len(results), 1, "Should find one verse with 'three' at position 3.")
+        self.assertEqual(results[0]['ayah_number'], '3')
+
+        # Test 4: 'case' at position 1 in fourth verse (case-insensitive)
+        results = search_word_at_position(dummy_data, "case", 1)
+        self.assertEqual(len(results), 1, "Should find one verse with 'case' at position 1 (case-insensitive).")
+        self.assertEqual(results[0]['ayah_number'], '4')
+
+        # Test 5: 'insensitive' at position 1 in fourth verse should not match
+        results = search_word_at_position(dummy_data, "insensitive", 1)
+        self.assertEqual(len(results), 0, "Should not find a verse with 'insensitive' at position 1.")
+
+        # Test 6: Invalid position (e.g., 10) should return no results
+        results = search_word_at_position(dummy_data, "Hello", 10)
+        self.assertEqual(len(results), 0, "Should return no verses for an out-of-range position.")
 
 if __name__ == '__main__':
     unittest.main()

@@ -575,3 +575,26 @@ def calculate_quran_gematrical_value(quran_data) -> int:
         for word in words:
             total_value += calculate_gematrical_value(word)
     return total_value
+
+def search_word_at_position(quran_data, word, position):
+    """
+    Search for verses where the specified word appears at the given position within the verse.
+
+    The search is performed in a case-insensitive manner, and the position parameter is 1-indexed.
+    If the specified position is greater than the number of words in a verse, that verse is skipped.
+
+    Args:
+        quran_data (list): A list of dictionaries representing Quran verses.
+        word (str): The word to search for.
+        position (int): The 1-indexed position to look for the word in each verse.
+
+    Returns:
+        list: A list of verses (dictionaries) where the word is found at the specified position.
+    """
+    results = []
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        words = verse_text.split()
+        if position <= len(words) and words[position - 1].lower() == word.lower():
+            results.append(verse)
+    return results
