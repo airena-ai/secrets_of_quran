@@ -3,5 +3,10 @@
         "iteration": 0,
         "date": "2025-04-05",
         "iteration_goal": "This stage establishes the foundation for the 'Quran Secrets' Python application. It outlines a clear project vision focused on analyzing the Quran text to find hidden patterns. Essential components include the main driver, text preprocessing functions (for normalization), file reading from the designated data file, and a structured logging system. An integration test for full execution of the main function is also planned, setting up a robust base for future, more advanced analytical features."
+    },
+    {
+        "iteration": 1,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment focuses on implementing basic word frequency analysis in the Quran Secrets application. It includes developing a function to tokenize the preprocessed Quran text into words, count word frequencies, and log the top N most frequent words to the results.log file. The integration test from the previous iteration will be updated to include this new functionality, ensuring the entire analysis pipeline, including word frequency counting, is tested. This step lays the groundwork for more complex analyses in subsequent iterations by providing initial insights into word distributions within the Quran."
     }
 ]

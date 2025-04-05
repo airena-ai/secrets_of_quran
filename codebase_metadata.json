@@ -27,12 +27,12 @@
     {
       "path": "src/main.py",
       "language": "Python",
-      "description": "Main driver for the Quran Secrets application. It orchestrates the analysis by reading, preprocessing, analyzing and logging results from the Quran text.",
+      "description": "Main driver for the Quran Secrets application. It reads the Quran text file, preprocesses it, analyzes the text for anomalies and word frequency, and logs the results.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main entry point for the Quran Secrets analysis. It reads the Quran text, preprocesses it to remove diacritics and normalize letters, analyzes for anomalies, logs any found secrets and prints a completion message.",
+          "description": "Main entry point for the Quran Secrets analysis. Handles file reading, text preprocessing, analysis, logging results, and error handling.",
           "parameters": [],
           "return_type": "None"
         }
@@ -103,20 +103,32 @@
     {
       "path": "src/analyzer.py",
       "language": "Python",
-      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. It simulates detection of numerical patterns in the provided text.",
+      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Contains functions analyze_text and analyze_word_frequency to detect anomalies and perform word frequency analysis on the Quran text.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_text",
-          "description": "Analyze the given text for hidden numerical patterns and anomalies. Returns a list of detected anomaly messages.",
+          "description": "Analyze the given text for hidden numerical patterns and anomalies. Returns a list of anomaly messages if the text is non-empty.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
-              "description": "The preprocessed text of the Quran."
+              "description": "Input text representing the preprocessed Quran text."
             }
           ],
           "return_type": "list"
+        },
+        {
+          "name": "analyze_word_frequency",
+          "description": "Perform word frequency analysis on the given preprocessed Quran text. Returns a tuple containing a summary string and a list of flagged messages.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "Input text representing the preprocessed Quran text."
+            }
+          ],
+          "return_type": "tuple"
         }
       ],
       "dependencies": []
@@ -124,17 +136,29 @@
     {
       "path": "src/logger.py",
       "language": "Python",
-      "description": "Module for logging analysis outputs of the Quran Secrets application. It provides functionality to log secret findings with a prefixed message to a log file.",
+      "description": "Module for logging analysis outputs of the Quran Secrets application. Provides functions to log secret findings and results with timestamps to a log file.",
       "classes": [],
       "functions": [
         {
           "name": "log_secret_found",
-          "description": "Log a secret finding to the log file with a prefix \"POTENTIAL SECRET FOUND:\".",
+          "description": "Logs a secret finding to the results.log file with a timestamp and a special tag. Handles exceptions while logging.",
           "parameters": [
             {
               "name": "message",
               "type": "str",
               "description": "The secret message to log."
+            }
+          ],
+          "return_type": "None"
+        },
+        {
+          "name": "log_result",
+          "description": "Logs a result message to the results.log file with a timestamp. Handles exceptions while logging.",
+          "parameters": [
+            {
+              "name": "message",
+              "type": "str",
+              "description": "The result message to log."
             }
           ],
           "return_type": "None"
@@ -217,25 +241,61 @@
     {
       "path": "tests/test_analyzer.py",
       "language": "Python",
-      "description": "Unit tests for the analyzer module testing anomaly detection on non-empty and empty texts.",
+      "description": "Unit tests for the analyzer module, covering both anomaly detection and word frequency analysis functions for various scenarios.",
       "classes": [
         {
           "name": "TestAnalyzer",
-          "description": "Unit test class for the analyzer module, verifying that anomaly detection works correctly for non-empty texts and returns empty list for texts with only whitespace.",
+          "description": "Unit test class for the analyzer module that tests analyze_text and analyze_word_frequency functions.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_analyze_non_empty",
-              "description": "Test that a non-empty text returns a simulated anomaly.",
-              "parameters": [],
+              "description": "Test that a non-empty text returns a simulated anomaly message.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_empty",
               "description": "Test that an empty text returns no anomalies.",
-              "parameters": [],
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_word_frequency_summary",
+              "description": "Test that the word frequency analysis returns a proper summary and flagged list.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_word_frequency_with_flags",
+              "description": "Test that the word frequency analysis correctly flags unusual word frequencies.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
               "return_type": "None"
             }
           ]
@@ -249,19 +309,63 @@
     {
       "path": "tests/test_logger.py",
       "language": "Python",
-      "description": "Unit tests for the logger module, verifying that the log_secret_found function writes the expected log message to a file.",
+      "description": "This file contains unit tests for the logger module. It tests the functionality of logging secret findings and general results. The tests use unittest framework with mocking to isolate the tests from actual file operations and datetime dependencies.",
       "classes": [
         {
           "name": "TestLogger",
-          "description": "Unit test class for the logger module, testing logging functionality.",
+          "description": "A test class that contains test cases for the logger module. It verifies that the logging functions correctly format and write messages to the log file.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
-              "name": "test_log_secret_found",
-              "description": "Test that log_secret_found writes the correct log message to a file.",
+              "name": "setUp",
+              "description": "Initializes the test environment by setting maxDiff to None to see full diff output in case of test failures.",
               "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_log_secret_found",
+              "description": "Tests that the log_secret_found function correctly formats and writes a message about a potential secret to the log file. It mocks the datetime and file operations to verify the exact output.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestLogger",
+                  "description": "Instance of the test class"
+                },
+                {
+                  "name": "mock_datetime",
+                  "type": "MagicMock",
+                  "description": "Mocked datetime module to provide a fixed timestamp"
+                },
+                {
+                  "name": "mock_file",
+                  "type": "MagicMock",
+                  "description": "Mocked file open function to capture file writes"
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_log_result",
+              "description": "Tests that the log_result function correctly formats and writes a general result message to the log file. It mocks the datetime and file operations to verify the exact output.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestLogger",
+                  "description": "Instance of the test class"
+                },
+                {
+                  "name": "mock_datetime",
+                  "type": "MagicMock",
+                  "description": "Mocked datetime module to provide a fixed timestamp"
+                },
+                {
+                  "name": "mock_file",
+                  "type": "MagicMock",
+                  "description": "Mocked file open function to capture file writes"
+                }
+              ],
               "return_type": "None"
             }
           ]
@@ -269,25 +373,34 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/logger.py"
+        "unittest",
+        "os",
+        "unittest.mock",
+        "src.logger"
       ]
     },
     {
       "path": "tests/test_main.py",
       "language": "Python",
-      "description": "Integration test for the main module to execute end-to-end analysis of the Quran Secrets application.",
+      "description": "Integration tests for the main module of the Quran Secrets application. Validates end-to-end execution behavior including log file creation and content verification.",
       "classes": [
         {
           "name": "TestMainIntegration",
-          "description": "Integration test class for the main module, testing the complete flow of reading, analyzing, and logging from the Quran text.",
+          "description": "Integration test class that checks the full execution flow of the main function in the Quran Secrets application.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_main_integration",
-              "description": "Test the full execution of main() function end-to-end, verifying log creation and anomaly detection.",
-              "parameters": [],
+              "description": "End-to-end integration test for main() ensuring proper processing, file I/O, and log generation.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestMainIntegration."
+                }
+              ],
               "return_type": "None"
             }
           ]

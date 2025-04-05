@@ -3,5 +3,10 @@
         "iteration": 0,
         "date": "2025-04-05",
         "iteration_goal": "A modular architecture is established for the Quran analyzer, featuring modules for main driver, file reading, text preprocessing, analysis, and logging.  The design emphasizes modularity, testability, and future scalability. An integration test ensures end-to-end functionality. This foundational architecture sets the stage for incremental feature development in subsequent iterations."
+    },
+    {
+        "iteration": 1,
+        "date": "2025-04-05",
+        "iteration_goal": "The architecture is extended to include a 'Word Frequency Analysis' feature. A new `analyze_word_frequency()` function is added to the 'analysis' module to process preprocessed text, count word frequencies, and log the top N words along with potential 'secret' flags to `results.log`. The main program flow and integration tests are updated to incorporate this new analysis step, ensuring modularity and testability are maintained."
     }
 ]

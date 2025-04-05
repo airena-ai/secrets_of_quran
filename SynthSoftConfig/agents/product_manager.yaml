@@ -27,7 +27,7 @@ agents:
     llm_model: "deepseek-r1:8b"
 
   - name: "Alice Johnson"
-    llm_model:  "o3-mini" # "gemini-2.0-flash-thinking-exp-01-21"  
+    llm_model:  "gemini-2.0-flash-thinking-exp-01-21"  
 
   #- name: "Mary Johnson"
   #  llm_model:  "o3-mini"     

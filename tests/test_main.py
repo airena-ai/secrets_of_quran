@@ -23,8 +23,10 @@ class TestMainIntegration(unittest.TestCase):
             self.assertTrue(os.path.exists(log_file))
             with open(log_file, 'r', encoding='utf-8') as f:
                 log_contents = f.read()
+            # Check that secret findings (from both analyzer functions) are logged.
             self.assertIn("POTENTIAL SECRET FOUND:", log_contents)
             self.assertIn("Calculated numerical pattern: 42", log_contents)
+            self.assertIn("Word Frequency Analysis (Top 20):", log_contents)
         finally:
             if os.path.exists(file_path):
                 os.remove(file_path)

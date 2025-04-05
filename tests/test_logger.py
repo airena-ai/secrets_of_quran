@@ -1,28 +1,46 @@
 '''Unit tests for the logger module.'''
 
-import os
 import unittest
-from src import logger
+import os
+from unittest.mock import patch, mock_open
+from src.logger import log_secret_found, log_result
 
 class TestLogger(unittest.TestCase):
-    def test_log_secret_found(self):
-        '''Test that log_secret_found writes the correct log message.'''
-        test_log_file = "tests/test_results.log"
-        original_log_file = logger.LOG_FILE
-        logger.LOG_FILE = test_log_file
-        try:
-            if os.path.exists(test_log_file):
-                os.remove(test_log_file)
-            test_message = "Test secret message"
-            logger.log_secret_found(test_message)
-            with open(test_log_file, 'r', encoding='utf-8') as f:
-                log_contents = f.read()
-            expected_log = f"POTENTIAL SECRET FOUND: {test_message}\n"
-            self.assertEqual(log_contents, expected_log)
-        finally:
-            logger.LOG_FILE = original_log_file
-            if os.path.exists(test_log_file):
-                os.remove(test_log_file)
-
-if __name__ == '__main__':
-    unittest.main()
+    '''Test cases for the logger module.'''
+    
+    def setUp(self):
+        '''Set up test environment.'''
+        self.maxDiff = None
+    
+    @patch('src.logger.open', new_callable=mock_open)
+    @patch('src.logger.datetime')
+    def test_log_secret_found(self, mock_datetime, mock_file):
+        '''Test that log_secret_found writes the correct message to the log file.'''
+        # Mock the datetime to return a fixed value
+        mock_datetime.datetime.now.return_value.strftime.return_value = "2025-04-05 00:43:48"
+        
+        # Call the function
+        log_secret_found("Test secret message")
+        
+        # Get the contents that were written to the mocked file
+        log_contents = mock_file().write.call_args[0][0]
+        
+        # Assert that the log contains the expected message
+        self.assertIn("POTENTIAL SECRET FOUND: Test secret message", log_contents)
+    
+    @patch('src.logger.open', new_callable=mock_open)
+    @patch('src.logger.datetime')
+    def test_log_result(self, mock_datetime, mock_file):
+        '''Test that log_result writes the correct message to the log file.'''
+        # Mock the datetime to return a fixed value
+        mock_datetime.datetime.now.return_value.strftime.return_value = "2025-04-05 00:43:48"
+        
+        # Call the function
+        log_result("Test result message")
+        
+        # Get the contents that were written to the mocked file
+        log_contents = mock_file().write.call_args[0][0]
+        
+        # Assert that the log contains the expected message
+        expected_log = "2025-04-05 00:43:48 - RESULT: Test result message\n"
+        self.assertEqual(log_contents, expected_log)
