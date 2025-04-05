@@ -1,12 +1,15 @@
 import unittest
-from src.quran_data_loader import load_quran_text
+from src.quran_data_loader import load_quran_text, load_quran_data
 from src.quran_search import (
     search_word_in_quran, 
     search_word_group, 
     search_word_in_surah,
     search_word_group_in_surah,
     count_word_occurrences,
-    count_word_group_occurrences
+    count_word_group_occurrences,
+    search_word_in_verse_range,
+    search_word_group_in_verse_range,
+    search_verses_by_word_count
 )
 
 class TestQuranSearch(unittest.TestCase):
@@ -239,7 +242,6 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'alpha Beta gamma'},
             {'surah_number': '3', 'ayah_number': '1', 'verse_text': 'Gamma delta'},
         ]
-        from src.quran_search import search_word_in_verse_range
 
         # Test case 1: Search for "alpha" in range (1,1) to (1,2) case-insensitive
         results = search_word_in_verse_range(dummy_data, "alpha", (1,1), (1,2))
@@ -285,7 +287,6 @@ class TestQuranSearch(unittest.TestCase):
             {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'Ending verse with bismillah again.'},
             {'surah_number': '3', 'ayah_number': '1', 'verse_text': 'Verse in surah 3 but no match.'},
         ]
-        from src.quran_search import search_word_group_in_verse_range
 
         # Case-insensitive search in range (1,1) to (1,3)
         results1 = search_word_group_in_verse_range(dummy_data, "bismillah", (1, 1), (1, 3))
@@ -312,6 +313,38 @@ class TestQuranSearch(unittest.TestCase):
         self.assertEqual(len(results5), 1, "Edge case: range with the same start and end should return 1 matching verse.")
         self.assertEqual(results5[0]['surah_number'], '2', "Expected surah number '2' for the matching verse.")
         self.assertEqual(results5[0]['ayah_number'], '2', "Expected ayah number '2' for the matching verse.")
+
+    def test_search_verses_by_word_count(self):
+        """
+        Test that the search_verses_by_word_count function returns only verses with the exact specified word count.
+
+        This test creates a temporary dummy Quran data file with controlled verses and verifies that 
+        only verses with exactly 19 words are returned.
+        """
+        self.maxDiff = None
+        import tempfile
+        import os
+        # Prepare dummy data lines in the expected file format: surah_number|ayah_number|verse_text
+        dummy_lines = [
+            "1|1|This verse has five words",
+            "1|2|" + " ".join(["alpha{}".format(i) for i in range(1, 20)]),
+            "2|1|Only seven words are here indeed",
+            "2|2|" + " ".join(["beta{}".format(i) for i in range(1, 20)])
+        ]
+        with tempfile.NamedTemporaryFile(mode='w', delete=False, encoding='utf-8', suffix='.txt') as tmp_file:
+            tmp_file.write("\n".join(dummy_lines))
+            tmp_file_path = tmp_file.name
+
+        try:
+            quran_data = load_quran_data(tmp_file_path)
+            results = search_verses_by_word_count(quran_data, 19)
+            expected = [
+                {'surah_number': '1', 'ayah_number': '2', 'verse_text': " ".join(["alpha{}".format(i) for i in range(1, 20)])},
+                {'surah_number': '2', 'ayah_number': '2', 'verse_text': " ".join(["beta{}".format(i) for i in range(1, 20)])}
+            ]
+            self.assertEqual(results, expected, "The verses with exactly 19 words should be returned.")
+        finally:
+            os.remove(tmp_file_path)
 
 if __name__ == '__main__':
     unittest.main()

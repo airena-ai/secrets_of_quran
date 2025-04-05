@@ -36,3 +36,17 @@ def load_quran_text(file_path):
     except FileNotFoundError:
         print("Error: file not found -", file_path)
     return quran_data
+
+def load_quran_data(file_path):
+    """
+    Load Quran data from a file by aliasing load_quran_text.
+
+    This function is an alias to load_quran_text for backward compatibility and ease of use.
+    
+    Args:
+        file_path (str): Path to the Quran text file.
+    
+    Returns:
+        list: A list of dictionaries containing Quran verses.
+    """
+    return load_quran_text(file_path)

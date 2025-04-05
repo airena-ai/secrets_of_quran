@@ -2,7 +2,7 @@
 Main entry point for the Quran search application.
 """
 
-from src.quran_data_loader import load_quran_text
+from src.quran_data_loader import load_quran_text, load_quran_data
 from src.quran_search import search_word_in_quran, search_word_group_in_surah, count_word_group_occurrences
 
 def main():
@@ -24,7 +24,7 @@ def main():
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))
     
-    # Demonstration of new search_word_group_in_surah function
+    # Demonstration of search_word_group_in_surah function
     word_group = "الرحمن الرحيم"
     results_group = search_word_group_in_surah(quran_data, word_group, surah_number=1)
     
@@ -34,11 +34,11 @@ def main():
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))
     
-    # Demonstration of new count_word_group_occurrences function
+    # Demonstration of count_word_group_occurrences function
     total_count = count_word_group_occurrences(quran_data, word_group)
     print("\nTotal occurrences of phrase '{}': {}".format(word_group, total_count))
     
-    # Demonstration of new search_word_in_verse_range function
+    # Demonstration of search_word_in_verse_range function
     from src.quran_search import search_word_in_verse_range
     verse_range_start = (1, 1)
     verse_range_end = (1, 5)
@@ -50,7 +50,7 @@ def main():
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))
         
-    # Demonstration of new search_word_group_in_verse_range function
+    # Demonstration of search_word_group_in_verse_range function
     from src.quran_search import search_word_group_in_verse_range
     verse_range_group_start = (1, 1)
     verse_range_group_end = (1, 5)
@@ -59,6 +59,16 @@ def main():
     
     print("\nSearch results for word group '{}' in verse range {} to {}:".format(group_phrase, verse_range_group_start, verse_range_group_end))
     for verse in results_group_range:
+        print("Surah: {} Ayah: {} - {}".format(
+            verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
+        ))
+        
+    # Demonstration of search_verses_by_word_count function
+    from src.quran_search import search_verses_by_word_count
+    specific_count = 19
+    results_word_count = search_verses_by_word_count(quran_data, specific_count)
+    print("\nSearch results for verses with exactly {} words:".format(specific_count))
+    for verse in results_word_count:
         print("Surah: {} Ayah: {} - {}".format(
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))

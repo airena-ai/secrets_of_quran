@@ -236,3 +236,25 @@ def search_word_group_in_verse_range(quran_data, word_group: str, start_verse: t
             if word_group.lower() in verse_text.lower():
                 results.append(verse)
     return results
+
+def search_verses_by_word_count(quran_data, word_count):
+    """
+    Search Quran verses that contain exactly the specified number of words.
+
+    Iterates over the provided quran_data, splitting each verse's verse_text into words, and collects
+    verses where the number of words is exactly equal to word_count.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran verses.
+        word_count (int): The desired number of words in a verse.
+
+    Returns:
+        list: A list of dictionaries, each containing a verse with exactly word_count words.
+    """
+    results = []
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        words = verse_text.split()
+        if len(words) == word_count:
+            results.append(verse)
+    return results
