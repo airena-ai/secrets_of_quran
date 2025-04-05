@@ -56,3 +56,27 @@ def search_word_group(quran_data, word_group, case_sensitive=False):
             if word_group.lower() in verse_text.lower():
                 results.append(verse)
     return results
+
+def search_word_in_surah(word: str, surah_number: int, quran_data: list) -> list:
+    """
+    Searches for a word within a specific Surah in the Quran data.
+
+    Args:
+        word (str): The word to search for (case-insensitive).
+        surah_number (int): The Surah number to search within.
+        quran_data (list[dict]): The loaded Quran data.
+
+    Returns:
+        list[dict]: A list of verses (dictionaries) where the word is found in the specified Surah.
+    """
+    results = []
+    for verse in quran_data:
+        try:
+            verse_surah_number = int(verse.get('surah_number'))
+        except (ValueError, TypeError):
+            continue
+        if verse_surah_number == surah_number:
+            verse_text = verse.get('verse_text', '')
+            if word.lower() in verse_text.lower():
+                results.append(verse)
+    return results
