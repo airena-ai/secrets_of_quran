@@ -54,6 +54,9 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("#################### Muqatta'at Analysis ####################", log_contents)
                 self.assertIn("MUQATTA'AT POSITION ANALYSIS:", log_contents)
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
+                # New assertions for numerical analysis of Muqatta'at
+                self.assertIn("#################### Muqatta'at Numerical Analysis ####################", log_contents)
+                self.assertIn("Total Abjad Sum:", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -115,6 +118,9 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("#################### Muqatta'at Analysis ####################", log_contents)
                 self.assertIn("MUQATTA'AT POSITION ANALYSIS:", log_contents)
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
+                # New assertions for numerical analysis of Muqatta'at
+                self.assertIn("#################### Muqatta'at Numerical Analysis ####################", log_contents)
+                self.assertIn("Total Abjad Sum:", log_contents)
                 # Verify that the proper Muqatta'at sequences and their frequencies are logged.
                 self.assertIn("Sequence 'الم' occurred 1 times", log_contents)
                 self.assertIn("Sequence 'الحمد' occurred 1 times", log_contents)

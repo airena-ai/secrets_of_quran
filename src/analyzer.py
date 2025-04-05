@@ -921,3 +921,79 @@ def analyze_muqattaat_sequences(text):
                     sequence_by_surah[surah] = m_seq.group(1)
     freq_counter = Counter(sequence_by_surah.values())
     return dict(freq_counter)
+
+def analyze_muqattaat_numerical_values(text):
+    '''Perform numerical analysis of Muqatta'at using Abjad values.
+
+    This function identifies Surahs with Muqatta'at (extracted from the beginning of the first verse)
+    and calculates the numerical sum of the Abjad values for each letter in the Muqatta'at.
+    The result is logged in a structured format including:
+        - Surah Number
+        - Muqatta'at Letters (as a string)
+        - Individual Abjad values for each letter
+        - Total Abjad Sum
+
+    If the total Abjad sum is a prime number, a multiple of 19, or a multiple of 7, the result is flagged
+    as a potential secret.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+
+    Returns:
+        None
+    '''
+    import re
+    from src import logger
+    # Define Abjad mapping - Comprehensive mapping
+    abjad = {
+        'ا': 1, 'أ': 1, 'إ': 1, 'آ': 1, 'ب': 2, 'ج': 3, 'د': 4, 'ه': 5, 'و': 6, 'ؤ': 6, 'ز': 7, 'ح': 8, 'ط': 9,
+        'ي': 10, 'ى': 10, 'ك': 20, 'ل': 30, 'م': 40, 'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90, 'ق': 100,
+        'ر': 200, 'ش': 300, 'ت': 400, 'ث': 500, 'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900, 'غ': 1000,
+        'ء': 1, 'ئ': 1, 'ة': 5, 'ۀ': 5, 'ی': 10, 'ے': 10, 'ە': 5, 'ھ': 5, 'ہ': 5, 'ۃ': 5,
+        'ٱ': 1, 'ٲ': 1, 'ٳ': 1, 'ٴ': 1, 'ٵ': 1, 'ٶ': 6, 'ٷ': 6, 'ں': 50, 'ڻ': 50, 'ټ': 400, 'ھ': 5, 'ۀ': 5, 'ہ': 5, 'ۂ': 5, 'ۃ': 5, 'ة': 5, 'ڀ': 2, 'پ': 2, 'ٿ': 400, 'ڃ': 3, 'ڄ': 3, 'ڃ': 3, 'څ': 600, 'چ': 3, 'ڇ': 3, 'ڈ': 4, 'ډ': 4, 'ڊ': 4, 'ڌ': 700, 'ڍ': 5, 'ڎ': 700, 'ڏ': 4, 'ڐ': 4, 'ڑ': 200, 'ڒ': 200, 'ړ': 200, 'ڔ': 200, 'ڕ': 200, 'ږ': 200, 'ڗ': 7, 'ژ': 7, 'ڙ': 200, 'ښ': 300, 'ڛ': 60, 'ڜ': 300, 'ڝ': 90, 'ڞ': 900, 'ڟ': 9, 'ڠ': 1000, 'ۄ': 6, 'ۅ': 6, 'ۆ': 6, 'ۈ': 6, 'ۉ': 6, 'ۊ': 6, 'ۋ': 6, 'ی': 10, 'ۍ': 10, 'ې': 10, 'ۑ': 10, 'ے': 10, 'ۓ': 10, '۔': 0, '؟': 0, '،': 0, '؛': 0, 'ء': 1, 'ٮ': 400, 'ٯ': 80, 'ٰ': 1, ' opening hamza': 1, 'tanwin fatha': 1, 'kasra': 0, 'fatha': 0, 'damma': 0, 'sukun': 0, 'shadda': 0, 'hamza below': 1, 'hamza above': 1, 'madda': 1, 'hamza': 1, 'alif': 1, 'alif maqsurah': 10, 'ya': 10, 'ta marbuta': 5
+    }
+    # Predefined Surahs with Muqatta'at - Surah 1 removed
+    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
+                           "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
+                           "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
+    muqattaat_numerical = {}
+    pattern_line = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    lines = text.splitlines()
+    for line in lines:
+        if not line.strip():
+            continue
+        m = pattern_line.match(line)
+        if m:
+            surah = m.group(1)
+            verse_text = m.group(3).strip()
+            if surah not in muqattaat_numerical:
+                m_letters = re.match(r'^([\u0621-\u064A]+)', verse_text)
+                if m_letters:
+                    muqattaat_numerical[surah] = m_letters.group(1)
+    def is_prime(n):
+        if n < 2:
+            return False
+        for i in range(2, int(n**0.5)+1):
+            if n % i == 0:
+                return False
+        return True
+
+    logger.log_result("#################### Muqatta'at Numerical Analysis ####################")
+    for surah, letters in sorted(muqattaat_numerical.items(), key=lambda x: int(x[0])):
+        letters_list = list(letters)
+        letter_values = {letter: abjad.get(letter, 0) for letter in letters_list}
+        total_sum = sum(letter_values.values())
+        logger.log_result(f"Surah {surah} - Muqatta'at: {letters}")
+        logger.log_result(f"  Letters: {letters_list}")
+        logger.log_result(f"  Abjad Values: {letter_values}")
+        logger.log_result(f"  Total Abjad Sum: {total_sum}")
+        if total_sum != 0:
+            if total_sum % 19 == 0:
+                secret_msg = f"Abjad sum {total_sum} is a multiple of 19"
+                logger.log_secret_found(secret_msg)
+            elif total_sum % 7 == 0:
+                secret_msg = f"Abjad sum {total_sum} is a multiple of 7"
+                logger.log_secret_found(secret_msg)
+            elif is_prime(total_sum):
+                secret_msg = f"Abjad sum {total_sum} is a prime number"
+                logger.log_secret_found(secret_msg)
