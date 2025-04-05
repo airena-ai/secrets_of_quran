@@ -8,5 +8,10 @@
         "iteration": 1,
         "date": "2025-04-05",
         "iteration_goal": "The architecture is extended to include a 'Word Frequency Analysis' feature. A new `analyze_word_frequency()` function is added to the 'analysis' module to process preprocessed text, count word frequencies, and log the top N words along with potential 'secret' flags to `results.log`. The main program flow and integration tests are updated to incorporate this new analysis step, ensuring modularity and testability are maintained."
+    },
+    {
+        "iteration": 2,
+        "date": "2025-04-05",
+        "iteration_goal": "The architecture is updated to include root word analysis functionality. A new `analyze_root_words()` function is added to the 'analysis' module, which will use an Arabic NLP library to identify root words, calculate their frequencies, and log the results. The integration test will be updated to ensure the new functionality is correctly integrated into the analysis pipeline and that root word frequencies are properly logged."
     }
 ]

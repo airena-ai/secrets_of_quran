@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words
 from src.logger import log_secret_found, log_result
 
 def main():
@@ -21,8 +21,14 @@ def main():
     anomalies = analyze_text(text)
     freq_summary, freq_flagged = analyze_word_frequency(text)
     
+    # Execute Arabic root word frequency analysis.
+    root_summary, root_freq, top_roots = analyze_root_words(text)
+    
     # Log the word frequency analysis summary with a timestamp.
     log_result(freq_summary)
+    
+    # Log the Arabic root word analysis summary.
+    log_result(root_summary)
     
     # Log flagged words from frequency analysis as potential secrets.
     for flag in freq_flagged:
