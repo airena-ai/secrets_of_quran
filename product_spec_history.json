@@ -18,5 +18,10 @@
         "iteration": 3,
         "date": "2025-04-05",
         "iteration_goal": "This increment focuses on adding bigram (2-word group) frequency analysis to the Quran Secrets application. It involves developing a new function `analyze_bigrams` to generate and count bigrams from the tokenized Quran text. The `main()` function is updated to call this new function and log the top N most frequent bigrams to `results.log`. The integration test is also updated to ensure the new bigram analysis functionality is correctly implemented and tested. This enhancement allows for the analysis of word combinations, providing a more nuanced linguistic analysis of the Quran beyond single word frequencies."
+    },
+    {
+        "iteration": 4,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment adds verse repetition analysis to the Quran Secrets application. It involves developing a function to identify and count repeating verses within each Surah and across the entire Quran, logging the results, and updating the integration test. This step expands the application's analytical capabilities to the verse level, exploring structural patterns in the Quran and preparing for more advanced analyses in the next iteration."
     }
 ]

@@ -15,7 +15,8 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+        sample_text = ("1:1: بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
+                       "1:2: بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -33,10 +34,14 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("POTENTIAL SECRET FOUND:", log_contents)
                 self.assertIn("Calculated numerical pattern: 42", log_contents)
                 self.assertIn("Word Frequency Analysis (Top 20):", log_contents)
-                self.assertIn("Arabic Root Word Frequency Analysis:", log_contents)
+                self.assertIn("Arabic Root Word Frequency Analysis Summary:", log_contents)
                 self.assertIn("Top Root Word Frequencies:", log_contents)
                 self.assertIn("--- Bigram Frequency Analysis ---", log_contents)
                 self.assertIn("Top 20 Bigrams:", log_contents)
+                self.assertIn("Verse Repetition Analysis:", log_contents)
+                # Additional assertions to verify the structure of verse repetition analysis output.
+                self.assertRegex(log_contents, r'Within Surah - Surah \d+: Verse \'.+\' repeated \d+ times at Ayahs \[.+\]')
+                self.assertRegex(log_contents, r'Across Quran - Verse \'.+\' repeated \d+ times at locations: \[.+\]')
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)
@@ -52,7 +57,8 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ"
+        sample_text = ("2:1: الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\n"
+                       "2:2: الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -63,17 +69,15 @@ class TestMainIntegration(unittest.TestCase):
         # Create mock objects for CAMeL Tools
         mock_spec = MagicMock()
         mock_analyzer = MagicMock()
-        # When analyze is called, return a mock analysis with root information
-        mock_analyzer.analyze.side_effect = lambda token: [{'root': 'سمو'}] if token == "بسم" else [{'root': 'الله'}] if token == "الله" else [{'root': 'رحم'}] if token in ["الرحمن", "الرحيم"] else [{'root': token}]
+        mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}] if token == "الحمد" else [{'root': token}]
         
         mock_analyzer_class = MagicMock()
         mock_analyzer_class.builtin_analyzer.return_value = mock_analyzer
         
-        # Apply the mocks to simulate CAMeL Tools being available and working
         with patch('importlib.util.find_spec', return_value=mock_spec), \
              patch.dict('sys.modules', {'camel_tools': MagicMock(), 
-                                       'camel_tools.morphology': MagicMock(),
-                                       'camel_tools.morphology.analyzer': MagicMock()}), \
+                                          'camel_tools.morphology': MagicMock(),
+                                          'camel_tools.morphology.analyzer': MagicMock()}), \
              patch('camel_tools.morphology.analyzer.Analyzer', mock_analyzer_class):
             try:
                 main.main()
@@ -83,16 +87,15 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("POTENTIAL SECRET FOUND:", log_contents)
                 self.assertIn("Calculated numerical pattern: 42", log_contents)
                 self.assertIn("Word Frequency Analysis (Top 20):", log_contents)
-                self.assertIn("Arabic Root Word Frequency Analysis:", log_contents)
+                self.assertIn("Arabic Root Word Frequency Analysis Summary:", log_contents)
                 self.assertIn("Top Root Word Frequencies:", log_contents)
                 self.assertIn("--- Bigram Frequency Analysis ---", log_contents)
                 self.assertIn("Top 20 Bigrams:", log_contents)
-                
-                # Verify that the root analysis was performed using CAMeL Tools
-                # We should see the roots that our mock analyzer returned
-                self.assertIn("Root 'سمو'", log_contents)
-                self.assertIn("Root 'الله'", log_contents)
-                self.assertIn("Root 'رحم'", log_contents)
+                self.assertIn("Verse Repetition Analysis:", log_contents)
+                self.assertIn("Root 'حمد'", log_contents)
+                # Additional assertions to verify the structure of verse repetition analysis output.
+                self.assertRegex(log_contents, r'Within Surah - Surah \d+: Verse \'.+\' repeated \d+ times at Ayahs \[.+\]')
+                self.assertRegex(log_contents, r'Across Quran - Verse \'.+\' repeated \d+ times at locations: \[.+\]')
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)

@@ -26,13 +26,13 @@
     },
     {
       "path": "src/main.py",
-      "language": "python",
-      "description": "Main driver for the Quran Secrets application. Orchestrates reading and preprocessing of Quran text, analysis using various functions from the analyzer module, and logging of results.",
+      "language": "Python",
+      "description": "Main driver for the Quran Secrets application. Coordinates reading the Quran text, preprocessing, various analyses (numerical patterns, word frequencies, root words, bigrams, and verse repetitions), and logging results with error handling.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main entry point for the Quran Secrets analysis. Reads Quran text, preprocesses it, runs various analyses, logs results, and prints completion message.",
+          "description": "Main entry point for the Quran Secrets analysis. Executes file reading, text preprocessing, analysis of word frequency, numerical patterns, root words, bigrams, and verse repetitions, and logs the respective results.",
           "parameters": [],
           "return_type": "None"
         }
@@ -102,13 +102,13 @@
     },
     {
       "path": "src/analyzer.py",
-      "language": "python",
-      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Contains functions to analyze text for numerical patterns, word frequency, Arabic root words, and bigrams.",
+      "language": "Python",
+      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Contains various functions for text analysis including analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, and analyze_verse_repetitions. It imports standard libraries and project modules (src/logger.py and src/text_preprocessor.py) for logging and text preprocessing.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_text",
-          "description": "Analyze the given text for hidden numerical patterns and anomalies. This function simulates pattern detection and returns anomaly messages when the text is non-empty.",
+          "description": "Analyze the given text for hidden numerical patterns and anomalies. Simulates pattern detection by appending a calculated numerical pattern if the text is non-empty.",
           "parameters": [
             {
               "name": "text",
@@ -120,7 +120,7 @@
         },
         {
           "name": "analyze_word_frequency",
-          "description": "Perform word frequency analysis on the given preprocessed Quran text. Tokenizes the text, counts word occurrences, produces a summary and flags unusual frequencies.",
+          "description": "Perform word frequency analysis. Tokenizes the text, counts word occurrences, composes a summary of top words, and flags words with non-typical frequencies based on a heuristic. Returns a formatted summary and a list of flagged messages.",
           "parameters": [
             {
               "name": "text",
@@ -132,7 +132,7 @@
         },
         {
           "name": "analyze_root_words",
-          "description": "Perform Arabic root word analysis on the given preprocessed Quran text using CAMeL Tools if available, counts frequency of root words, and logs the analysis.",
+          "description": "Perform Arabic root word analysis on the given Quran text. Uses CAMeL Tools analyzer if available; otherwise falls back to a token-based approach. Returns a summary of the analysis, a dictionary of root frequencies, and the top N most frequent roots.",
           "parameters": [
             {
               "name": "text",
@@ -144,7 +144,7 @@
         },
         {
           "name": "analyze_bigrams",
-          "description": "Perform bigram frequency analysis on the given tokenized text. Generates n-grams, counts their occurrences, and returns a dictionary of bigrams with counts.",
+          "description": "Perform bigram (or n-gram) frequency analysis on the tokenized text. Generates n-grams from the token list and returns their frequency counts in a dictionary.",
           "parameters": [
             {
               "name": "tokenized_text",
@@ -158,10 +158,23 @@
             }
           ],
           "return_type": "dict"
+        },
+        {
+          "name": "analyze_verse_repetitions",
+          "description": "Analyze verse repetitions within each Surah and across the entire Quran. Normalizes verses and returns analysis including repetitions within surahs and across the Quran in a structured dictionary.",
+          "parameters": [
+            {
+              "name": "preprocessed_text",
+              "type": "str",
+              "description": "The preprocessed Quran text where each line represents a verse."
+            }
+          ],
+          "return_type": "dict"
         }
       ],
       "dependencies": [
-        "src/logger.py"
+        "src/logger.py",
+        "src/text_preprocessor.py"
       ]
     },
     {
@@ -429,25 +442,31 @@
     },
     {
       "path": "tests/test_main.py",
-      "language": "python",
-      "description": "Integration test for the main module to execute end-to-end analysis. Validates main application flow under different conditions including with and without CAMeL Tools.",
+      "language": "Python",
+      "description": "This file contains integration tests for the main module of the application. It tests the end-to-end execution of the main function with two scenarios: one where CAMeL Tools is not available (fallback mode) and another where CAMeL Tools is available. The tests verify that the application correctly processes Arabic text, performs various analyses (word frequency, root word analysis, bigram analysis, verse repetition), and logs the results appropriately. The file includes mocking of external dependencies to simulate different environments.",
       "classes": [
         {
           "name": "TestMainIntegration",
-          "description": "Integration tests for the main module's end-to-end execution.",
+          "description": "A test class that contains integration tests for the main module. It verifies the end-to-end functionality of the application in different scenarios.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
+              "name": "setUp",
+              "description": "Sets up the test environment before each test method is executed. Configures maxDiff to None to see full diff output in case of test failures.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
               "name": "test_main_integration_fallback",
-              "description": "Test the full execution of main() function end-to-end with CAMeL Tools fallback.",
+              "description": "Tests the full execution of the main() function when CAMeL Tools is not available. It creates a sample Quran text file, mocks the absence of CAMeL Tools, runs the main function, and verifies that the expected analysis results are present in the log file.",
               "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_with_camel_tools",
-              "description": "Test the full execution of main() function end-to-end with CAMeL Tools available.",
+              "description": "Tests the full execution of the main() function when CAMeL Tools is available. It creates a sample Quran text file, mocks the presence of CAMeL Tools and its analyzer functionality, runs the main function, and verifies that the expected analysis results (including root word analysis using CAMeL Tools) are present in the log file. The mock analyzer is configured to return 'حمد' as the root for the token 'الحمد' (after diacritics removal from 'الْحَمْدُ').",
               "parameters": [],
               "return_type": "None"
             }
@@ -456,7 +475,11 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/main.py"
+        "os",
+        "unittest",
+        "unittest.mock",
+        "importlib.util",
+        "src.main"
       ]
     },
     {

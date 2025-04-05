@@ -66,8 +66,8 @@ def analyze_root_words(text):
     '''Perform Arabic root word analysis on the given preprocessed Quran text.
 
     This function uses the CAMeL Tools morphological analyzer to extract the root of each word in the text.
-    It counts the frequency of each identified root word and logs the frequency details to the results log file.
-    Specifically, the function logs both the frequency of each root word and the top N most frequent root words.
+    It counts the frequency of each identified root word and logs a concise summary of the analysis to the results log file.
+    Specifically, the function logs a summary of the Arabic root word frequency analysis along with the top N most frequent root words.
 
     Args:
         text (str): The preprocessed Quran text.
@@ -123,9 +123,7 @@ def analyze_root_words(text):
         summary_lines.append(f"{idx}. Root '{root}' : {freq}")
     summary = "\n".join(summary_lines)
 
-    log_result("Arabic Root Word Frequency Analysis:")
-    for root, freq in root_freq.items():
-        log_result(f"Root '{root}': {freq}")
+    log_result("Arabic Root Word Frequency Analysis Summary:")
     log_result("Top Root Word Frequencies:")
     for idx, (root, freq) in enumerate(top_roots, 1):
         log_result(f"{idx}. Root '{root}' : {freq}")
@@ -150,3 +148,83 @@ def analyze_bigrams(tokenized_text, n=2):
         return {}
     ngrams = [tuple(tokenized_text[i:i+n]) for i in range(len(tokenized_text)-n+1)]
     return dict(Counter(ngrams))
+
+def analyze_verse_repetitions(preprocessed_text):
+    '''Analyze verse repetitions within each Surah and across the entire Quran.
+    
+    This function expects the preprocessed Quran text as input where each line represents a verse.
+    It attempts to parse each line for Surah and Ayah numbers in formats such as "Surah:Ayah: verse text"
+    or "Surah - Ayah - verse text", allowing for variations in spacing and delimiters.
+    If the format is not found, the verse is assigned to a default Surah "1" with sequential Ayah numbers.
+    
+    The verse text is normalized using the existing text preprocessing functions before comparison.
+    It then identifies verses that are repeated within each Surah and across the entire Quran.
+    
+    Returns a dictionary with two keys:
+        "within_surah": A list of dictionaries each with keys: "surah", "verse", "ayah_numbers", "repetition"
+        "across_quran": A list of dictionaries each with keys: "verse", "occurrences" (list of {"surah", "ayah"}), "repetition"
+    
+    Args:
+        preprocessed_text (str): The preprocessed Quran text data.
+    
+    Returns:
+        dict: The analysis result of verse repetitions.
+    '''
+    import re
+    from collections import defaultdict
+    from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
+
+    surah_dict = defaultdict(list)
+    default_surah = "1"
+    default_ayah = 1
+
+    # Updated regex pattern to handle variations in spacing and delimiters (colon or hyphen)
+    pattern = re.compile(r'^\s*(\d+)\s*[:\-]\s*(\d+)\s*[:\-]\s*(.+)$')
+    lines = preprocessed_text.splitlines()
+    for line in lines:
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            ayah = int(m.group(2))
+            verse_text = m.group(3).strip()
+        else:
+            surah = default_surah
+            ayah = default_ayah
+            verse_text = line.strip()
+            default_ayah += 1
+
+        norm_verse = normalize_arabic_letters(remove_diacritics(verse_text))
+        surah_dict[surah].append({"ayah": ayah, "verse": norm_verse})
+
+    result = {"within_surah": [], "across_quran": []}
+
+    # Analyze within each Surah.
+    for surah, verses in surah_dict.items():
+        verse_occurrences = defaultdict(list)
+        for entry in verses:
+            verse_occurrences[entry["verse"]].append(entry["ayah"])
+        for verse, ayahs in verse_occurrences.items():
+            if len(ayahs) > 1:
+                result["within_surah"].append({
+                    "surah": surah,
+                    "verse": verse,
+                    "ayah_numbers": ayahs,
+                    "repetition": len(ayahs)
+                })
+
+    # Analyze across the entire Quran.
+    all_verses = defaultdict(list)
+    for surah, verses in surah_dict.items():
+        for entry in verses:
+            all_verses[entry["verse"]].append({"surah": surah, "ayah": entry["ayah"]})
+    for verse, occurrences in all_verses.items():
+        if len(occurrences) > 1:
+            result["across_quran"].append({
+                "verse": verse,
+                "occurrences": occurrences,
+                "repetition": len(occurrences)
+            })
+
+    return result

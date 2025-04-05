@@ -18,5 +18,10 @@
         "iteration": 3,
         "date": "2025-04-05",
         "iteration_goal": "Introduce bigram frequency analysis feature. Add `analyze_bigrams` function to the analysis module. Integrate it into the `main()` function in `quran_analyzer.py`. Update the logging module to include bigram frequency results in `results.log`. Enhance integration tests in `test_quran_analyzer.py` to verify the new bigram analysis functionality and its logging."
+    },
+    {
+        "iteration": 4,
+        "date": "2025-04-05",
+        "iteration_goal": "A new `analyze_verse_repetitions` function is added to the `analysis` module to identify and count verse repetitions within Surahs and across the Quran. The `main()` function will call this new function and log the results to `results.log`. Integration tests will be updated to verify the new functionality. This increment maintains modularity and testability while adding verse repetition analysis to the Quran analyzer."
     }
 ]

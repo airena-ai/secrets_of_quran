@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions
 from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
@@ -43,6 +43,19 @@ def main():
     for anomaly in anomalies:
         log_secret_found(anomaly)
         
+    # Perform verse repetition analysis.
+    verse_repetitions = analyze_verse_repetitions(text)
+    log_result("Verse Repetition Analysis:")
+    for item in verse_repetitions.get("within_surah", []):
+        log_result("Within Surah - Surah {}: Verse '{}' repeated {} times at Ayahs {}".format(
+            item["surah"], item["verse"], item["repetition"], item["ayah_numbers"]))
+    for item in verse_repetitions.get("across_quran", []):
+        log_result("Across Quran - Verse '{}' repeated {} times at locations: {}".format(
+            item["verse"], item["repetition"], item["occurrences"]))
+        surahs = {occ["surah"] for occ in item["occurrences"]}
+        if len(surahs) > 1:
+            log_secret_found("Verse '{}' is repeated across multiple Surahs: {}".format(item["verse"], list(surahs)))
+    
     print("Quran Secrets Analysis Completed.")
 
 if __name__ == '__main__':
