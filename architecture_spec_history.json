@@ -73,5 +73,10 @@
         "iteration": 14,
         "date": "2025-04-04",
         "iteration_goal": "A new function `calculate_surah_gematrical_value` is added to the `QuranSearch` module. This function calculates the total gematrical value of a Surah by reusing existing `QuranDataLoader` and `calculate_gematrical_value` components. A new test case is included to ensure functionality, enhancing numerical analysis at the Surah level while maintaining modularity and testability."
+    },
+    {
+        "iteration": 15,
+        "date": "2025-04-04",
+        "iteration_goal": "A new function `calculate_verse_range_gematrical_value` is added to the `QuranSearch` module. This function calculates the total gematrical value for a given range of verses by reusing the `calculate_gematrical_value` function. A new test case is included to ensure functionality. The architecture remains modular and testable, enhancing numerical analysis capabilities within the existing `QuranSearch` module."
     }
 ]

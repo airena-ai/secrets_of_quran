@@ -400,8 +400,8 @@ class TestQuranSearch(unittest.TestCase):
         self.assertEqual(calculate_gematrical_value("الله"), 66, "Gematrical value of 'الله' should be 66.")
 
         # Test with the phrase "بسم الله الرحمن الرحيم"
-        # Expected calculation: بسم = 2+60+40 =102, الله = 1+30+30+5 =66,
-        # الرحمن = 1+30+200+8+40+50 =329, الرحيم = 1+30+200+8+10+40 =289, Total = 786.
+        # Expected calculation: بسم = 102, الله = 66,
+        # الرحمن = 329, الرحيم = 289, Total = 786.
         self.assertEqual(calculate_gematrical_value("بسم الله الرحمن الرحيم"), 786, "Gematrical value of 'بسم الله الرحمن الرحيم' should be 786.")
 
         # Test with non-Arabic characters; they should be ignored.
@@ -517,6 +517,35 @@ class TestQuranSearch(unittest.TestCase):
         # For Surah 2, the non-Arabic text should yield a gematrical value of 0.
         calculated_total_surah2 = calculate_surah_gematrical_value(quran_data, 2)
         self.assertEqual(calculated_total_surah2, 0, "Calculated gematrical value for Surah 2 should be 0 since no mapped Arabic letters.")
+
+    def test_calculate_verse_range_gematrical_value(self):
+        """
+        Test the calculate_verse_range_gematrical_value function by manually summing gematrical values
+        for a defined verse range.
+        
+        This test loads the Quran data using load_quran_data, calculates the expected cumulative gematrical
+        value for verses from verse number 1 to 5 (inclusive), and asserts that the function returns the expected value.
+        """
+        self.maxDiff = None
+        quran_file_path = 'data/quran-uthmani-min.txt'
+        from src.quran_search import calculate_verse_range_gematrical_value, calculate_gematrical_value
+        from src.quran_data_loader import load_quran_data
+        quran_data = load_quran_data(quran_file_path)
+        
+        # Define test verse range: verses 1 to 5
+        start_verse = 1
+        end_verse = 5
+        
+        # Manually calculate expected gematrical value
+        expected_total = 0
+        for idx, verse in enumerate(quran_data, start=1):
+            if start_verse <= idx <= end_verse:
+                verse_text = verse.get('verse_text', '')
+                expected_total += calculate_gematrical_value(verse_text)
+        
+        # Call the new function
+        actual_total = calculate_verse_range_gematrical_value(quran_data, start_verse, end_verse)
+        self.assertEqual(actual_total, expected_total, "The gematrical value for verses {} to {} should be {}.".format(start_verse, end_verse, expected_total))
 
 if __name__ == '__main__':
     unittest.main()
