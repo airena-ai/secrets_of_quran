@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts
 from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
@@ -16,6 +16,9 @@ def main():
 
     text = remove_diacritics(text)
     text = normalize_arabic_letters(text)
+    
+    # Perform verse length analysis and distribution.
+    analyze_verse_lengths_distribution(text)
     
     # Execute both numerical pattern analysis and word frequency analysis.
     anomalies = analyze_text(text)

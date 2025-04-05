@@ -141,6 +141,46 @@ class TestAnalyzer(unittest.TestCase):
         self.assertEqual(across["verse"], "VerseA")
         self.assertEqual(across["occurrences"], [{'surah': '1', 'ayah': 1}, {'surah': '1', 'ayah': 3}, {'surah': '2', 'ayah': 1}])
         self.assertEqual(across["repetition"], 3)
+        
+    def test_analyze_verse_lengths_distribution(self):
+        '''Test that analyze_verse_lengths_distribution correctly calculates average verse length,
+        standard deviation, and identifies consistent surahs, logging the appropriate messages.'''
+        from src.analyzer import analyze_verse_lengths_distribution
+        import src.logger
+        sample_text = ("1|1| This is test\n"
+                       "1|2| That is a trial\n"
+                       "2|1| Short\n"
+                       "2|2| This is a much longer verse than others")
+        log_results = []
+        log_secrets = []
+        original_log_result = src.logger.log_result
+        original_log_secret = src.logger.log_secret_found
+        src.logger.log_result = lambda msg: log_results.append(msg)
+        src.logger.log_secret_found = lambda msg: log_secrets.append(msg)
+        
+        results = analyze_verse_lengths_distribution(sample_text)
+        
+        # For Surah 1: "This is test" (3 words) and "That is a trial" (4 words) -> avg = 3.5, stddev = 0.5, consistent True.
+        self.assertAlmostEqual(results["1"]["average"], 3.5)
+        self.assertAlmostEqual(results["1"]["stddev"], 0.5)
+        self.assertTrue(results["1"]["consistent"])
+        
+        # For Surah 2: "Short" (1 word) and "This is a much longer verse than others" (8 words) -> avg = 4.5, stddev = 3.5, not consistent.
+        self.assertAlmostEqual(results["2"]["average"], 4.5)
+        self.assertAlmostEqual(results["2"]["stddev"], 3.5)
+        self.assertFalse(results["2"]["consistent"])
+        
+        found_secret = any("Verse length consistency" in msg and "[Surah 1]" in msg for msg in log_secrets)
+        self.assertTrue(found_secret)
+        
+        found_surah1_log = any("Surah 1:" in msg and "Average Verse Length: 3.50" in msg for msg in log_results)
+        self.assertTrue(found_surah1_log)
+        
+        found_surah2_log = any("Surah 2:" in msg and "Average Verse Length: 4.50" in msg for msg in log_results)
+        self.assertTrue(found_surah2_log)
+        
+        src.logger.log_result = original_log_result
+        src.logger.log_secret_found = original_log_secret
 
 if __name__ == '__main__':
     unittest.main()

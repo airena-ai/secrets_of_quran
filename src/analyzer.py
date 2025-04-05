@@ -303,6 +303,60 @@ def analyze_surah_verse_counts(text):
     src.logger.log_result(summary)
     return summary
 
+def analyze_verse_lengths_distribution(text, threshold=2):
+    '''Analyze verse lengths distribution across the Quran text.
+    
+    This function calculates the word count for each verse by tokenizing the verse text,
+    groups the counts by Surah, and computes the average verse length and standard deviation
+    of verse lengths for each Surah. It identifies Surahs with 'consistent' verse lengths when the standard
+    deviation is less than the threshold (default is 2 words). The summary for each Surah is logged, and
+    consistent Surahs are flagged with a special "POTENTIAL SECRET FOUND" log entry.
+    
+    Args:
+        text (str): The preprocessed Quran text, where each line represents a verse.
+        threshold (float, optional): The standard deviation threshold to consider a Surah as having consistent verse lengths.
+        
+    Returns:
+        dict: A dictionary mapping Surah numbers to a dictionary with keys 'average', 'stddev', and 'consistent'.
+    '''
+    import math
+    from collections import defaultdict
+    import re
+    surah_verse_lengths = defaultdict(list)
+    default_surah = "1"
+    default_ayah = 1
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    lines = text.splitlines()
+    for line in lines:
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            verse_text = m.group(3).strip()
+        else:
+            surah = default_surah
+            verse_text = line.strip()
+            default_ayah += 1
+        tokens = verse_text.split()
+        word_count = len(tokens)
+        surah_verse_lengths[surah].append(word_count)
+    results = {}
+    for surah, lengths in surah_verse_lengths.items():
+        if lengths:
+            avg = sum(lengths) / len(lengths)
+            variance = sum((x - avg) ** 2 for x in lengths) / len(lengths)
+            stddev = math.sqrt(variance)
+        else:
+            avg = 0
+            stddev = 0
+        consistent = stddev < threshold
+        results[surah] = {"average": avg, "stddev": stddev, "consistent": consistent}
+        src.logger.log_result(f"Surah {surah}: Average Verse Length: {avg:.2f}, StdDev: {stddev:.2f}")
+        if consistent:
+            src.logger.log_secret_found(f"[Surah {surah}] Verse length consistency (StdDev: {stddev:.2f})")
+    return results
+
 def analyze_palindromes(quran_text):
     '''Analyze palindromic structures within each verse of the Quran.
     

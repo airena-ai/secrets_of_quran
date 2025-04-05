@@ -27,12 +27,12 @@
     {
       "path": "src/main.py",
       "language": "python",
-      "description": "Main driver for the Quran Secrets application. Coordinates reading, preprocessing, and analysis of Quran text, executing various analysis functions and logging their results.",
+      "description": "Main driver for the Quran Secrets application. Orchestrates reading, preprocessing, analysis, and logging of Quran text data.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main entry point for the Quran Secrets analysis. It reads the Quran text, preprocesses it, and executes analysis functions including text analysis, word frequency analysis, root analysis, bigrams, verse repetition, palindromes, abjad numeral analysis, semantic symmetry, lemma analysis, and surah verse counts.",
+          "description": "Main entry point for the Quran Secrets analysis. Reads Quran text, preprocesses it, performs various analyses, logs results, and prints a completion message.",
           "parameters": [],
           "return_type": "None"
         }
@@ -102,13 +102,13 @@
     },
     {
       "path": "src/analyzer.py",
-      "language": "Python",
-      "description": "This module provides various analytical functions for processing and analyzing Quranic text to discover patterns, anomalies, and linguistic features. It includes functions for word frequency analysis, root word analysis, bigram analysis, verse repetition detection, palindrome detection, Abjad numeral calculations, and semantic symmetry analysis.",
+      "language": "python",
+      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Contains functions for anomaly detection, word frequency analysis, root word analysis, bigram generation, verse repetition analysis, lemma analysis, surah verse count analysis, verse length distribution, palindrome detection, Abjad numeral analysis, and semantic symmetry analysis.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_text",
-          "description": "Analyzes the given text for hidden numerical patterns and anomalies. This function simulates pattern detection. If the text is non-empty, a simulated anomaly is detected and returned.",
+          "description": "Analyze the given text for hidden numerical patterns and anomalies. Returns a list of anomaly messages if a hidden pattern is detected.",
           "parameters": [
             {
               "name": "text",
@@ -120,7 +120,7 @@
         },
         {
           "name": "analyze_word_frequency",
-          "description": "Performs word frequency analysis on the given preprocessed Quran text. It tokenizes the text, counts word occurrences, determines the top N most frequent words, and identifies words with unusually high or low frequencies based on a simple heuristic.",
+          "description": "Perform word frequency analysis on the preprocessed Quran text. Returns a summary string and a list of flagged unusual word frequencies.",
           "parameters": [
             {
               "name": "text",
@@ -132,7 +132,7 @@
         },
         {
           "name": "analyze_root_words",
-          "description": "Performs Arabic root word analysis on the given preprocessed Quran text using the CAMeL Tools morphological analyzer. It extracts the root of each word, counts root frequencies, and logs a summary of the analysis.",
+          "description": "Perform Arabic root word analysis on the preprocessed Quran text using CAMeL Tools. Returns a summary, a dictionary of root frequencies, and a list of top roots.",
           "parameters": [
             {
               "name": "text",
@@ -144,7 +144,7 @@
         },
         {
           "name": "analyze_bigrams",
-          "description": "Performs bigram frequency analysis on the given tokenized text. It generates n-grams (bigrams by default) from the tokenized text and counts the frequency of each n-gram.",
+          "description": "Perform bigram frequency analysis on the tokenized Quran text. Returns a dictionary with bigram tuples as keys and their frequency counts as values.",
           "parameters": [
             {
               "name": "tokenized_text",
@@ -154,26 +154,26 @@
             {
               "name": "n",
               "type": "int",
-              "description": "The number of words in each n-gram (default is 2 for bigrams)."
+              "description": "The number of words in each n-gram (default is 2)."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_verse_repetitions",
-          "description": "Analyzes verse repetitions within each Surah and across the entire Quran. It parses each line for Surah and Ayah numbers and identifies verses that are repeated.",
+          "description": "Analyze verse repetitions within each Surah and across the entire Quran. Returns a dictionary with keys 'within_surah' and 'across_quran' for repetition analysis.",
           "parameters": [
             {
               "name": "preprocessed_text",
               "type": "str",
-              "description": "The preprocessed Quran text data."
+              "description": "The preprocessed Quran text where each line represents a verse."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_lemmas",
-          "description": "Performs lemma analysis on the tokenized Quran text using CAMeL Tools morphological analyzer. It extracts lemmas for each word, counts their frequencies, and logs the top 20 most frequent lemmas.",
+          "description": "Perform lemma analysis on the preprocessed Quran text using CAMeL Tools. Returns a formatted summary of the lemma frequency analysis.",
           "parameters": [
             {
               "name": "text",
@@ -185,7 +185,7 @@
         },
         {
           "name": "analyze_surah_verse_counts",
-          "description": "Performs analysis of verse counts per Surah in the Quran text. It parses each line, extracts the Surah number, counts verses per Surah, and logs the results.",
+          "description": "Analyze the verse counts per Surah in the Quran text. Returns a formatted summary of surah verse counts.",
           "parameters": [
             {
               "name": "text",
@@ -196,8 +196,25 @@
           "return_type": "str"
         },
         {
+          "name": "analyze_verse_lengths_distribution",
+          "description": "Analyze verse lengths distribution across the Quran text. Returns a dictionary mapping Surah numbers to average verse length, standard deviation, and a consistency flag.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "The preprocessed Quran text with each line representing a verse."
+            },
+            {
+              "name": "threshold",
+              "type": "float",
+              "description": "The standard deviation threshold to consider a Surah as having consistent verse lengths (default is 2)."
+            }
+          ],
+          "return_type": "dict"
+        },
+        {
           "name": "analyze_palindromes",
-          "description": "Analyzes palindromic structures within each verse of the Quran. It identifies word-level palindromes and palindromic phrases, logging each discovery to the results log.",
+          "description": "Analyze palindromic structures within each verse of the Quran. Returns a list of tuples containing (surah, ayah, palindrome_text) for each detected palindrome.",
           "parameters": [
             {
               "name": "quran_text",
@@ -209,7 +226,7 @@
         },
         {
           "name": "analyze_abjad_numerals",
-          "description": "Performs Abjad numeral analysis on the Quran text. It calculates the Abjad numerical sum for each verse based on Arabic letter-to-number mapping and identifies verses with notable numerical patterns.",
+          "description": "Perform Abjad numeral analysis on the Quran text. Returns a list of tuples with verse abjad sums and notable numerical pattern descriptions.",
           "parameters": [
             {
               "name": "quran_text",
@@ -221,7 +238,7 @@
         },
         {
           "name": "analyze_semantic_symmetry",
-          "description": "Analyzes semantic symmetry (word overlap) between segments of each Surah. It divides each Surah into two halves and calculates the number of common words between them.",
+          "description": "Analyze semantic symmetry (word overlap) between segments of each Surah. Returns a list of tuples containing (surah, common_word_count, list_of_common_words).",
           "parameters": [
             {
               "name": "quran_text",
@@ -233,11 +250,6 @@
         }
       ],
       "dependencies": [
-        "collections.Counter",
-        "collections.defaultdict",
-        "datetime",
-        "importlib.util",
-        "re",
         "src.logger",
         "src.text_preprocessor"
       ]
@@ -367,23 +379,23 @@
     {
       "path": "tests/test_analyzer.py",
       "language": "python",
-      "description": "This file contains unit tests for the analyzer module. It verifies the behavior of various text analysis functions such as analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, and analyze_verse_repetitions. The tests cover both typical and edge case scenarios to ensure robust functionality.",
+      "description": "Unit tests for the analyzer module. Contains test cases to verify the correctness and robustness of analysis functions.",
       "classes": [
         {
           "name": "TestAnalyzer",
-          "description": "A unittest.TestCase subclass that encapsulates a suite of tests for verifying the analyzer module's functionality. It includes tests for non-empty and empty texts, word frequency analysis, root word analysis, bigram generation, palindrome detection, abjad numeral patterns, semantic symmetry, and verse repetition detection.",
+          "description": "Unit tests for the analyzer module. Tests various analysis functions using different scenarios.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "setUp",
-              "description": "Initializes test fixtures and environment settings before each test method is executed.",
+              "description": "Set up test fixtures before each test method.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -394,8 +406,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -406,8 +418,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -418,8 +430,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -430,8 +442,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -442,8 +454,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -454,8 +466,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -466,8 +478,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -478,8 +490,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -490,8 +502,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -502,8 +514,8 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -514,20 +526,32 @@
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_verse_repetitions",
-              "description": "Test that analyze_verse_repetitions correctly identifies repetitions both intra-surah and across the Quran.",
+              "description": "Test that analyze_verse_repetitions correctly identifies repetitions both within a surah and across the Quran.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "",
-                  "description": ""
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_verse_lengths_distribution",
+              "description": "Test that analyze_verse_lengths_distribution correctly calculates the average verse length, standard deviation, and consistency of surahs.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestAnalyzer",
+                  "description": "Instance of TestAnalyzer."
                 }
               ],
               "return_type": "None"
@@ -537,8 +561,8 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/analyzer.py",
-        "src/logger.py"
+        "src.analyzer",
+        "src.logger"
       ]
     },
     {
@@ -616,32 +640,48 @@
     },
     {
       "path": "tests/test_main.py",
-      "language": "Python",
-      "description": "This module contains integration tests for the main module to verify end-to-end analysis functionality. It tests the main.main() function with and without CAMeL Tools available, verifying that all analysis steps are executed correctly and appropriate log entries are created.",
+      "language": "python",
+      "description": "Integration test for the main module to execute end-to-end analysis flows with and without CAMeL Tools.",
       "classes": [
         {
           "name": "TestMainIntegration",
-          "description": "Test class for integration testing of the main module execution flow.",
-          "parents": [
-            "unittest.TestCase"
-          ],
+          "description": "Integration tests for the main module, verifying end-to-end analysis execution.",
+          "parents": [],
           "methods": [
             {
               "name": "setUp",
-              "description": "Sets up the test environment before each test method execution.",
-              "parameters": [],
+              "description": "Set up integration test fixtures.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestMainIntegration",
+                  "description": "Instance of TestMainIntegration."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_fallback",
-              "description": "Tests the full execution of main() function end-to-end with CAMeL Tools fallback. It creates a sample Quran text file, executes the main function, and verifies that all expected log entries are present.",
-              "parameters": [],
+              "description": "Test the full execution of main() function end-to-end with CAMeL Tools fallback.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestMainIntegration",
+                  "description": "Instance of TestMainIntegration."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_with_camel_tools",
-              "description": "Tests the full execution of main() function end-to-end with CAMeL Tools available. It creates a sample Quran text file, mocks the CAMeL Tools functionality, executes the main function, and verifies that all expected log entries are present.",
-              "parameters": [],
+              "description": "Test the full execution of main() function end-to-end with CAMeL Tools available.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestMainIntegration",
+                  "description": "Instance of TestMainIntegration."
+                }
+              ],
               "return_type": "None"
             }
           ]
@@ -649,10 +689,6 @@
       ],
       "functions": [],
       "dependencies": [
-        "os",
-        "unittest",
-        "unittest.mock.MagicMock",
-        "importlib.util",
         "src.main"
       ]
     },
