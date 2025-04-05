@@ -18,5 +18,10 @@
         "iteration": 3,
         "date": "2025-04-04",
         "iteration_goal": "This increment focuses on adding the functionality to search for a specific word within a particular Surah (chapter) of the Quran. A new function `search_word_in_surah` will be implemented in `quran_search.py` to enable this feature.  A corresponding pytest test case `test_search_word_in_surah` will be created to validate the functionality, ensuring accurate and case-insensitive searches within specified Surahs. This enhancement allows for more targeted analysis of Quranic text."
+    },
+    {
+        "iteration": 4,
+        "date": "2025-04-04",
+        "iteration_goal": "This increment focuses on enhancing the Quran Secrets Analyzer by enabling users to search for specific word groups (phrases) within a particular Surah (chapter) of the Quran.  A new function `search_word_group_in_surah` will be added to `quran_search.py` to facilitate this.  Correspondingly, a new pytest test case `test_search_word_group_in_surah` will be created to validate the functionality, ensuring accurate and case-insensitive (and optionally case-sensitive) searches for phrases within specified Surahs. This feature expands the search precision and allows for more targeted analysis of Quranic text by chapter."
     }
 ]

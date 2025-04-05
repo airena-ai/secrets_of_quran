@@ -57,7 +57,7 @@ def search_word_group(quran_data, word_group, case_sensitive=False):
                 results.append(verse)
     return results
 
-def search_word_in_surah(word: str, surah_number: int, quran_data: list) -> list:
+def search_word_in_surah(word, surah_number, quran_data):
     """
     Searches for a word within a specific Surah in the Quran data.
 
@@ -79,4 +79,39 @@ def search_word_in_surah(word: str, surah_number: int, quran_data: list) -> list
             verse_text = verse.get('verse_text', '')
             if word.lower() in verse_text.lower():
                 results.append(verse)
+    return results
+
+def search_word_group_in_surah(quran_data, word_group, surah_number, case_sensitive=False):
+    """
+    Search for a specific word group (phrase) within a given Surah of the Quran data.
+
+    This function iterates over the provided Quran data, filtering verses to those that belong
+    to the specified Surah (identified by surah_number). It then checks if the given word group,
+    treated as an exact phrase, is present in the verse text using either case-sensitive or
+    case-insensitive comparison based on the case_sensitive flag.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran data.
+        word_group (str): The word group (exact phrase) to search for in the verse text.
+        surah_number (int): The Surah number to filter verses.
+        case_sensitive (bool): If True, performs case-sensitive search; otherwise, performs case-insensitive search.
+                               Defaults to False.
+
+    Returns:
+        list: A list of dictionaries for verses that contain the specified word group within the given Surah.
+    """
+    results = []
+    for verse in quran_data:
+        try:
+            verse_surah_number = int(verse.get('surah_number'))
+        except (ValueError, TypeError):
+            continue
+        if verse_surah_number == surah_number:
+            verse_text = verse.get('verse_text', '')
+            if case_sensitive:
+                if word_group in verse_text:
+                    results.append(verse)
+            else:
+                if word_group.lower() in verse_text.lower():
+                    results.append(verse)
     return results

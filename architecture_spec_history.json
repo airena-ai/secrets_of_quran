@@ -18,5 +18,10 @@
         "iteration": 3,
         "date": "2025-04-04",
         "iteration_goal": "Added `search_word_in_surah` function to `QuranSearch` module to search for a word within a specific Surah. A corresponding test case `test_search_word_in_surah` is added. No new modules are introduced, maintaining the existing modular architecture and ensuring testability. The new function reuses the existing data loading mechanism and enhances search functionality."
+    },
+    {
+        "iteration": 4,
+        "date": "2025-04-04",
+        "iteration_goal": "A new function `search_word_group_in_surah` is added to the `QuranSearch` module. This function allows searching for a specific word group within a specified Surah, enhancing the search capabilities of the application. The architecture remains modular and testable, with a new test case added to ensure the functionality of the new feature. No new modules are introduced; the change is contained within the existing `QuranSearch` module."
     }
 ]

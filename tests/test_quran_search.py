@@ -1,6 +1,11 @@
 import unittest
 from src.quran_data_loader import load_quran_text
-from src.quran_search import search_word_in_quran, search_word_group, search_word_in_surah
+from src.quran_search import (
+    search_word_in_quran, 
+    search_word_group, 
+    search_word_in_surah,
+    search_word_group_in_surah
+)
 
 class TestQuranSearch(unittest.TestCase):
     def test_search_allah_word(self):
@@ -120,6 +125,55 @@ class TestQuranSearch(unittest.TestCase):
         # Scenario 2: Search for a word that does not exist in surah 1
         results_non_existing = search_word_in_surah('NonExistentWord', 1, quran_data)
         self.assertEqual(results_non_existing, [], "Expect an empty list when searching for a non-existent word in surah 1.")
+
+    def test_search_word_group_in_surah(self):
+        """
+        Test the search_word_group_in_surah function for various scenarios:
+        
+        - Scenario 1: Search for a word group that exists in a specific Surah (case-insensitive).
+        - Scenario 2: Search for a word group that exists multiple times in a specific Surah.
+        - Scenario 3: Search for a non-existent word group in a Surah.
+        - Scenario 4: Verify case-sensitive search differentiates correctly.
+        - Scenario 5: Ensure that filtering by a Surah number with no entries returns an empty list.
+        """
+        self.maxDiff = None
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'Bismillah Ar-Rahman Ar-Rahim'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'The phrase Ar-Rahman Ar-Rahim is repeated.'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'This verse does not contain the target phrase.'},
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'Test Phrase appears here.'},
+            {'surah_number': '2', 'ayah_number': '3', 'verse_text': 'Another Test Phrase instance in surah 2.'},
+            {'surah_number': '3', 'ayah_number': '1', 'verse_text': 'A mixture of text with Al-Rahman Al-Rahim present.'},
+            {'surah_number': '3', 'ayah_number': '2', 'verse_text': 'A mixture of text with al-rahman al-rahim in lower case.'},
+            {'surah_number': '4', 'ayah_number': '1', 'verse_text': 'CaseSensitive Example'},
+            {'surah_number': '4', 'ayah_number': '2', 'verse_text': 'casesensitive example'}
+        ]
+        # Scenario 1: Search for "Al-Rahman Al-Rahim" in surah 3 (case-insensitive)
+        results_surah3 = search_word_group_in_surah(quran_data, "Al-Rahman Al-Rahim", 3)
+        self.assertEqual(len(results_surah3), 2, "Expect 2 verses from surah 3 containing 'Al-Rahman Al-Rahim' in case-insensitive search.")
+        ayah_numbers_surah3 = sorted([verse.get('ayah_number') for verse in results_surah3])
+        self.assertEqual(ayah_numbers_surah3, ['1', '2'], "Expected ayah numbers ['1', '2'] for surah 3 phrase occurrence.")
+
+        # Scenario 2: Search for "Test Phrase" in surah 2 (multiple occurrences)
+        results_surah2 = search_word_group_in_surah(quran_data, "Test Phrase", 2)
+        self.assertEqual(len(results_surah2), 2, "Expect 2 verses from surah 2 containing 'Test Phrase'.")
+        ayah_numbers_surah2 = sorted([verse.get('ayah_number') for verse in results_surah2])
+        self.assertEqual(ayah_numbers_surah2, ['2', '3'], "Expected ayah numbers ['2', '3'] for surah 2 phrase occurrence.")
+
+        # Scenario 3: Search for a word group that does not exist in surah 1
+        results_no_match = search_word_group_in_surah(quran_data, "NonexistentPhrase", 1)
+        self.assertEqual(results_no_match, [], "Expect no matches for 'NonexistentPhrase' in surah 1.")
+
+        # Scenario 4: Test case-sensitive search in surah 4
+        results_surah4_cs = search_word_group_in_surah(quran_data, "CaseSensitive Example", 4, case_sensitive=True)
+        self.assertEqual(len(results_surah4_cs), 1, "Expect 1 verse from surah 4 with exact case-sensitive match.")
+        self.assertEqual(results_surah4_cs[0].get('ayah_number'), '1', "Expected match with ayah number '1' for case-sensitive search.")
+        results_surah4_ci = search_word_group_in_surah(quran_data, "CaseSensitive Example", 4, case_sensitive=False)
+        self.assertEqual(len(results_surah4_ci), 2, "Expect 2 verses from surah 4 in case-insensitive search.")
+
+        # Scenario 5: Search in a surah number with no matching entries
+        results_wrong_surah = search_word_group_in_surah(quran_data, "Test Phrase", 5)
+        self.assertEqual(results_wrong_surah, [], "Expect empty list for surah 5 with no entries.")
 
 if __name__ == '__main__':
     unittest.main()
