@@ -546,6 +546,33 @@ class TestQuranSearch(unittest.TestCase):
         # Call the new function
         actual_total = calculate_verse_range_gematrical_value(quran_data, start_verse, end_verse)
         self.assertEqual(actual_total, expected_total, "The gematrical value for verses {} to {} should be {}.".format(start_verse, end_verse, expected_total))
+    
+    def test_calculate_quran_gematrical_value(self):
+        """
+        Test the calculate_quran_gematrical_value function by monkey-patching the calculate_gematrical_value to return
+        predictable values (using the length of the input text) and using dummy Quran data.
+        """
+        self.maxDiff = None
+        import src.quran_search as qs
+        dummy_quran_data = [
+            {'verse_text': "abcd ef"},
+            {'verse_text': "ghij"},
+            {'verse_text': "kl mn op"}
+        ]
+        # Expected calculation:
+        # First verse: "abcd ef" -> words: "abcd" (length 4) and "ef" (length 2) => 4 + 2 = 6
+        # Second verse: "ghij" -> word: "ghij" (length 4) => 4
+        # Third verse: "kl mn op" -> words: "kl" (2), "mn" (2), "op" (2) => 6
+        # Total expected = 6 + 4 + 6 = 16.
+        expected_total = 16
+        
+        original_func = qs.calculate_gematrical_value
+        qs.calculate_gematrical_value = lambda text: len(text)
+        try:
+            result = qs.calculate_quran_gematrical_value(dummy_quran_data)
+            self.assertEqual(result, expected_total, "Total gematrical value for the dummy Quran data should be {}.".format(expected_total))
+        finally:
+            qs.calculate_gematrical_value = original_func
 
 if __name__ == '__main__':
     unittest.main()

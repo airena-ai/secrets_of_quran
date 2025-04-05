@@ -456,3 +456,25 @@ def calculate_verse_range_gematrical_value(quran_data, start_verse_num: int, end
             verse_text = verse.get('verse_text', '')
             total += calculate_gematrical_value(verse_text)
     return total
+
+def calculate_quran_gematrical_value(quran_data) -> int:
+    """
+    Calculate the total gematrical value of the entire Quran.
+    
+    This function iterates through each verse in the provided Quran data, splits the verse text into individual words,
+    calculates the gematrical value of each word using the calculate_gematrical_value function, and sums these values
+    to produce the total gematrical value for the entire Quran.
+
+    Args:
+        quran_data (list): List of dictionaries representing Quran verses. Each dictionary should have a 'verse_text' key.
+
+    Returns:
+        int: The total gematrical value computed for all verses.
+    """
+    total_value = 0
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        words = verse_text.split()
+        for word in words:
+            total_value += calculate_gematrical_value(word)
+    return total_value
