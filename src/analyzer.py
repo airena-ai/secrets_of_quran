@@ -797,3 +797,93 @@ def analyze_muqattaat(text):
     logger.log_result("############################################################")
     
     return (muqattaat_results, frequency_counter)
+
+def analyze_muqattaat_positions(text):
+    '''Analyze the positional distribution of Muqatta'at within Surahs.
+
+    This function processes the preprocessed Quran text (with each line representing a verse in the format "Surah|Ayah|Verse")
+    to identify the occurrence positions of Muqatta'at within each Surah (only for predefined Surahs).
+    It determines in which category (Beginning, Middle, End, or Throughout) the Muqatta'at appear,
+    based on the index of the verses in the Surah where they are found. The results,
+    including a summary count for each category, are logged to results.log.
+
+    Args:
+        text (str): The preprocessed Quran text.
+
+    Returns:
+        None
+    '''
+    import re
+    from math import ceil, floor
+    # Group verses by Surah
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    surahs = {}
+    default_surah = "1"
+    default_ayah = 1
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah_no = m.group(1)
+            verse_text = m.group(3).strip()
+        else:
+            surah_no = default_surah
+            verse_text = line.strip()
+            default_ayah += 1
+        if surah_no not in surahs:
+            surahs[surah_no] = []
+        surahs[surah_no].append(verse_text)
+    # Predefined Surahs that may contain Muqatta'at based on established logic
+    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
+                           "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
+                           "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
+    position_results = {}
+    for surah_no, verses in surahs.items():
+        if surah_no not in predefined_surahs:
+            continue
+        verse_indices = []
+        letters_list = []
+        for idx, verse in enumerate(verses, start=1):
+            m_letters = re.match(r'^([\u0621-\u064A]+)', verse)
+            if m_letters:
+                verse_indices.append(idx)
+                letters_list.append(m_letters.group(1))
+        if not verse_indices:
+            continue
+        total_verses = len(verses)
+        begin_threshold = ceil(0.2 * total_verses)
+        end_start = total_verses - floor(0.2 * total_verses) + 1
+        categories = set()
+        for index in verse_indices:
+            if index <= begin_threshold:
+                categories.add("Beginning")
+            elif index >= end_start:
+                categories.add("End")
+            else:
+                categories.add("Middle")
+        if len(categories) > 1:
+            position_category = "Throughout"
+        else:
+            position_category = list(categories)[0]
+        representative_letters = letters_list[0] if letters_list else ""
+        position_results[surah_no] = {
+            "letters": representative_letters,
+            "indices": verse_indices,
+            "category": position_category
+        }
+    import src.logger as logger
+    logger.log_result("MUQATTA'AT POSITION ANALYSIS:")
+    logger.log_result("---------------------------")
+    for surah_no in sorted(position_results.keys(), key=lambda x: int(x)):
+        res = position_results[surah_no]
+        logger.log_result("Surah {} - Muqatta'at: {} - Position: {}".format(surah_no, res["letters"], res["category"]))
+    summary_counts = {"Beginning": 0, "Middle": 0, "End": 0, "Throughout": 0}
+    for res in position_results.values():
+        summary_counts[res["category"]] += 1
+    logger.log_result("")
+    logger.log_result("Summary of Muqatta'at Positions:")
+    logger.log_result("Beginning: {} Surahs".format(summary_counts["Beginning"]))
+    logger.log_result("Middle: {} Surahs".format(summary_counts["Middle"]))
+    logger.log_result("End: {} Surahs".format(summary_counts["End"]))
+    logger.log_result("Throughout: {} Surahs".format(summary_counts["Throughout"]))

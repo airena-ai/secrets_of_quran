@@ -50,6 +50,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Verse length distribution symmetry detected", log_contents)
                 self.assertIn("Enhanced semantic symmetry (lemma overlap) detected", log_contents)
                 self.assertIn("#################### Muqatta'at Analysis ####################", log_contents)
+                self.assertIn("MUQATTA'AT POSITION ANALYSIS:", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -105,6 +106,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Verse length distribution symmetry detected", log_contents)
                 self.assertIn("Enhanced semantic symmetry (lemma overlap) detected", log_contents)
                 self.assertIn("#################### Muqatta'at Analysis ####################", log_contents)
+                self.assertIn("MUQATTA'AT POSITION ANALYSIS:", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)

@@ -58,5 +58,10 @@
         "iteration": 11,
         "date": "2025-04-05",
         "iteration_goal": "This increment initiates the analysis of Muqatta'at (Mysterious Letters) in the Quran Secrets application. It involves creating a function to identify Surahs containing Muqatta'at, extract these letters, and calculate their frequency across all occurrences. The results, including a list of Surahs with Muqatta'at, extracted letters per Surah, and letter frequencies, are logged to `results.log`. The `main()` function and integration test are updated to include this new Muqatta'at analysis functionality. This step sets the stage for deeper investigations into the meaning and patterns of Muqatta'at in subsequent iterations."
+    },
+    {
+        "iteration": 12,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment focuses on analyzing the positions of Muqatta'at within the Surahs of the Quran. It involves developing a function to categorize Muqatta'at occurrences as being in the 'Beginning', 'Middle', 'End', or 'Throughout' positions of Surahs and logging these findings. The `main()` function and integration tests will be updated to include this new positional analysis, providing insights into potential structural patterns related to Muqatta'at placement."
     }
 ]
