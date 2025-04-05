@@ -224,6 +224,32 @@ class TestQuranSearch(unittest.TestCase):
         # Test with an empty word group should return 0
         self.assertEqual(count_word_group_occurrences(quran_data, ''), 0, "An empty word group should return 0 occurrences.")
 
+    def test_count_word_occurrences_in_surah(self):
+        """
+        Test the count_word_occurrences_in_surah function by ensuring it correctly counts occurrences of a word
+        within a specific Surah, in a case-insensitive manner.
+        """
+        self.maxDiff = None
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'Allah is the Creator.'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'Praise be to ALLAH.'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'This verse does not have the word.'},
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'Allah appears in surah 2.'},
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'Multiple ALLAH ALLAH occurrences here.'},
+        ]
+        from src.quran_search import count_word_occurrences_in_surah
+        count_surah1 = count_word_occurrences_in_surah(quran_data, 'Allah', 1)
+        self.assertEqual(count_surah1, 2, "Expected 2 occurrences of 'Allah' in Surah 1.")
+
+        count_surah2 = count_word_occurrences_in_surah(quran_data, 'AllAh', 2)
+        self.assertEqual(count_surah2, 3, "Expected 3 occurrences of 'Allah' in Surah 2 (case-insensitive).")
+
+        count_nonexistent = count_word_occurrences_in_surah(quran_data, 'Nonexistent', 1)
+        self.assertEqual(count_nonexistent, 0, "Expected 0 occurrences for a word that is not present in Surah 1.")
+
+        count_empty = count_word_occurrences_in_surah(quran_data, '', 1)
+        self.assertEqual(count_empty, 0, "Expected 0 occurrences when searching for an empty word.")
+
     def test_search_word_in_verse_range(self):
         """
         Test the search_word_in_verse_range function for various scenarios:

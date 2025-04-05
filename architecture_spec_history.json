@@ -83,5 +83,10 @@
         "iteration": 16,
         "date": "2025-04-04",
         "iteration_goal": "Added `calculate_quran_gematrical_value` function to `QuranSearch` module to calculate the total gematrical value of the entire Quran. This reuses `QuranDataLoader` and `calculate_gematrical_value` functions. A new test case `test_calculate_quran_gematrical_value` is also added to ensure testability and correctness of the new feature, maintaining the modular architecture."
+    },
+    {
+        "iteration": 17,
+        "date": "2025-04-04",
+        "iteration_goal": "Added `count_word_occurrences_in_surah` function to `QuranSearch` module to count word occurrences within a specific Surah. This enhancement is modular, testable, and reuses existing components, maintaining the system's architecture. A new test case is also included to ensure functionality."
     }
 ]

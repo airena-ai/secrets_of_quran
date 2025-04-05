@@ -83,5 +83,10 @@
         "iteration": 16,
         "date": "2025-04-04",
         "iteration_goal": "This increment adds the final gematrical value calculation feature to the Quran Secrets Analyzer. It involves implementing a function `calculate_quran_gematrical_value` in `quran_search.py` to compute the total gematrical value of the entire Quran by summing the gematrical values of all words across all verses. A pytest test case `test_calculate_quran_gematrical_value` will be created to ensure the accuracy of this function. This completes the gematrical analysis capabilities."
+    },
+    {
+        "iteration": 17,
+        "date": "2025-04-04",
+        "iteration_goal": "Implement `count_word_occurrences_in_surah` function in `quran_search.py` to count word occurrences within a specific Surah. Create `test_count_word_occurrences_in_surah` in `test_quran_search.py` to validate the new function. This feature enables analysis of word frequency within specific Quran chapters."
     }
 ]
