@@ -676,5 +676,51 @@ class TestQuranSearch(unittest.TestCase):
         results = search_word_at_position(dummy_data, "Hello", 10)
         self.assertEqual(len(results), 0, "Should return no verses for an out-of-range position.")
 
+    def test_search_word_group_at_position(self):
+        """
+        Test the search_word_group_at_position function for various scenarios:
+        
+        - Case-insensitive search: Searching for "quick brown" starting at position 2 should match verses 1, 2, and 3.
+          In these verses, the 2nd and 3rd words form the phrase "quick brown" in a case-insensitive manner.
+        - Case-sensitive search: Searching for "quick Brown" starting at position 1 should match only verse 4,
+          since only verse 4 begins with the exact case-sensitive phrase "quick Brown".
+        - Out-of-bounds position: Searching for a phrase with insufficient words from the given position should return no matches.
+        - No match scenario: Searching for a phrase that does not appear at the specified position should return an empty list.
+        """
+        self.maxDiff = None
+        dummy_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'The quick brown fox jumps'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'A QUICK brown Dog leaps'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'The quick brown fox'},
+            {'surah_number': '1', 'ayah_number': '4', 'verse_text': 'quick Brown fox is agile'},
+            {'surah_number': '1', 'ayah_number': '5', 'verse_text': 'A single word'}
+        ]
+        from src.quran_search import search_word_group_at_position
+        # Case-insensitive search for "quick brown" starting at position 2:
+        # Expected to match verses where the word group ("quick", "brown") appears starting at the 2nd word.
+        # In the dummy data, verses 1 ("The quick brown fox jumps"), 2 ("A QUICK brown Dog leaps"), and 3 ("The quick brown fox")
+        # satisfy this condition. Verse 4 does not match because its corresponding words at position 2 and 3 are ("Brown", "fox").
+        results_ci = search_word_group_at_position(dummy_data, "quick brown", 2, case_sensitive=False)
+        self.assertEqual(len(results_ci), 3, "Case-insensitive search should match 3 verses.")
+        self.assertEqual(results_ci[0]['ayah_number'], '1')
+        self.assertEqual(results_ci[1]['ayah_number'], '2')
+        self.assertEqual(results_ci[2]['ayah_number'], '3')
+        
+        # Case-sensitive search for "quick Brown" starting at position 1:
+        # Expected to match only verse 4, because it exactly starts with the word group "quick Brown" in the correct case.
+        results_cs = search_word_group_at_position(dummy_data, "quick Brown", 1, case_sensitive=True)
+        self.assertEqual(len(results_cs), 1, "Case-sensitive search should match only 1 verse.")
+        self.assertEqual(results_cs[0]['ayah_number'], '4')
+        
+        # Test out-of-bounds: searching "fox jumps" starting at position 5 should return no matches
+        # since there are not enough words in the verse to accommodate the word group.
+        results_oob = search_word_group_at_position(dummy_data, "fox jumps", 5)
+        self.assertEqual(len(results_oob), 0, "Out-of-bounds search should return zero matches.")
+        
+        # Test no match: searching for "brown fox" starting at position 1 should return an empty list
+        # because the phrase does not occur at the specified starting position in any verse.
+        results_no_match = search_word_group_at_position(dummy_data, "brown fox", 1)
+        self.assertEqual(results_no_match, [], "Search should return an empty list when no match is found.")
+
 if __name__ == '__main__':
     unittest.main()

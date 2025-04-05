@@ -108,5 +108,10 @@
         "iteration": 21,
         "date": "2025-04-04",
         "iteration_goal": "A new function `search_word_at_position` is added to the `QuranSearch` module to enable searching for a specific word at a given position within Quran verses. This enhancement is modular and testable, fitting within the existing architecture. A new test case `test_search_word_at_position` is also included to validate the functionality."
+    },
+    {
+        "iteration": 22,
+        "date": "2025-04-04",
+        "iteration_goal": "A new function `search_word_group_at_position` is added to the `QuranSearch` module, enhancing search capabilities to find word groups at specific positions in verses. This change is modular and testable, with a new test case added. No new modules are introduced, and the existing architecture is maintained."
     }
 ]

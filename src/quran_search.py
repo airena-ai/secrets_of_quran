@@ -598,3 +598,38 @@ def search_word_at_position(quran_data, word, position):
         if position <= len(words) and words[position - 1].lower() == word.lower():
             results.append(verse)
     return results
+
+def search_word_group_at_position(quran_data, word_group, position, case_sensitive=False):
+    """
+    Search for verses where the specified word group (phrase) appears starting at the given position.
+    
+    The verse text is split into words, and the word group is split into its constituent words.
+    The function checks if the sequence of words in the verse starting from the specified 1-indexed position
+    matches the word group. Comparison is done in a case-insensitive manner by default.
+    
+    Args:
+        quran_data (list): A list of dictionaries representing Quran verses.
+        word_group (str): The word group (phrase) to search for.
+        position (int): The starting position (1-indexed) to look for the word group.
+        case_sensitive (bool): If True, performs a case-sensitive match; otherwise, match is case-insensitive.
+                               Defaults to False.
+    
+    Returns:
+        list: A list of verse dictionaries where the word group is found at the specified position.
+    """
+    results = []
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        words = verse_text.split()
+        if not word_group.strip():
+            continue
+        group_words = word_group.split()
+        if position - 1 + len(group_words) <= len(words):
+            slice_words = words[position - 1: position - 1 + len(group_words)]
+            if case_sensitive:
+                if slice_words == group_words:
+                    results.append(verse)
+            else:
+                if [w.lower() for w in slice_words] == [w.lower() for w in group_words]:
+                    results.append(verse)
+    return results

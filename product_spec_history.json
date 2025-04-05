@@ -108,5 +108,10 @@
         "iteration": 21,
         "date": "2025-04-04",
         "iteration_goal": "This increment adds a new search function `search_word_at_position` to `quran_search.py`. This function allows users to find verses where a specific word appears at a particular position within the verse. For example, users can search for verses where 'Allah' is the first word. A new test case `test_search_word_at_position` is also created to ensure the correct functionality of this new feature."
+    },
+    {
+        "iteration": 22,
+        "date": "2025-04-04",
+        "iteration_goal": "This increment focuses on implementing the `search_word_group_at_position` function in `quran_search.py`. This new function will allow users to search for verses where a specific word group (phrase) starts at a given position within the verse.  A corresponding pytest test case `test_search_word_group_at_position` will be created to validate this functionality, ensuring accurate searches for phrases at specific positions in Quranic verses. This feature enhances the precision of verse searching by considering the positional context of word groups."
     }
 ]
