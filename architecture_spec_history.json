@@ -8,5 +8,10 @@
         "iteration": 1,
         "date": "2025-04-04",
         "iteration_goal": "The architecture is extended by adding a `search_word_group` function to the `QuranSearch` module. This function enables searching for exact word phrases within the Quran data, which is loaded by the existing `QuranDataLoader`. A new test case is introduced to verify the `search_word_group` functionality, ensuring modularity and testability are maintained as new features are added."
+    },
+    {
+        "iteration": 2,
+        "date": "2025-04-04",
+        "iteration_goal": "The architecture will be updated to support case-insensitive search in `search_word` and `search_word_group` functions within the `QuranSearch` module. This involves adding a `case_sensitive` parameter to these functions and modifying their search logic to handle case-insensitive comparisons when needed.  The test suite will be expanded to include tests for both case-sensitive and case-insensitive search modes to ensure functionality and correctness."
     }
 ]

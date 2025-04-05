@@ -48,39 +48,49 @@
     {
       "path": "src/quran_search.py",
       "language": "python",
-      "description": "Module for searching words in the loaded Quran data. This file provides two functions: one to search for a word in the Quran verses and another to search for a word group (exact phrase). It iterates over the provided Quran data to return verses that match the search criteria in a case-sensitive manner.",
+      "description": "Module for searching words in the loaded Quran data. Implements two functions: search_word_in_quran for searching for a word in the Quran data, and search_word_group for searching for a word group phrase with support for case sensitivity options. The module provides clear documentation for parameters and return types.",
       "classes": [],
       "functions": [
         {
           "name": "search_word_in_quran",
-          "description": "Searches for a word in the provided Quran data. Iterates over a list of Quran verses and returns those verses containing the specified search word. The function uses a case-sensitive search.",
+          "description": "Search for a word in the Quran verses. Iterates over the provided list of Quran data dictionaries to check for the presence of the search word in the verse text. Supports both case-sensitive and case-insensitive search.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data."
+              "description": "List of dictionaries representing Quran data containing verses."
             },
             {
               "name": "search_word",
               "type": "str",
-              "description": "The word to search for in the verse text."
+              "description": "The word to search within the verse text."
+            },
+            {
+              "name": "case_sensitive",
+              "type": "bool",
+              "description": "Optional flag to perform a case-sensitive search, defaults to False."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "search_word_group",
-          "description": "Searches for a specific word group (exact phrase) in the provided Quran data. Iterates through the verses and returns those that contain the given phrase while preserving word order and ensuring case sensitivity.",
+          "description": "Search for a specific word group (exact phrase) in the Quran verses. Iterates over the provided Quran data to check if the exact phrase is present in the verse text, supporting both case-sensitive and case-insensitive search.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data."
+              "description": "List of dictionaries representing Quran data containing verses."
             },
             {
               "name": "word_group",
               "type": "str",
-              "description": "The exact phrase to search for in the verse text."
+              "description": "The word group (exact phrase) to search for in the verse text."
+            },
+            {
+              "name": "case_sensitive",
+              "type": "bool",
+              "description": "Optional flag to perform a case-sensitive search, defaults to False."
             }
           ],
           "return_type": "list"
@@ -117,25 +127,85 @@
     {
       "path": "tests/test_quran_search.py",
       "language": "python",
-      "description": "Test file for verifying the functionalities of the Quran search module. Contains unit tests that check the correct behavior of word and phrase search functions using sample Quran data.",
+      "description": "Test suite for the Quran search functionality. Uses Python's unittest framework to validate the behavior of the search_word_in_quran and search_word_group functions from the quran_search module using both real and dummy data. It covers various scenarios including case-sensitive and case-insensitive searches.",
       "classes": [
         {
           "name": "TestQuranSearch",
-          "description": "Unit test class for testing the Quran search module. It verifies that the search functions return expected results for given search criteria including both existing and non-existing words/phrases.",
+          "description": "Unit test suite for validating the Quran search functions including case-sensitive and case-insensitive searches as well as various scenarios with both real and dummy data.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_search_allah_word",
-              "description": "Tests that searching for the word 'اللَّهِ' returns at least one verse from the Quran data, ensuring that the search function correctly identifies matching verses.",
-              "parameters": [],
+              "description": "Test that searching for the word 'اللَّهِ' returns at least one verse using case-insensitive search. Loads Quran data from file and verifies that the result list is non-empty.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestQuranSearch."
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_search_word_group",
-              "description": "Tests the search_word_group function with two scenarios: one where an existing word group is present in the Quran data and one where a non-existing group is searched, verifying both correct match and no-match outcomes.",
-              "parameters": [],
+              "description": "Test that search_word_group returns expected results for an existing word group and returns an empty list for a non-existing group. Also checks surah and ayah numbers for the matched verse.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestQuranSearch."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_case_insensitive_search_word",
+              "description": "Test search_word_in_quran function in case-insensitive mode using a dummy dataset, ensuring both matching verses are returned regardless of case.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestQuranSearch."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_case_sensitive_search_word",
+              "description": "Test search_word_in_quran function in case-sensitive mode using a dummy dataset, ensuring that only verses matching the exact case are returned.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestQuranSearch."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_case_insensitive_search_word_group",
+              "description": "Test search_word_group function in case-insensitive mode with a dummy dataset, verifying that both verses with different cases are matched.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestQuranSearch."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_case_sensitive_search_word_group",
+              "description": "Test search_word_group function in case-sensitive mode with a dummy dataset, ensuring that only exact case matches are returned.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of TestQuranSearch."
+                }
+              ],
               "return_type": "None"
             }
           ]
@@ -143,8 +213,8 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/quran_data_loader.py",
-        "src/quran_search.py"
+        "src/quran_search.py",
+        "src/quran_data_loader.py"
       ]
     },
     {

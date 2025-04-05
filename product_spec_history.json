@@ -8,5 +8,10 @@
         "iteration": 1,
         "date": "2025-04-04",
         "iteration_goal": "This increment focuses on enhancing the Quran Secrets Analyzer by adding the capability to search for word groups (phrases). A new function `search_word_group` will be implemented in `quran_search.py` to find exact word sequences within the Quran text.  A new pytest test case `test_search_word_group` will be created to validate this functionality, ensuring the application can now search for phrases in addition to individual words. This step expands the search capabilities and prepares the ground for more complex analyses in future iterations."
+    },
+    {
+        "iteration": 2,
+        "date": "2025-04-04",
+        "iteration_goal": "This increment enhances the search functionality of the Quran Secrets Analyzer by adding case-insensitive search capability to both `search_word` and `search_word_group` functions.  This allows users to search for words and phrases regardless of letter case. Existing and new test cases will be updated to ensure the correct functionality of both case-sensitive and case-insensitive search modes. This improvement makes the search feature more flexible and user-friendly."
     }
 ]

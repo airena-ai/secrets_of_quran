@@ -5,7 +5,7 @@ from src.quran_search import search_word_in_quran, search_word_group
 class TestQuranSearch(unittest.TestCase):
     def test_search_allah_word(self):
         """
-        Test that searching for the word 'اللَّهِ' returns at least one verse.
+        Test that searching for the word 'اللَّهِ' returns at least one verse using case-insensitive search.
         """
         self.maxDiff = None
         quran_file_path = 'data/quran-uthmani-min.txt'
@@ -39,6 +39,57 @@ class TestQuranSearch(unittest.TestCase):
         non_existing_group = "nonExistingWordGroup"
         results_non_existing = search_word_group(quran_data, non_existing_group)
         self.assertEqual(results_non_existing, [], "Search for '{}' should return an empty list".format(non_existing_group))
+
+    def test_case_insensitive_search_word(self):
+        """
+        Test the search_word_in_quran function in case-insensitive mode using a dummy dataset.
+        """
+        self.maxDiff = None
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'This is a Test verse.'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'This is a test verse.'}
+        ]
+        # Default mode is case-insensitive.
+        results = search_word_in_quran(quran_data, "Test")
+        self.assertEqual(len(results), 2, "Case-insensitive search should match both verses where casing differs.")
+
+    def test_case_sensitive_search_word(self):
+        """
+        Test the search_word_in_quran function in case-sensitive mode using a dummy dataset.
+        """
+        self.maxDiff = None
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'This is a Test verse.'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'This is a test verse.'}
+        ]
+        results = search_word_in_quran(quran_data, "Test", case_sensitive=True)
+        self.assertEqual(len(results), 1, "Case-sensitive search should match only the verse with exact case.")
+        self.assertEqual(results[0]['ayah_number'], '1', "Expected to match verse with ayah number '1' due to exact case match.")
+
+    def test_case_insensitive_search_word_group(self):
+        """
+        Test the search_word_group function in case-insensitive mode using a dummy dataset.
+        """
+        self.maxDiff = None
+        quran_data = [
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'A wonderful Journey begins here.'},
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'a wonderful journey begins here.'}
+        ]
+        results = search_word_group(quran_data, "wonderful Journey")
+        self.assertEqual(len(results), 2, "Case-insensitive group search should match both verses ignoring case differences.")
+
+    def test_case_sensitive_search_word_group(self):
+        """
+        Test the search_word_group function in case-sensitive mode using a dummy dataset.
+        """
+        self.maxDiff = None
+        quran_data = [
+            {'surah_number': '2', 'ayah_number': '1', 'verse_text': 'A wonderful Journey begins here.'},
+            {'surah_number': '2', 'ayah_number': '2', 'verse_text': 'a wonderful journey begins here.'}
+        ]
+        results = search_word_group(quran_data, "wonderful Journey", case_sensitive=True)
+        self.assertEqual(len(results), 1, "Case-sensitive group search should match only the verse with exact case.")
+        self.assertEqual(results[0]['ayah_number'], '1', "Expected to match verse with ayah number '1' due to exact case match.")
 
 if __name__ == '__main__':
     unittest.main()
