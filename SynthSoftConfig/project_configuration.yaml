@@ -1,6 +1,7 @@
 product_spec_northstar: >
   ### Objective:
   Develop a comprehensive Python application called Quran Secrets to discover deep, potentially hidden patterns, numerical codes, and linguistic structures in the Quran. The goal is to search for ultimate secrets — from known codes like 19-based patterns to yet-undiscovered anomalies.
+  Solve the mystery of 'The mysterious letters (Muqattaʿat)' that are at the begining of the Quran.
 
   ### Phase-Based Development Plan:
   
@@ -15,6 +16,7 @@ product_spec_northstar: >
   Mathematical phenomena
   Semantic symmetry
   Rhythmic or structural balance in verse arrangements
+  Solve the mystery of 'The mysterious letters (Muqattaʿat)' that are at the begining of the Quran.
   Anything “unthinkable” that could hint at a secret code or structure
   
   * No Restrictions on Creativity:
@@ -61,7 +63,7 @@ product_spec_northstar: >
   No mocks or partial runs — test the full analyzer as a real-world application
 
   * Final Goal:
-  Build the ultimate Quran Analyzer, pushing the boundaries of pattern discovery, linguistic depth, and computational creativity.
+  Build the ultimate Quran Analyzer, pushing the boundaries of pattern discovery, linguistic depth, and computational creativity and Solve the mystery of 'The mysterious letters (Muqattaʿat)' that are at the begining of the Quran.
 
 project_root_folder: C:\Github\secrets_of_quran
 product_spec_history_filename: product_spec_history.json
