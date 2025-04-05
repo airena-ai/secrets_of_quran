@@ -129,5 +129,15 @@ def main():
             verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
         ))
         
+    # Demonstration of search_verses_by_verse_gematrical_value_equals function (New Feature)
+    from src.quran_search import search_verses_by_verse_gematrical_value_equals
+    target_verse_gem_value = 168  # Example target value (e.g., for "بسم الله")
+    results_verse_gem = search_verses_by_verse_gematrical_value_equals(quran_data, target_verse_gem_value)
+    print("\nSearch results for verses where total gematrical value equals {}:".format(target_verse_gem_value))
+    for verse in results_verse_gem:
+        print("Surah: {} Ayah: {} - {}".format(
+            verse.get('surah_number'), verse.get('ayah_number'), verse.get('verse_text')
+        ))
+        
 if __name__ == '__main__':
     main()

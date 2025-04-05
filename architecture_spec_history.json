@@ -138,5 +138,10 @@
         "iteration": 27,
         "date": "2025-04-04",
         "iteration_goal": "A new function `search_verses_by_word_gematrical_value_equals_surah_number` is added to the `QuranSearch` module to find verses where a word's gematrical value matches the Surah number. A new test case is also created. This enhancement is modular and testable, extending the search capabilities of the `Quran Secrets Analyzer`."
+    },
+    {
+        "iteration": 28,
+        "date": "2025-04-04",
+        "iteration_goal": "A new function `search_verses_by_verse_gematrical_value_equals` is added to `QuranSearch` module. This function searches verses based on the sum of gematrical values of all words in each verse. A new test case is also added. No new modules are introduced, maintaining the existing architecture."
     }
 ]

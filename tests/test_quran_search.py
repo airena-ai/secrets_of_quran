@@ -22,7 +22,8 @@ from src.quran_search import (
     calculate_quran_gematrical_value,
     search_word_at_position,
     search_word_group_at_position,
-    search_verses_by_word_gematrical_value_equals_verse_number
+    search_verses_by_word_gematrical_value_equals_verse_number,
+    search_verses_by_word_gematrical_value_equals_surah_number
 )
 
 class TestQuranSearch(unittest.TestCase):
@@ -811,6 +812,37 @@ class TestQuranSearch(unittest.TestCase):
         self.assertEqual(results_beta, expected_beta, "Case-insensitive search for 'beta' should return verses with surah number equal to 3.")
         
         qs.calculate_gematrical_value = original_calc
+
+    def test_search_verses_by_verse_gematrical_value_equals(self):
+        """
+        Test the search_verses_by_verse_gematrical_value_equals function.
+        
+        Creates a dummy Quran data set with verses of known gematrical values and verifies that the function
+        returns the correct verses for given target gematrical values.
+        """
+        self.maxDiff = None
+        quran_data = [
+            {'surah_number': '1', 'ayah_number': '1', 'verse_text': 'بسم الله'},
+            {'surah_number': '1', 'ayah_number': '2', 'verse_text': 'الله'},
+            {'surah_number': '1', 'ayah_number': '3', 'verse_text': 'بسم'}
+        ]
+        from src.quran_search import search_verses_by_verse_gematrical_value_equals
+        # "بسم" = 2+60+40 = 102, "الله" = 1+30+30+5 = 66, so "بسم الله" = 168.
+        result = search_verses_by_verse_gematrical_value_equals(quran_data, 168)
+        expected = [{'surah_number': '1', 'ayah_number': '1', 'verse_text': 'بسم الله'}]
+        self.assertEqual(result, expected, "Expected only the first verse for target gematrical value 168.")
+        
+        result = search_verses_by_verse_gematrical_value_equals(quran_data, 66)
+        expected = [{'surah_number': '1', 'ayah_number': '2', 'verse_text': 'الله'}]
+        self.assertEqual(result, expected, "Expected only the second verse for target gematrical value 66.")
+        
+        result = search_verses_by_verse_gematrical_value_equals(quran_data, 102)
+        expected = [{'surah_number': '1', 'ayah_number': '3', 'verse_text': 'بسم'}]
+        self.assertEqual(result, expected, "Expected only the third verse for target gematrical value 102.")
+        
+        result = search_verses_by_verse_gematrical_value_equals(quran_data, 100)
+        expected = []
+        self.assertEqual(result, expected, "Expected no verses for target gematrical value 100.")
 
 if __name__ == '__main__':
     unittest.main()

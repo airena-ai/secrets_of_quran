@@ -787,3 +787,27 @@ def search_verses_by_word_gematrical_value_equals_surah_number(quran_data, word,
                 'verse_text': verse_text
             })
     return results
+
+def search_verses_by_verse_gematrical_value_equals(quran_data, target_value):
+    """
+    Search for Quran verses where the total gematrical value of all words in the verse equals the target value.
+    
+    This function iterates over each verse in the provided quran_data, splits the verse text into individual words,
+    calculates the gematrical value of each word using the calculate_gematrical_value function, sums these values,
+    and if the sum matches the target_value, the verse is included in the results.
+    
+    Args:
+        quran_data (list): A list of dictionaries representing Quran verses.
+        target_value (int): The target gematrical value to match.
+        
+    Returns:
+        list: A list of dictionaries representing verses where the total gematrical value equals target_value.
+    """
+    results = []
+    for verse in quran_data:
+        verse_text = verse.get('verse_text', '')
+        words = verse_text.split()
+        total = sum(calculate_gematrical_value(word) for word in words)
+        if total == target_value:
+            results.append(verse)
+    return results
