@@ -90,6 +90,45 @@ def main():
     # New: Contextual Analysis of Verses Following Muqatta'at
     analyze_muqattaat_context(text)
     
+    # New: Comparative Analysis for Surahs with and without Muqatta'at based on Root and Lemma Frequencies
+    from src.analyzer import categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies
+    muq_surahs, non_muq_surahs = categorize_surahs_by_muqattaat(text)
+    root_freq_muq = analyze_grouped_root_frequencies(text, muq_surahs)
+    root_freq_non_muq = analyze_grouped_root_frequencies(text, non_muq_surahs)
+    lemma_freq_muq = analyze_grouped_lemma_frequencies(text, muq_surahs)
+    lemma_freq_non_muq = analyze_grouped_lemma_frequencies(text, non_muq_surahs)
+    
+    top_n = 20
+    log_result("----- Comparative Analysis: Root Word Frequencies -----")
+    sorted_roots_muq = sorted(root_freq_muq.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    log_result("Top {} Root Words for Muqatta'at Surahs:".format(top_n))
+    for idx, (root, freq) in enumerate(sorted_roots_muq, start=1):
+         log_result("{}. '{}' : {}".format(idx, root, freq))
+    
+    sorted_roots_non_muq = sorted(root_freq_non_muq.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    log_result("Top {} Root Words for Non-Muqatta'at Surahs:".format(top_n))
+    for idx, (root, freq) in enumerate(sorted_roots_non_muq, start=1):
+         log_result("{}. '{}' : {}".format(idx, root, freq))
+    
+    common_roots = set(dict(sorted_roots_muq).keys()).intersection(set(dict(sorted_roots_non_muq).keys()))
+    if len(common_roots) < (0.5 * top_n):
+         log_secret_found("POTENTIAL SECRET FOUND: Significant difference in top root words between Muqatta'at and Non-Muqatta'at Surahs.")
+    
+    log_result("----- Comparative Analysis: Lemma Frequencies -----")
+    sorted_lemmas_muq = sorted(lemma_freq_muq.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    log_result("Top {} Lemmas for Muqatta'at Surahs:".format(top_n))
+    for idx, (lemma, freq) in enumerate(sorted_lemmas_muq, start=1):
+         log_result("{}. '{}' : {}".format(idx, lemma, freq))
+    
+    sorted_lemmas_non_muq = sorted(lemma_freq_non_muq.items(), key=lambda x: x[1], reverse=True)[:top_n]
+    log_result("Top {} Lemmas for Non-Muqatta'at Surahs:".format(top_n))
+    for idx, (lemma, freq) in enumerate(sorted_lemmas_non_muq, start=1):
+         log_result("{}. '{}' : {}".format(idx, lemma, freq))
+    
+    common_lemmas = set(dict(sorted_lemmas_muq).keys()).intersection(set(dict(sorted_lemmas_non_muq).keys()))
+    if len(common_lemmas) < (0.5 * top_n):
+         log_secret_found("POTENTIAL SECRET FOUND: Significant difference in top lemmas between Muqatta'at and Non-Muqatta'at Surahs.")
+    
     # New: Comparison between Surahs with and without Muqatta'at
     compare_surahs_muqattaat_vs_non_muqattaat(text)
     

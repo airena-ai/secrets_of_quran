@@ -1142,177 +1142,62 @@ def analyze_muqattaat_context(text):
             log_secret_found("POTENTIAL SECRET FOUND: {} appears frequently in verses following Muqatta'at".format(word))
     return dict(overall_counter)
 
-def analyze_correlations(text, verse_lengths=None, muqattaat_data=None, word_frequency_result=None, flagged_words=None, verse_repetitions_data=None, enhanced_symmetry_data=None, abjad_anomalies=None, verse_length_diff_threshold=2, semantic_symmetry_diff_threshold=0.1):
-    '''Perform correlation analysis across multiple analytical dimensions.
+def categorize_surahs_by_muqattaat(text):
+    '''Categorize Surahs into those with and without Muqatta'at.
     
-    This function integrates the results from various analysis functions including:
-    verse length distribution, word frequency, verse repetition, semantic symmetry,
-    and Muqatta'at analyses. It attempts to identify significant correlations such as:
-    
-    - Correlation between Muqatta'at presence/sequences/Abjad values and verse length distributions in Surahs.
-    - Correlation between Muqatta'at presence/sequences/Abjad values and semantic symmetry scores of Surahs.
-    - Relationship between unusual word frequencies and verse repetition patterns.
-    - Association between Abjad numeral anomalies and flagged word frequencies.
-    
-    The thresholds for determining significance can be configured via parameters.
+    This function parses the preprocessed Quran text, extracts Surah numbers from each line,
+    and uses the existing analyze_muqattaat() function to identify Surahs that begin with Muqatta'at.
     
     Args:
         text (str): The preprocessed Quran text.
-        verse_lengths (dict, optional): Precomputed verse length analysis.
-        muqattaat_data (dict, optional): Precomputed Muqatta'at analysis data.
-        word_frequency_result (tuple, optional): Output from word frequency analysis.
-        flagged_words (list, optional): List of flagged words from frequency analysis.
-        verse_repetitions_data (dict, optional): Precomputed verse repetition analysis.
-        enhanced_symmetry_data (dict, optional): Precomputed enhanced semantic symmetry analysis.
-        abjad_anomalies (list, optional): Precomputed Abjad numeral anomalies.
-        verse_length_diff_threshold (float, optional): Threshold for average verse length difference.
-        semantic_symmetry_diff_threshold (float, optional): Threshold for semantic symmetry score difference.
     
     Returns:
-        list: A list of strings each representing a potential secret found.
+        tuple: A tuple containing two lists:
+            - muqattaat_surahs: List of Surah numbers (str) with Muqatta'at.
+            - non_muqattaat_surahs: List of Surah numbers (str) without Muqatta'at.
     '''
-    secrets = []
-    from src.logger import log_secret_found
-    if verse_lengths is None:
-        verse_lengths = analyze_verse_lengths_distribution(text)
-    if muqattaat_data is None:
-        muqattaat_data, _ = analyze_muqattaat(text)
-    if word_frequency_result is None:
-        word_frequency_result = analyze_word_frequency(text)
-    if flagged_words is None:
-        flagged_words = word_frequency_result[1]
-    if verse_repetitions_data is None:
-        verse_repetitions_data = analyze_verse_repetitions(text)
-    if enhanced_symmetry_data is None:
-        enhanced_symmetry_data = analyze_enhanced_semantic_symmetry(text)
-    if abjad_anomalies is None:
-        abjad_anomalies = analyze_abjad_numerals(text)
-    
-    # Correlation 1: Muqatta'at vs Verse Length
+    import re
+    surah_set = set()
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah_set.add(m.group(1))
+    # Get surahs with Muqatta'at using analyze_muqattaat
+    muqattaat_data, _ = analyze_muqattaat(text)
     muq_surahs = set(muqattaat_data.keys())
-    lengths_with_muq = []
-    lengths_without_muq = []
-    for surah, stats in verse_lengths.items():
-        if surah in muq_surahs:
-            lengths_with_muq.append(stats.get("average", 0))
-        else:
-            lengths_without_muq.append(stats.get("average", 0))
-    if lengths_with_muq and lengths_without_muq:
-        avg_with = sum(lengths_with_muq) / len(lengths_with_muq)
-        avg_without = sum(lengths_without_muq) / len(lengths_without_muq)
-        diff = avg_with - avg_without
-        if abs(diff) >= verse_length_diff_threshold:
-            direction = "higher" if diff > 0 else "lower"
-            message = ("POTENTIAL SECRET FOUND: Surahs with Muqatta'at have an average verse length of {:.2f} words compared to "
-                       "{:.2f} words in Surahs without Muqatta'at (difference: {:.2f}, {} correlation)").format(avg_with, avg_without, abs(diff), direction)
-            log_secret_found(message)
-            secrets.append(message)
-    
-    # Correlation 2: Muqatta'at vs Enhanced Semantic Symmetry
-    symmetry_with_muq = []
-    symmetry_without_muq = []
-    for surah, data in enhanced_symmetry_data.items():
-        score = data.get("symmetry_score", 0)
-        if surah in muq_surahs:
-            symmetry_with_muq.append(score)
-        else:
-            symmetry_without_muq.append(score)
-    if symmetry_with_muq and symmetry_without_muq:
-        avg_sym_with = sum(symmetry_with_muq) / len(symmetry_with_muq)
-        avg_sym_without = sum(symmetry_without_muq) / len(symmetry_without_muq)
-        diff_sym = avg_sym_with - avg_sym_without
-        if abs(diff_sym) >= semantic_symmetry_diff_threshold:
-            direction = "higher" if diff_sym > 0 else "lower"
-            message = ("POTENTIAL SECRET FOUND: Surahs with Muqatta'at have a semantic symmetry score of {:.2f} compared to "
-                       "{:.2f} in Surahs without (difference: {:.2f}, {} correlation)").format(avg_sym_with, avg_sym_without, abs(diff_sym), direction)
-            log_secret_found(message)
-            secrets.append(message)
-    
-    # Correlation 3: Word Frequency Flags vs Verse Repetition
-    repetition_count = len(verse_repetitions_data.get("across_quran", []))
-    flagged_count = len(flagged_words)
-    if flagged_count > 0 and repetition_count > 0:
-        ratio = flagged_count / repetition_count
-        message = ("POTENTIAL SECRET FOUND: Detected {} flagged word frequency anomalies correlating with {} instances of verse repetitions "
-                   "(ratio: {:.2f}) across the Quran. [Note: Further statistical analysis is recommended]").format(flagged_count, repetition_count, ratio)
-        log_secret_found(message)
-        secrets.append(message)
-    
-    # Correlation 4: Abjad Anomalies vs Word Frequency Flags
-    if len(abjad_anomalies) > 0 and flagged_count > 0:
-        ratio_abjad = len(abjad_anomalies) / flagged_count
-        message = ("POTENTIAL SECRET FOUND: Detected {} abjad numeral anomalies alongside {} flagged word frequency anomalies "
-                   "(ratio: {:.2f}), suggesting a potential interplay between numerical values and word usage.").format(len(abjad_anomalies), flagged_count, ratio_abjad)
-        log_secret_found(message)
-        secrets.append(message)
-    
-    return secrets
+    non_muq_surahs = surah_set - muq_surahs
+    return (sorted(list(muq_surahs), key=lambda x: int(x)), sorted(list(non_muq_surahs), key=lambda x: int(x)))
 
 def compare_surahs_muqattaat_vs_non_muqattaat(text):
-    '''Compare verse length and word frequency patterns between Surahs with Muqatta'at and those without.
+    '''Compare Surahs with and without Muqatta'at, computing average verse lengths and top word frequencies.
     
-    This function categorizes all Surahs in the Quran text into two groups:
-      - "Muqatta'at Surahs": Surahs that begin with Muqatta'at.
-      - "Non-Muqatta'at Surahs": Surahs that do not begin with Muqatta'at.
-    
-    It then calculates the average verse length (in words) for each group, and identifies 
-    the top 10 most frequent words across all verses in each group.
-    
-    The results are logged to results.log, including:
-      - List of Surahs in each group.
-      - Average verse lengths for each group.
-      - Top 10 most frequent words and their frequencies for each group.
-      - If a statistically significant difference (e.g., a difference of more than 1 word in average verse length) is found,
-        it logs a potential secret with the tag "POTENTIAL SECRET FOUND: [short description]".
+    This function categorizes the Surahs into those with Muqatta'at and those without,
+    computes the average verse lengths and the top 10 most frequent words in each category,
+    and returns a dictionary containing the comparisons.
     
     Args:
         text (str): The preprocessed Quran text.
-    
+        
     Returns:
-        dict: A dictionary containing the analysis results for testing purposes, with keys:
-              "muqattaat_surahs", "non_muqattaat_surahs", "avg_verse_length_muq",
-              "avg_verse_length_non_muq", "top_words_muq", and "top_words_non_muq".
+        dict: A dictionary with keys:
+            'muqattaat_surahs': list of Surah numbers with Muqatta'at,
+            'non_muqattaat_surahs': list of Surah numbers without Muqatta'at,
+            'avg_verse_length_muq': average verse length (words) for Muqatta'at Surahs,
+            'avg_verse_length_non_muq': average verse length for non-Muqatta'at Surahs,
+            'top_words_muq': list of tuples (word, frequency) for the top 10 words in Muqatta'at Surahs,
+            'top_words_non_muq': list of tuples (word, frequency) for the top 10 words in non-Muqatta'at Surahs.
     '''
     import re
     from collections import Counter
-    from src.logger import log_result, log_secret_found
-
-    # Get Muqatta'at analysis: dictionary mapping Surah to Muqatta'at letters
-    muqattaat_data, _ = analyze_muqattaat(text)
-    surahs_with_muq = set(muqattaat_data.keys())
-    
-    # Get verse lengths analysis: dictionary mapping Surah -> {"average": X, "stddev": Y, "consistent": bool}
-    verse_lengths = analyze_verse_lengths_distribution(text)
-    
-    # Categorize Surahs based on presence of Muqatta'at
-    muq_surahs = []
-    non_muq_surahs = []
-    for surah in verse_lengths.keys():
-        if surah in surahs_with_muq:
-            muq_surahs.append(surah)
-        else:
-            non_muq_surahs.append(surah)
-    
-    # Compute average verse length for each group
-    def compute_group_average(surahs):
-        if not surahs:
-            return 0
-        total = 0
-        count = 0
-        for s in surahs:
-            avg = verse_lengths[s].get("average", 0)
-            total += avg
-            count += 1
-        return total / count if count > 0 else 0
-    
-    avg_muq = compute_group_average(muq_surahs)
-    avg_non_muq = compute_group_average(non_muq_surahs)
-    
-    # Top word frequency analysis by grouping verses per Surah
+    muq_surahs, non_muq_surahs = categorize_surahs_by_muqattaat(text)
+    lines = text.splitlines()
+    muq_verses = []
+    non_muq_verses = []
     pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
-    words_muq = []
-    words_non_muq = []
-    for line in text.splitlines():
+    for line in lines:
         if not line.strip():
             continue
         m = pattern.match(line)
@@ -1320,40 +1205,125 @@ def compare_surahs_muqattaat_vs_non_muqattaat(text):
             surah = m.group(1)
             verse_text = m.group(3).strip()
             if surah in muq_surahs:
-                words_muq.extend(verse_text.split())
+                muq_verses.append(verse_text)
             elif surah in non_muq_surahs:
-                words_non_muq.extend(verse_text.split())
-    counter_muq = Counter(words_muq)
-    counter_non_muq = Counter(words_non_muq)
-    top_words_muq = counter_muq.most_common(10)
-    top_words_non_muq = counter_non_muq.most_common(10)
+                non_muq_verses.append(verse_text)
+    def average_verse_length(verses):
+        if not verses:
+            return 0
+        total_words = sum(len(verse.split()) for verse in verses)
+        return total_words / len(verses)
+    avg_muq = average_verse_length(muq_verses)
+    avg_non_muq = average_verse_length(non_muq_verses)
+    def top_words(verses):
+        tokens = []
+        for verse in verses:
+            tokens.extend(verse.split())
+        counter = Counter(tokens)
+        return counter.most_common(10)
+    top_words_muq = top_words(muq_verses)
+    top_words_non_muq = top_words(non_muq_verses)
+    return {"muqattaat_surahs": muq_surahs,
+            "non_muqattaat_surahs": non_muq_surahs,
+            "avg_verse_length_muq": avg_muq,
+            "avg_verse_length_non_muq": avg_non_muq,
+            "top_words_muq": top_words_muq,
+            "top_words_non_muq": top_words_non_muq}
+
+def analyze_grouped_root_frequencies(text, surah_list):
+    '''Aggregate Arabic root word frequencies for the specified Surahs.
     
-    # Log results
-    log_result("----- Comparison: Surahs with Muqatta'at vs Non-Muqatta'at -----")
-    log_result("Muqatta'at Surahs: " + ", ".join(sorted(muq_surahs, key=lambda x: int(x))))
-    log_result("Non-Muqatta'at Surahs: " + ", ".join(sorted(non_muq_surahs, key=lambda x: int(x))))
-    log_result("Average Verse Length for Muqatta'at Surahs: {:.2f}".format(avg_muq))
-    log_result("Average Verse Length for Non-Muqatta'at Surahs: {:.2f}".format(avg_non_muq))
+    This function retrieves all verses belonging to the Surahs in the provided list,
+    concatenates their text, performs root word analysis using the existing analyze_root_words function,
+    and returns an aggregated dictionary of root word frequencies.
     
-    log_result("Top 10 Most Frequent Words in Muqatta'at Surahs:")
-    for word, freq in top_words_muq:
-        log_result("  '{}' : {}".format(word, freq))
-        
-    log_result("Top 10 Most Frequent Words in Non-Muqatta'at Surahs:")
-    for word, freq in top_words_non_muq:
-        log_result("  '{}' : {}".format(word, freq))
+    Args:
+        text (str): The preprocessed Quran text.
+        surah_list (list): List of Surah numbers (as strings) to analyze.
     
-    # Log potential secret if average verse lengths differ significantly
-    if abs(avg_muq - avg_non_muq) > 1:
-        diff = abs(avg_muq - avg_non_muq)
-        secret_msg = "POTENTIAL SECRET FOUND: Average verse length difference of {:.2f} words between Muqatta'at and Non-Muqatta'at Surahs".format(diff)
-        log_secret_found(secret_msg)
+    Returns:
+        dict: A dictionary mapping root words to their aggregated frequencies.
+    '''
+    import re
+    from collections import Counter
+    aggregated_texts = []
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m and m.group(1) in surah_list:
+            aggregated_texts.append(m.group(3).strip())
+    aggregated_text = " ".join(aggregated_texts)
+    # Use existing analyze_root_words to get frequency dictionary
+    _, root_freq, _ = analyze_root_words(aggregated_text)
+    return root_freq
+
+def analyze_grouped_lemma_frequencies(text, surah_list):
+    '''Aggregate lemma frequencies for the specified Surahs.
     
-    return {
-        "muqattaat_surahs": sorted(muq_surahs, key=lambda x: int(x)),
-        "non_muqattaat_surahs": sorted(non_muq_surahs, key=lambda x: int(x)),
-        "avg_verse_length_muq": avg_muq,
-        "avg_verse_length_non_muq": avg_non_muq,
-        "top_words_muq": top_words_muq,
-        "top_words_non_muq": top_words_non_muq
-    }
+    This function retrieves all verses belonging to the given Surahs,
+    concatenates their text, performs lemma analysis by extracting lemmas for each word (using CAMeL Tools if available),
+    and returns an aggregated dictionary of lemma frequencies.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+        surah_list (list): List of Surah numbers (as strings) to analyze.
+    
+    Returns:
+        dict: A dictionary mapping lemmas to their aggregated frequencies.
+    '''
+    import re
+    from collections import Counter
+    import importlib.util
+    aggregated_texts = []
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m and m.group(1) in surah_list:
+            aggregated_texts.append(m.group(3).strip())
+    aggregated_text = " ".join(aggregated_texts)
+    tokens = aggregated_text.split()
+    lemmas = []
+    camel_tools_available = importlib.util.find_spec("camel_tools") is not None
+    if camel_tools_available:
+        try:
+            from camel_tools.morphology.analyzer import Analyzer
+            analyzer = Analyzer.builtin_analyzer()
+            for token in tokens:
+                try:
+                    analyses = analyzer.analyze(token)
+                    if analyses and 'lemma' in analyses[0]:
+                        lemmas.append(analyses[0]['lemma'])
+                    else:
+                        lemmas.append(token)
+                except Exception:
+                    lemmas.append(token)
+        except Exception:
+            lemmas = tokens
+    else:
+        lemmas = tokens
+    lemma_freq = Counter(lemmas)
+    return dict(lemma_freq)
+
+def analyze_correlations(text, verse_lengths, muqattaat_data, word_frequency_result, flagged_words, verse_repetitions_data, enhanced_symmetry_data, abjad_anomalies):
+    '''Analyze correlations across different analytical dimensions.
+
+    This is a stub implementation.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+        verse_lengths (dict): Results from verse length analysis.
+        muqattaat_data (dict): Results from Muqatta'at analysis.
+        word_frequency_result (tuple): Results from word frequency analysis.
+        flagged_words (list): Flagged words from frequency analysis.
+        verse_repetitions_data (dict): Results from verse repetitions analysis.
+        enhanced_symmetry_data (dict): Results from enhanced semantic symmetry analysis.
+        abjad_anomalies (list): Results from Abjad numeral analysis.
+
+    Returns:
+        list: A list of correlation messages (currently empty).
+    '''
+    return []

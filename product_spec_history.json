@@ -93,5 +93,10 @@
         "iteration": 18,
         "date": "2025-04-05",
         "iteration_goal": "This increment focuses on comparing Surahs that begin with Muqatta'at to those that do not. We will develop a function to categorize Surahs into these two groups and then analyze and compare them based on average verse length and top word frequencies. The results, logged in `results.log`, will help determine if the presence of Muqatta'at correlates with any distinct patterns in these basic textual features. This comparative analysis is a step towards understanding the characteristics of Surahs associated with Muqatta'at."
+    },
+    {
+        "iteration": 19,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment focuses on comparing Surahs with and without Muqatta'at based on grouped root word and lemma frequency analysis. We will categorize Surahs, analyze root and lemma frequencies for each group, log the top frequencies, and perform a comparative analysis to identify potential linguistic differences or similarities. The results will be logged in `results.log`, and the integration test will be updated to include this new functionality. This step aims to uncover whether Surahs with Muqatta'at exhibit distinct linguistic patterns at the root and lemma levels compared to those without."
     }
 ]

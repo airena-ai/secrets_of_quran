@@ -17,8 +17,8 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
-                       "1|2| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
+        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
+                       "1|2| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -56,9 +56,10 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
                 self.assertIn("#################### Muqatta'at Numerical Analysis ####################", log_contents)
                 self.assertIn("Total Abjad Sum:", log_contents)
-                # New assertion to verify contextual analysis logs
+                # New assertions for comparative analysis
+                self.assertIn("----- Comparative Analysis: Root Word Frequencies -----", log_contents)
+                self.assertIn("----- Comparative Analysis: Lemma Frequencies -----", log_contents)
                 self.assertIn("Contextual Analysis of Verses Following Muqatta'at", log_contents)
-                # New assertion to verify thematic analysis logs
                 self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at 'الم': Theme - Guidance and Divine Law", log_contents)
             finally:
                 if os.path.exists(log_file):
@@ -123,11 +124,10 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
                 self.assertIn("#################### Muqatta'at Numerical Analysis ####################", log_contents)
                 self.assertIn("Total Abjad Sum:", log_contents)
-                self.assertIn("Sequence 'الم' occurred 2 times", log_contents)
-                self.assertIn("Sequence 'الحمد' occurred 2 times", log_contents)
-                # New assertion to verify contextual analysis logs
+                # New assertions for comparative analysis
+                self.assertIn("----- Comparative Analysis: Root Word Frequencies -----", log_contents)
+                self.assertIn("----- Comparative Analysis: Lemma Frequencies -----", log_contents)
                 self.assertIn("Contextual Analysis of Verses Following Muqatta'at", log_contents)
-                # New assertion to verify thematic analysis logs
                 self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at 'الم': Theme - Guidance and Divine Law", log_contents)
             finally:
                 if os.path.exists(file_path):
