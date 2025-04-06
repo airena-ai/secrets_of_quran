@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat
 from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
@@ -89,6 +89,9 @@ def main():
     
     # New: Contextual Analysis of Verses Following Muqatta'at
     analyze_muqattaat_context(text)
+    
+    # New: Comparison between Surahs with and without Muqatta'at
+    compare_surahs_muqattaat_vs_non_muqattaat(text)
     
     # Perform correlation analysis across various analytical dimensions.
     correlation_secrets = analyze_correlations(

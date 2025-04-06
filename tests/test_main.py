@@ -139,5 +139,23 @@ class TestMainIntegration(unittest.TestCase):
                 except OSError:
                     pass
 
+    def test_compare_surahs_muqattaat_vs_non_muqattaat(self):
+        '''Test the compare_surahs_muqattaat_vs_non_muqattaat() function for correct categorization and analysis.'''
+        sample_text = ("2|1|الم بداية السورة\n"
+                       "2|2|نص الآية الثانية\n"
+                       "4|1|هذه آية عادية\n"
+                       "4|2|وهذه آية أخرى")
+        from src.analyzer import compare_surahs_muqattaat_vs_non_muqattaat
+        result = compare_surahs_muqattaat_vs_non_muqattaat(sample_text)
+        # Check that Surah 2 is categorized as having Muqatta'at and Surah 4 is not.
+        self.assertIn("2", result["muqattaat_surahs"])
+        self.assertIn("4", result["non_muqattaat_surahs"])
+        # Expected average for both groups should be 3.0 as each line has 3 words.
+        self.assertAlmostEqual(result["avg_verse_length_muq"], 3.0)
+        self.assertAlmostEqual(result["avg_verse_length_non_muq"], 3.0)
+        # Top words lists should have at most 10 entries.
+        self.assertLessEqual(len(result["top_words_muq"]), 10)
+        self.assertLessEqual(len(result["top_words_non_muq"]), 10)
+
 if __name__ == '__main__':
     unittest.main()

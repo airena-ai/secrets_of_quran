@@ -88,5 +88,10 @@
         "iteration": 17,
         "date": "2025-04-05",
         "iteration_goal": "A new function `analyze_muqattaat_context()` is added to the `analysis` module to analyze verses following Muqatta'at. This function extracts and analyzes the context verses, logs frequent words and potential secrets. `main()` and integration tests are updated to include this new analysis. The modular architecture is maintained by extending the `analysis` module."
+    },
+    {
+        "iteration": 18,
+        "date": "2025-04-05",
+        "iteration_goal": "Introduce `compare_surahs_muqattaat_vs_non_muqattaat()` function in the `analysis` module to compare Surahs with and without Muqatta'at based on verse length and word frequency. This function categorizes Surahs, reuses existing analysis functions, logs comparison results, and identifies potential secrets. Update `main()` and integration tests to include this new analysis for comparative study of Surah groups."
     }
 ]

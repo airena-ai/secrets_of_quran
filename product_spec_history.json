@@ -88,5 +88,10 @@
         "iteration": 17,
         "date": "2025-04-05",
         "iteration_goal": "This increment focuses on analyzing the verses that immediately follow the Muqatta'at (mysterious letters) in the Quran. A new function `analyze_muqattaat_context()` will be developed to extract these 'context verses', perform word frequency analysis on them, and log the most frequent words. This aims to identify potential semantic links or patterns in the verses that appear right after the Muqatta'at, providing a new perspective in understanding these mysterious letters. The `main()` function and integration tests will be updated to include this new analysis."
+    },
+    {
+        "iteration": 18,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment focuses on comparing Surahs that begin with Muqatta'at to those that do not. We will develop a function to categorize Surahs into these two groups and then analyze and compare them based on average verse length and top word frequencies. The results, logged in `results.log`, will help determine if the presence of Muqatta'at correlates with any distinct patterns in these basic textual features. This comparative analysis is a step towards understanding the characteristics of Surahs associated with Muqatta'at."
     }
 ]

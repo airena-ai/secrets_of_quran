@@ -1247,3 +1247,113 @@ def analyze_correlations(text, verse_lengths=None, muqattaat_data=None, word_fre
         secrets.append(message)
     
     return secrets
+
+def compare_surahs_muqattaat_vs_non_muqattaat(text):
+    '''Compare verse length and word frequency patterns between Surahs with Muqatta'at and those without.
+    
+    This function categorizes all Surahs in the Quran text into two groups:
+      - "Muqatta'at Surahs": Surahs that begin with Muqatta'at.
+      - "Non-Muqatta'at Surahs": Surahs that do not begin with Muqatta'at.
+    
+    It then calculates the average verse length (in words) for each group, and identifies 
+    the top 10 most frequent words across all verses in each group.
+    
+    The results are logged to results.log, including:
+      - List of Surahs in each group.
+      - Average verse lengths for each group.
+      - Top 10 most frequent words and their frequencies for each group.
+      - If a statistically significant difference (e.g., a difference of more than 1 word in average verse length) is found,
+        it logs a potential secret with the tag "POTENTIAL SECRET FOUND: [short description]".
+    
+    Args:
+        text (str): The preprocessed Quran text.
+    
+    Returns:
+        dict: A dictionary containing the analysis results for testing purposes, with keys:
+              "muqattaat_surahs", "non_muqattaat_surahs", "avg_verse_length_muq",
+              "avg_verse_length_non_muq", "top_words_muq", and "top_words_non_muq".
+    '''
+    import re
+    from collections import Counter
+    from src.logger import log_result, log_secret_found
+
+    # Get Muqatta'at analysis: dictionary mapping Surah to Muqatta'at letters
+    muqattaat_data, _ = analyze_muqattaat(text)
+    surahs_with_muq = set(muqattaat_data.keys())
+    
+    # Get verse lengths analysis: dictionary mapping Surah -> {"average": X, "stddev": Y, "consistent": bool}
+    verse_lengths = analyze_verse_lengths_distribution(text)
+    
+    # Categorize Surahs based on presence of Muqatta'at
+    muq_surahs = []
+    non_muq_surahs = []
+    for surah in verse_lengths.keys():
+        if surah in surahs_with_muq:
+            muq_surahs.append(surah)
+        else:
+            non_muq_surahs.append(surah)
+    
+    # Compute average verse length for each group
+    def compute_group_average(surahs):
+        if not surahs:
+            return 0
+        total = 0
+        count = 0
+        for s in surahs:
+            avg = verse_lengths[s].get("average", 0)
+            total += avg
+            count += 1
+        return total / count if count > 0 else 0
+    
+    avg_muq = compute_group_average(muq_surahs)
+    avg_non_muq = compute_group_average(non_muq_surahs)
+    
+    # Top word frequency analysis by grouping verses per Surah
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    words_muq = []
+    words_non_muq = []
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            verse_text = m.group(3).strip()
+            if surah in muq_surahs:
+                words_muq.extend(verse_text.split())
+            elif surah in non_muq_surahs:
+                words_non_muq.extend(verse_text.split())
+    counter_muq = Counter(words_muq)
+    counter_non_muq = Counter(words_non_muq)
+    top_words_muq = counter_muq.most_common(10)
+    top_words_non_muq = counter_non_muq.most_common(10)
+    
+    # Log results
+    log_result("----- Comparison: Surahs with Muqatta'at vs Non-Muqatta'at -----")
+    log_result("Muqatta'at Surahs: " + ", ".join(sorted(muq_surahs, key=lambda x: int(x))))
+    log_result("Non-Muqatta'at Surahs: " + ", ".join(sorted(non_muq_surahs, key=lambda x: int(x))))
+    log_result("Average Verse Length for Muqatta'at Surahs: {:.2f}".format(avg_muq))
+    log_result("Average Verse Length for Non-Muqatta'at Surahs: {:.2f}".format(avg_non_muq))
+    
+    log_result("Top 10 Most Frequent Words in Muqatta'at Surahs:")
+    for word, freq in top_words_muq:
+        log_result("  '{}' : {}".format(word, freq))
+        
+    log_result("Top 10 Most Frequent Words in Non-Muqatta'at Surahs:")
+    for word, freq in top_words_non_muq:
+        log_result("  '{}' : {}".format(word, freq))
+    
+    # Log potential secret if average verse lengths differ significantly
+    if abs(avg_muq - avg_non_muq) > 1:
+        diff = abs(avg_muq - avg_non_muq)
+        secret_msg = "POTENTIAL SECRET FOUND: Average verse length difference of {:.2f} words between Muqatta'at and Non-Muqatta'at Surahs".format(diff)
+        log_secret_found(secret_msg)
+    
+    return {
+        "muqattaat_surahs": sorted(muq_surahs, key=lambda x: int(x)),
+        "non_muqattaat_surahs": sorted(non_muq_surahs, key=lambda x: int(x)),
+        "avg_verse_length_muq": avg_muq,
+        "avg_verse_length_non_muq": avg_non_muq,
+        "top_words_muq": top_words_muq,
+        "top_words_non_muq": top_words_non_muq
+    }
