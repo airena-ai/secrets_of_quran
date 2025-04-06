@@ -83,5 +83,10 @@
         "iteration": 16,
         "date": "2025-04-05",
         "iteration_goal": "This increment focuses on performing a simplified thematic analysis of Surahs that contain Muqatta'at. It involves creating a dictionary of Surah themes, developing a function `analyze_muqattaat_themes()` to associate these themes with Surahs containing Muqatta'at, logging the results, and updating the integration test. This step aims to explore potential thematic connections to the mysterious letters by linking them to the high-level topics of the Surahs they precede. The themes are manually assigned and simplified for this initial exploratory step."
+    },
+    {
+        "iteration": 17,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment focuses on analyzing the verses that immediately follow the Muqatta'at (mysterious letters) in the Quran. A new function `analyze_muqattaat_context()` will be developed to extract these 'context verses', perform word frequency analysis on them, and log the most frequent words. This aims to identify potential semantic links or patterns in the verses that appear right after the Muqatta'at, providing a new perspective in understanding these mysterious letters. The `main()` function and integration tests will be updated to include this new analysis."
     }
 ]

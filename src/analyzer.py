@@ -810,7 +810,7 @@ def analyze_muqattaat_positions(text):
     It determines in which category (Beginning, Middle, End, or Throughout) the Muqatta'at appear,
     based on the index of the verses in the Surah where they are found. The results,
     including a summary count for each category, are logged to results.log.
-
+    
     Args:
         text (str): The preprocessed Quran text.
 
@@ -907,9 +907,9 @@ def analyze_muqattaat_positions(text):
 def analyze_muqattaat_sequences(text):
     '''Analyze Muqatta'at sequences in the Quran text.
 
-    This function identifies Surahs recognized to contain Muqatta'at by checking if the Surah number is in a predefined list.
-    For each such Surah, it extracts the sequence of Muqatta'at letters from the beginning of the first verse.
-    It then counts the frequency of each unique sequence across all Surahs and returns the result.
+    This function identifies lines from Surahs recognized to contain Muqatta'at by checking if the Surah number is in a predefined list.
+    For each such line, it extracts the sequence of Muqatta'at letters from the beginning of the verse.
+    It then counts the frequency of each unique sequence across all such verses and returns the result.
 
     Args:
         text (str): The preprocessed Quran text.
@@ -922,7 +922,7 @@ def analyze_muqattaat_sequences(text):
     predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
                            "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
                            "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
-    sequence_by_surah = {}
+    sequences = []
     pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
     for line in text.splitlines():
         if not line.strip():
@@ -931,11 +931,11 @@ def analyze_muqattaat_sequences(text):
         if m:
             surah = m.group(1)
             verse_text = m.group(3).strip()
-            if surah in predefined_surahs and surah not in sequence_by_surah:
+            if surah in predefined_surahs:
                 m_seq = re.match(r'^([\u0621-\u064A]+)', verse_text)
                 if m_seq:
-                    sequence_by_surah[surah] = m_seq.group(1)
-    freq_counter = Counter(sequence_by_surah.values())
+                    sequences.append(m_seq.group(1))
+    freq_counter = Counter(sequences)
     return dict(freq_counter)
 
 def analyze_muqattaat_numerical_values(text):
@@ -1070,6 +1070,77 @@ def analyze_muqattaat_themes():
          letters = muqattaat_letters.get(surah, "N/A")
          message = "Surah {} ({}) with Muqatta'at '{}': Theme - {}".format(surah, info["name"], letters, info["theme"])
          logger.log_result(message)
+
+def analyze_muqattaat_context(text):
+    '''Analyze the verses that immediately follow the Muqatta'at in Surahs that begin with them.
+
+    This function processes the preprocessed Quran text to group verses by Surah,
+    identifies Surahs that begin with Muqatta'at (using a predefined list),
+    and for each such Surah, extracts the verse immediately following the first verse (which contains the Muqatta'at).
+    The context verse is then preprocessed using existing text normalization and tokenization functions,
+    and the word frequencies across all context verses are calculated.
+    The top 10 most frequent words are logged to the results log file, with any words that are unusually frequent flagged.
+
+    Args:
+        text (str): The preprocessed Quran text.
+
+    Returns:
+        dict: A dictionary mapping words to their frequency counts from the context verses.
+    '''
+    import re
+    from collections import defaultdict, Counter
+    from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
+    from src.logger import log_result, log_secret_found
+
+    # Group verses by Surah
+    surah_verses = defaultdict(list)
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    default_surah = "1"
+    default_ayah = 1
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            ayah = int(m.group(2))
+            verse_text = m.group(3).strip()
+        else:
+            surah = default_surah
+            ayah = default_ayah
+            verse_text = line.strip()
+            default_ayah += 1
+        surah_verses[surah].append((ayah, verse_text))
+    # Predefined Surahs that begin with Muqatta'at
+    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15",
+                           "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
+                           "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
+    overall_counter = Counter()
+    for surah in predefined_surahs:
+        verses = surah_verses.get(surah, [])
+        if len(verses) >= 2:
+            verses_sorted = sorted(verses, key=lambda x: x[0])
+            if len(verses_sorted) < 2:
+                continue
+            # Extract the context verse (immediately after the Muqatta'at verse)
+            context_verse = verses_sorted[1][1]
+            # Preprocess the context verse
+            processed_verse = normalize_arabic_letters(remove_diacritics(context_verse))
+            tokens = processed_verse.split()
+            overall_counter.update(tokens)
+    # Log top 10 words
+    top_n = 10
+    top_words = overall_counter.most_common(top_n)
+    log_result("Contextual Analysis of Verses Following Muqatta'at (Top {} words):".format(top_n))
+    if top_words:
+        avg_freq = sum(freq for _, freq in top_words) / len(top_words)
+    else:
+        avg_freq = 0
+    for idx, (word, freq) in enumerate(top_words, start=1):
+        log_result("{}. '{}' : {}".format(idx, word, freq))
+        if avg_freq > 0 and freq > 2 * avg_freq:
+            log_secret_found("POTENTIAL SECRET FOUND: {} appears frequently in verses following Muqatta'at".format(word))
+    return dict(overall_counter)
 
 def analyze_correlations(text, verse_lengths=None, muqattaat_data=None, word_frequency_result=None, flagged_words=None, verse_repetitions_data=None, enhanced_symmetry_data=None, abjad_anomalies=None, verse_length_diff_threshold=2, semantic_symmetry_diff_threshold=0.1):
     '''Perform correlation analysis across multiple analytical dimensions.

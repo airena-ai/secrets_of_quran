@@ -83,5 +83,10 @@
         "iteration": 16,
         "date": "2025-04-05",
         "iteration_goal": "The architecture is updated to include thematic analysis of Surahs with Muqatta'at. A new `analyze_muqattaat_themes()` function and `surah_themes` dictionary are added to the `analysis` module. The `main()` function is updated to call this new function, and the integration test is enhanced to verify the thematic analysis logging in `results.log`. This is a modular addition to the existing analysis capabilities."
+    },
+    {
+        "iteration": 17,
+        "date": "2025-04-05",
+        "iteration_goal": "A new function `analyze_muqattaat_context()` is added to the `analysis` module to analyze verses following Muqatta'at. This function extracts and analyzes the context verses, logs frequent words and potential secrets. `main()` and integration tests are updated to include this new analysis. The modular architecture is maintained by extending the `analysis` module."
     }
 ]

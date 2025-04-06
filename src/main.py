@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_correlations, analyze_muqattaat_themes
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations
 from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
@@ -87,6 +87,9 @@ def main():
         if freq > 1:
             log_secret_found("Sequence '{}' appears unusually often ({} times)".format(seq, freq))
     
+    # New: Contextual Analysis of Verses Following Muqatta'at
+    analyze_muqattaat_context(text)
+    
     # Perform correlation analysis across various analytical dimensions.
     correlation_secrets = analyze_correlations(
         text,
@@ -141,7 +144,7 @@ def main():
     for seq, freq in muqattaat_seq_freq.items():
         final_report_lines.append("Sequence '{}' occurred {} times".format(seq, freq))
     final_report_lines.append("")
-    final_report_lines.append("Correlation Analysis:")
+    final_report_lines.append("Correlation Analysis Summary:")
     if correlation_secrets:
         for msg in correlation_secrets:
             final_report_lines.append(msg)

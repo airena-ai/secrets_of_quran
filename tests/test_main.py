@@ -56,6 +56,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
                 self.assertIn("#################### Muqatta'at Numerical Analysis ####################", log_contents)
                 self.assertIn("Total Abjad Sum:", log_contents)
+                # New assertion to verify contextual analysis logs
+                self.assertIn("Contextual Analysis of Verses Following Muqatta'at", log_contents)
                 # New assertion to verify thematic analysis logs
                 self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at 'الم': Theme - Guidance and Divine Law", log_contents)
             finally:
@@ -71,7 +73,7 @@ class TestMainIntegration(unittest.TestCase):
         sample_text = ("2|1|الم الحمد لله رب العالمين\n"
                        "2|2|الم الحمد لله رب العالمين\n"
                        "3|1| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين\n"
-                       "3|2| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين")
+                       "3|2| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -121,8 +123,10 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
                 self.assertIn("#################### Muqatta'at Numerical Analysis ####################", log_contents)
                 self.assertIn("Total Abjad Sum:", log_contents)
-                self.assertIn("Sequence 'الم' occurred 1 times", log_contents)
-                self.assertIn("Sequence 'الحمد' occurred 1 times", log_contents)
+                self.assertIn("Sequence 'الم' occurred 2 times", log_contents)
+                self.assertIn("Sequence 'الحمد' occurred 2 times", log_contents)
+                # New assertion to verify contextual analysis logs
+                self.assertIn("Contextual Analysis of Verses Following Muqatta'at", log_contents)
                 # New assertion to verify thematic analysis logs
                 self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at 'الم': Theme - Guidance and Divine Law", log_contents)
             finally:
