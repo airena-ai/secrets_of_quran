@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat, analyze_muqattaat_distribution_meccan_medinan, surah_classification
 from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
@@ -76,6 +76,8 @@ def main():
     muqattaat_data, _ = analyze_muqattaat(text)
     muqattaat_positions_summary = analyze_muqattaat_positions(text)
     numerical_summary = analyze_muqattaat_numerical_values(text)
+    # NEW: Distribution Analysis of Muqatta'at: Meccan vs. Medinan
+    analyze_muqattaat_distribution_meccan_medinan(text, surah_classification)
     # New: Thematic Analysis for Muqatta'at
     analyze_muqattaat_themes()
     

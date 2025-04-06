@@ -26,22 +26,22 @@
     },
     {
       "path": "src/main.py",
-      "language": "Python",
-      "description": "Main driver for the Quran Secrets application. It orchestrates the reading of Quran text, preprocessing, and various analytical functions including verse length analysis, word frequency analysis, Arabic root word extraction, bigram analysis, palindrome detection, and Muqatta'at evaluations. It logs results and writes a final report.",
+      "language": "python",
+      "description": "Main driver for the Quran Secrets application. Orchestrates file reading, preprocessing, analysis, logging, and report generation.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main entry point for the Quran Secrets analysis. It reads the Quran text, applies preprocessing, performs multiple analyses, logs results, and writes out a final report.",
+          "description": "Main entry point for the Quran Secrets analysis. Reads the Quran text, preprocesses it, invokes analytical functions, logs results, and writes the final report.",
           "parameters": [],
           "return_type": "None"
         }
       ],
       "dependencies": [
-        "src/file_reader.py",
-        "src/text_preprocessor.py",
-        "src/analyzer.py",
-        "src/logger.py"
+        "src.file_reader",
+        "src.text_preprocessor",
+        "src.analyzer",
+        "src.logger"
       ]
     },
     {
@@ -103,12 +103,12 @@
     {
       "path": "src/analyzer.py",
       "language": "python",
-      "description": "Module for analyzing the Quran text for hidden patterns and anomalies.",
+      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. This module contains various functions to perform different types of analysis on the Quran text, including numerical pattern detection, word frequency analysis, root word analysis, bigram analysis, verse repetition analysis, lemma analysis, surah and verse count analysis, verse length distribution analysis, palindrome analysis, Abjad numeral analysis, semantic symmetry analysis, Muqatta'at analysis, and comparative analysis between Surahs with and without Muqatta'at. The module aims to uncover hidden patterns and potential secrets within the Quranic text through computational linguistics and statistical methods.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_text",
-          "description": "Analyze the given text for hidden numerical patterns and anomalies.\n\n    This function simulates pattern detection. If the text is non-empty,\n    a simulated anomaly is detected and returned.\n\n    Args:\n        text (str): The preprocessed text of the Quran.\n\n    Returns:\n        list: A list of anomaly messages detected in the text.",
+          "description": "Analyze the given text for hidden numerical patterns and anomalies. This function simulates pattern detection. If the text is non-empty, a simulated anomaly is detected and returned.\n\nArgs:\n    text (str): The preprocessed text of the Quran.\n\nReturns:\n    list: A list of anomaly messages detected in the text.",
           "parameters": [
             {
               "name": "text",
@@ -120,7 +120,7 @@
         },
         {
           "name": "analyze_word_frequency",
-          "description": "Perform word frequency analysis on the given preprocessed Quran text.\n\n    This function tokenizes the text using whitespace, counts the occurrences of each unique word,\n    and determines the top N most frequent words. It prepares a summary of the word frequency analysis\n    and identifies any words whose frequency is unusually high or low based on a simple heuristic.\n\n    The heuristic flags a word if its frequency is more than twice the average frequency of the top words\n    (and greater than 1), or if the frequency is less than half the average (provided the average is greater than 1).\n\n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        tuple: A tuple containing:\n            - summary (str): A formatted multiline string listing the top N words and their counts.\n            - flagged (list): A list of flagged messages for words deemed unusual.",
+          "description": "Perform word frequency analysis on the given preprocessed Quran text.\n\nThis function tokenizes the text using whitespace, counts the occurrences of each unique word,\nand determines the top N most frequent words. It prepares a summary of the word frequency analysis\nand identifies any words whose frequency is unusually high or low based on a simple heuristic.\n\nThe heuristic flags a word if its frequency is more than twice the average frequency of the top words\n(and greater than 1), or if the frequency is less than half the average (provided the average is greater than 1).\n\nArgs:\n    text (str): The preprocessed Quran text.\n\nReturns:\n    tuple: A tuple containing:\n        - summary (str): A formatted multiline string listing the top N words and their counts.\n        - flagged (list): A list of flagged messages for words deemed unusual.",
           "parameters": [
             {
               "name": "text",
@@ -132,7 +132,7 @@
         },
         {
           "name": "analyze_root_words",
-          "description": "Perform Arabic root word analysis on the given preprocessed Quran text.\n\n    This function uses the CAMeL Tools morphological analyzer to extract the root of each word in the text.\n    It counts the frequency of each identified root word and logs a concise summary of the analysis to the results log file.\n    Specifically, the function logs a summary of the Arabic root word frequency analysis along with the top N most frequent root words.\n\n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        tuple: A tuple containing:\n            - summary (str): A formatted summary of the root word frequency analysis.\n            - root_freq (dict): A dictionary mapping each root word to its frequency.\n            - top_roots (list): A list of tuples for the top N most frequent root words (root, frequency).",
+          "description": "Perform Arabic root word analysis on the given preprocessed Quran text.\n\nThis function uses the CAMeL Tools morphological analyzer to extract the root of each word in the text.\nIt counts the frequency of each identified root word and logs a concise summary of the analysis to the results log file.\nSpecifically, the function logs a summary of the Arabic root word frequency analysis along with the top N most frequent root words.\n\nArgs:\n    text (str): The preprocessed Quran text.\n\nReturns:\n    tuple: A tuple containing:\n        - summary (str): A formatted summary of the root word frequency analysis.\n        - root_freq (dict): A dictionary mapping each root word to its frequency.\n        - top_roots (list): A list of tuples for the top N most frequent root words (root, frequency).",
           "parameters": [
             {
               "name": "text",
@@ -144,7 +144,7 @@
         },
         {
           "name": "analyze_bigrams",
-          "description": "Perform bigram frequency analysis on the given tokenized text.\n\n    This function generates n-grams (bigrams by default) from the tokenized text,\n    counts the frequency of each n-gram, and returns a dictionary where keys are n-gram tuples\n    and values are their frequency counts.\n\n    Args:\n        tokenized_text (list): A list of preprocessed tokens from the Quran text.\n        n (int): The number of words in each n-gram (default is 2 for bigrams).\n\n    Returns:\n        dict: A dictionary with n-gram tuples as keys and their frequency counts as values.",
+          "description": "Perform bigram frequency analysis on the given tokenized text.\n\nThis function generates n-grams (bigrams by default) from the tokenized text,\ncounts the frequency of each n-gram, and returns a dictionary where keys are n-gram tuples\nand values are their frequency counts.\n\nArgs:\n    tokenized_text (list): A list of preprocessed tokens from the Quran text.\n    n (int): The number of words in each n-gram (default is 2 for bigrams).\n\nReturns:\n    dict: A dictionary with n-gram tuples as keys and their frequency counts as values.",
           "parameters": [
             {
               "name": "tokenized_text",
@@ -161,7 +161,7 @@
         },
         {
           "name": "analyze_verse_repetitions",
-          "description": "Analyze verse repetitions within each Surah and across the entire Quran.\n    \n    This function expects the preprocessed Quran text as input where each line represents a verse.\n    It attempts to parse each line for Surah and Ayah numbers in formats such as \"Surah:Ayah: verse text\"\n    or \"Surah - Ayah - verse text\", allowing for variations in spacing and delimiters.\n    If the format is not found, the verse is assigned to a default Surah \"1\" with sequential Ayah numbers.\n    \n    The verse text is normalized using the existing text preprocessing functions before comparison.\n    It then identifies verses that are repeated within each Surah and across the entire Quran.\n    \n    Returns a dictionary with two keys:\n        \"within_surah\": A list of dictionaries each with keys: \"surah\", \"verse\", \"ayah_numbers\", \"repetition\"\n        \"across_quran\": A list of dictionaries each with keys: \"verse\", \"occurrences\" (list of {\"surah\", \"ayah\"}), \"repetition\"\n    \n    Args:\n        preprocessed_text (str): The preprocessed Quran text data.\n    \n    Returns:\n        dict: The analysis result of verse repetitions.",
+          "description": "Analyze verse repetitions within each Surah and across the entire Quran.\n\nThis function expects the preprocessed Quran text as input where each line represents a verse.\nIt attempts to parse each line for Surah and Ayah numbers in formats such as \"Surah:Ayah: verse text\"\nor \"Surah - Ayah - verse text\", allowing for variations in spacing and delimiters.\nIf the format is not found, the verse is assigned to a default Surah \"1\" with sequential Ayah numbers.\n\nThe verse text is normalized using the existing text preprocessing functions before comparison.\nIt then identifies verses that are repeated within each Surah and across the entire Quran.\n\nReturns a dictionary with two keys:\n    \"within_surah\": A list of dictionaries each with keys: \"surah\", \"verse\", \"ayah_numbers\", \"repetition\"\n    \"across_quran\": A list of dictionaries each with keys: \"verse\", \"occurrences\" (list of {\"surah\", \"ayah\"}), \"repetition\"\n\nArgs:\n    preprocessed_text (str): The preprocessed Quran text data.\n\nReturns:\n    dict: The analysis result of verse repetitions.",
           "parameters": [
             {
               "name": "preprocessed_text",
@@ -173,7 +173,7 @@
         },
         {
           "name": "analyze_lemmas",
-          "description": "Perform lemma analysis on the tokenized Quran text using CAMeL Tools morphological analyzer.\n    \n    This function iterates through each word in the text, extracts its lemma using the CAMeL Tools library,\n    counts the frequency of each lemma across the entire Quran, logs the top 20 most frequent lemmas, and returns the summary.\n\n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        str: A formatted summary of the lemma frequency analysis.",
+          "description": "Perform lemma analysis on the tokenized Quran text using CAMeL Tools morphological analyzer.\n\nThis function iterates through each word in the text, extracts its lemma using the CAMeL Tools library,\ncounts the frequency of each lemma across the entire Quran, logs the top 20 most frequent lemmas, and returns the summary.\n\nArgs:\n    text (str): The preprocessed Quran text.\n\nReturns:\n    str: A formatted summary of the lemma frequency analysis.",
           "parameters": [
             {
               "name": "text",
@@ -185,7 +185,7 @@
         },
         {
           "name": "analyze_surah_verse_counts",
-          "description": "Perform analysis of verse counts per Surah in the Quran text.\n    \n    This function parses each line of the Quran text, extracts the Surah number, counts the number of verses per Surah,\n    logs the verse counts for each Surah, and returns a formatted summary.\n\n    Args:\n        text (str): The Quran text loaded from the data file.\n\n    Returns:\n        str: A formatted summary of the surah verse counts.",
+          "description": "Perform analysis of verse counts per Surah in the Quran text.\n\nThis function parses each line of the Quran text, extracts the Surah number, counts the number of verses per Surah,\nlogs the verse counts for each Surah, and returns a formatted summary.\n\nArgs:\n    text (str): The Quran text loaded from the data file.\n\nReturns:\n    str: A formatted summary of the surah verse counts.",
           "parameters": [
             {
               "name": "text",
@@ -197,7 +197,7 @@
         },
         {
           "name": "analyze_verse_lengths_distribution",
-          "description": "Analyze verse lengths distribution across the Quran text.\n    \n    This function calculates the word count for each verse by tokenizing the verse text,\n    groups the counts by Surah, and computes the average verse length and standard deviation\n    of verse lengths for each Surah. It identifies Surahs with 'consistent' verse lengths when the standard\n    deviation is less than the threshold (default is 2 words). The summary for each Surah is logged, and\n    consistent Surahs are flagged with a special \"POTENTIAL SECRET FOUND\" log entry.\n    \n    Args:\n        text (str): The preprocessed Quran text, where each line represents a verse.\n        threshold (float, optional): The standard deviation threshold to consider a Surah as having consistent verse lengths.\n        \n    Returns:\n        dict: A dictionary mapping Surah numbers to a dictionary with keys 'average', 'stddev', and 'consistent'.",
+          "description": "Analyze verse lengths distribution across the Quran text.\n\nThis function calculates the word count for each verse by tokenizing the verse text,\ngroups the counts by Surah, and computes the average verse length and standard deviation\nof verse lengths for each Surah. It identifies Surahs with 'consistent' verse lengths when the standard\ndeviation is less than the threshold (default is 2 words). The summary for each Surah is logged, and\nconsistent Surahs are flagged with a special \"POTENTIAL SECRET FOUND\" log entry.\n\nArgs:\n    text (str): The preprocessed Quran text, where each line represents a verse.\n    threshold (float, optional): The standard deviation threshold to consider a Surah as having consistent verse lengths.\n    \nReturns:\n    dict: A dictionary mapping Surah numbers to a dictionary with keys 'average', 'stddev', and 'consistent'.",
           "parameters": [
             {
               "name": "text",
@@ -214,7 +214,7 @@
         },
         {
           "name": "analyze_palindromes",
-          "description": "Analyze palindromic structures within each verse of the Quran.\n    \n    This function identifies word-level palindromes. It parses each verse to extract Surah and Ayah information.\n    Detected palindromic words and phrases are logged to the results log in a specified format.\n\n    Args:\n        quran_text (str): The preprocessed Quran text.\n\n    Returns:\n        list: A list of tuples containing (surah, ayah, palindrome_text) for each detected palindrome.",
+          "description": "Analyze palindromic structures within each verse of the Quran.\n\nThis function identifies word-level palindromes. It parses each verse to extract Surah and Ayah information.\nDetected palindromic words and phrases are logged to the results log in a specified format.\n\nArgs:\n    quran_text (str): The preprocessed Quran text.\n\nReturns:\n    list: A list of tuples containing (surah, ayah, palindrome_text) for each detected palindrome.",
           "parameters": [
             {
               "name": "quran_text",
@@ -226,7 +226,7 @@
         },
         {
           "name": "analyze_abjad_numerals",
-          "description": "Perform Abjad numeral analysis on the Quran text.\n    \n    This function calculates the Abjad numerical sum for each verse based on a mapping of Arabic letters to their numerical values.\n    It logs each verse along with its calculated Abjad value. Additionally, if a verse's Abjad value meets specific criteria\n    (multiple of 19, multiple of 7, or prime), it logs a special pattern message.\n\n    Args:\n        quran_text (str): The preprocessed Quran text.\n\n    Returns:\n        list: A list of tuples containing (surah, ayah, abjad_sum, pattern_description) for verses with notable numerical patterns.",
+          "description": "Perform Abjad numeral analysis on the Quran text.\n\nThis function calculates the Abjad numerical sum for each verse based on a mapping of Arabic letters to their numerical values.\nIt logs each verse along with its calculated Abjad value. Additionally, if a verse's Abjad value meets specific criteria\n(multiple of 19, multiple of 7, or prime), it logs a special pattern message.\n\nArgs:\n    quran_text (str): The preprocessed Quran text.\n\nReturns:\n    list: A list of tuples containing (surah, ayah, abjad_sum, pattern_description) for verses with notable numerical patterns.",
           "parameters": [
             {
               "name": "quran_text",
@@ -238,7 +238,7 @@
         },
         {
           "name": "analyze_semantic_symmetry",
-          "description": "Analyze semantic symmetry (word overlap) between segments of each Surah.\n    \n    For each Surah, this function divides the text into two roughly equal halves based on verses.\n    It then tokenizes both halves and calculates the number of common words between them.\n    The common word count is logged to the results log.\n\n    Args:\n        quran_text (str): The preprocessed Quran text.\n\n    Returns:\n        list: A list of tuples containing (surah, common_word_count, list_of_common_words) for each Surah.",
+          "description": "Analyze semantic symmetry (word overlap) between segments of each Surah.\n\nFor each Surah, this function divides the text into two roughly equal halves based on verses.\nIt then tokenizes both halves and calculates the number of common words between them.\nThe common word count is logged to the results log.\n\nArgs:\n    quran_text (str): The preprocessed Quran text.\n\nReturns:\n    list: A list of tuples containing (surah, common_word_count, list_of_common_words) for each Surah.",
           "parameters": [
             {
               "name": "quran_text",
@@ -250,7 +250,7 @@
         },
         {
           "name": "analyze_verse_length_symmetry",
-          "description": "Analyze verse length symmetry between two halves of each Surah.\n    \n    For each Surah in the text, divided by line, the verses are split into two halves.\n    The average verse length (word count) and standard deviation of verse lengths is computed for each half.\n    If the difference in averages and standard deviations between the halves is within the given thresholds,\n    the symmetry is considered significant and logged as a potential secret.\n    \n    Args:\n        text (str): The preprocessed Quran text, with each line representing a verse.\n        avg_threshold (float, optional): Maximum allowed difference in average verse length between halves.\n        stddev_threshold (float, optional): Maximum allowed difference in verse length standard deviation between halves.\n    \n    Returns:\n        dict: A mapping from Surah numbers to a dictionary with metrics for both halves and a symmetry flag.",
+          "description": "Analyze verse length symmetry between two halves of each Surah.\n\nFor each Surah in the text, divided by line, the verses are split into two halves.\nThe average verse length (word count) and standard deviation of verse lengths is computed for each half.\nIf the difference in averages and standard deviations between the halves is within the given thresholds,\nthe symmetry is considered significant and logged as a potential secret.\n\nArgs:\n    text (str): The preprocessed Quran text, with each line representing a verse.\n    avg_threshold (float, optional): Maximum allowed difference in average verse length between halves.\n    stddev_threshold (float, optional): Maximum allowed difference in verse length standard deviation between halves.\n\nReturns:\n    dict: A mapping from Surah numbers to a dictionary with metrics for both halves and a symmetry flag.",
           "parameters": [
             {
               "name": "text",
@@ -272,7 +272,7 @@
         },
         {
           "name": "analyze_enhanced_semantic_symmetry",
-          "description": "Enhanced analysis of semantic symmetry using lemma overlap between two halves of each Surah.\n    \n    For each Surah, the verses are split into two halves and their texts are processed to extract lemmas.\n    The symmetry score is defined as the ratio of the number of common lemmas to the total unique lemmas in the Surah.\n    If the symmetry score meets or exceeds the threshold, it is logged as a potential secret.\n    \n    Args:\n        text (str): The preprocessed Quran text, with each line representing a verse.\n        symmetry_threshold (float, optional): The minimum normalized overlap required to consider semantic symmetry.\n    \n    Returns:\n        dict: A mapping from Surah numbers to a dictionary with the symmetry score and lemma sets for each half.",
+          "description": "Enhanced analysis of semantic symmetry using lemma overlap between two halves of each Surah.\n\nFor each Surah, the verses are split into two halves and their texts are processed to extract lemmas.\nThe symmetry score is defined as the ratio of the number of common lemmas to the total unique lemmas in the Surah.\nIf the symmetry score meets or exceeds the threshold, it is logged as a potential secret.\n\nArgs:\n    text (str): The preprocessed Quran text, with each line representing a verse.\n    symmetry_threshold (float, optional): The minimum normalized overlap required to consider semantic symmetry.\n\nReturns:\n    dict: A mapping from Surah numbers to a dictionary with the symmetry score and lemma sets for each half.",
           "parameters": [
             {
               "name": "text",
@@ -289,7 +289,7 @@
         },
         {
           "name": "analyze_muqattaat",
-          "description": "Analyze Muqatta'at (Mysterious Letters) in the Quran text.\n\n    This function identifies Surahs that begin with Muqatta'at based on a predefined list.\n    It extracts the sequence of Arabic letters (Muqatta'at) from the beginning of the first verse of each identified Surah,\n    computes the frequency of each unique letter, and logs the results to the results log file.\n\n    The logged output includes:\n        - A header \"#################### Muqatta'at Analysis ####################\"\n        - List of Surahs with Muqatta'at (by Surah number)\n        - For each identified Surah, the extracted Muqatta'at letters along with its Surah name.\n        - Frequency count of each unique Muqatta'at letter.\n\n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        tuple: A tuple containing:\n            - A dictionary mapping Surah numbers to their extracted Muqatta'at letters.\n            - A Counter object representing the frequency of each Muqatta'at letter.",
+          "description": "Analyze Muqatta'at (Mysterious Letters) in the Quran text.\n\nThis function identifies Surahs that begin with Muqatta'at based on a predefined list.\nIt extracts the sequence of Arabic letters (Muqatta'at) from the beginning of the first verse of each identified Surah,\ncomputes the frequency of each unique letter, and logs the results to the results log file.\n\nThe logged output includes:\n    - A header \"#################### Muqatta'at Analysis ####################\"\n    - List of Surahs with Muqatta'at (by Surah number)\n    - For each identified Surah, the extracted Muqatta'at letters along with its Surah name.\n    - Frequency count of each unique Muqatta'at letter.\n\nArgs:\n    text (str): The preprocessed Quran text.\n\nReturns:\n    tuple: A tuple containing:\n        - A dictionary mapping Surah numbers to their extracted Muqatta'at letters.\n        - A Counter object representing the frequency of each Muqatta'at letter.",
           "parameters": [
             {
               "name": "text",
@@ -301,7 +301,7 @@
         },
         {
           "name": "analyze_muqattaat_positions",
-          "description": "Analyze the positional distribution of Muqatta'at within Surahs.\n\n    This function processes the preprocessed Quran text (with each line representing a verse in the format \"Surah|Ayah|Verse\")\n    to identify the occurrence positions of Muqatta'at within each Surah (only for predefined Surahs).\n    It determines in which category (Beginning, Middle, End, or Throughout) the Muqatta'at appear,\n    based on the index of the verses in the Surah where they are found. The results,\n    including a summary count for each category, are logged to results.log.\n    \n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        str: A summary report of the Muqatta'at positional analysis.",
+          "description": "Analyze the positional distribution of Muqatta'at within Surahs.\n\nThis function processes the preprocessed Quran text (with each line representing a verse in the format \"Surah|Ayah|Verse\")\nto identify the occurrence positions of Muqatta'at within each Surah (only for predefined Surahs).\nIt determines in which category (Beginning, Middle, End, or Throughout) the Muqatta'at appear,\nbased on the index of the verses in the Surah where they are found. The results,\nincluding a summary count for each category, are logged to results.log.\n    \nArgs:\n    text (str): The preprocessed Quran text.\n\nReturns:\n    str: A summary report of the Muqatta'at positional analysis.",
           "parameters": [
             {
               "name": "text",
@@ -313,7 +313,7 @@
         },
         {
           "name": "analyze_muqattaat_sequences",
-          "description": "Analyze Muqatta'at sequences in the Quran text.\n\n    This function identifies lines from Surahs recognized to contain Muqatta'at by checking if the Surah number is in a predefined list.\n    For each such line, it extracts the sequence of Muqatta'at letters from the beginning of the verse.\n    It then counts the frequency of each unique sequence across all such verses and returns the result.\n\n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        dict: A dictionary mapping each unique Muqatta'at sequence (str) to its frequency (int).",
+          "description": "Analyze Muqatta'at sequences in the Quran text.\n\nThis function identifies lines from Surahs recognized to contain Muqatta'at by checking if the Surah number is in a predefined list.\nFor each such line, it extracts the sequence of Muqatta'at letters from the beginning of the verse.\nIt then counts the frequency of each unique sequence across all such verses and returns the result.\n\nArgs:\n    text (str): The preprocessed Quran text.\n\nReturns:\n    dict: A dictionary mapping each unique Muqatta'at sequence (str) to its frequency (int).",
           "parameters": [
             {
               "name": "text",
@@ -325,7 +325,7 @@
         },
         {
           "name": "analyze_muqattaat_numerical_values",
-          "description": "Perform numerical analysis of Muqatta'at using Abjad values.\n\n    This function identifies Surahs with Muqatta'at (extracted from the beginning of the first verse)\n    and calculates the numerical sum of the Abjad values for each letter in the Muqatta'at.\n    The result is logged in a structured format including:\n        - Surah Number\n        - Muqatta'at Letters (as a string)\n        - Individual Abjad values for each letter\n        - Total Abjad Sum\n\n    If the total Abjad sum is a prime number, a multiple of 19, or a multiple of 7, the result is flagged\n    as a potential secret.\n    \n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        str: A summary report of the Muqatta'at numerical analysis.",
+          "description": "Perform numerical analysis of Muqatta'at using Abjad values.\n\nThis function identifies Surahs with Muqatta'at (extracted from the beginning of the first verse)\nand calculates the numerical sum of the Abjad values for each letter in the Muqatta'at.\nThe result is logged in a structured format including:\n    - Surah Number\n    - Muqatta'at Letters (as a string)\n    - Individual Abjad values for each letter\n    - Total Abjad Sum\n\nIf the total Abjad sum is a prime number, a multiple of 19, or a multiple of 7, the result is flagged\nas a potential secret.\n    \nArgs:\n    text (str): The preprocessed Quran text.\n\nReturns:\n    str: A summary report of the Muqatta'at numerical analysis.",
           "parameters": [
             {
               "name": "text",
@@ -337,13 +337,13 @@
         },
         {
           "name": "analyze_muqattaat_themes",
-          "description": "Perform thematic analysis for Surahs with Muqatta'at by associating each Surah with a predefined theme.\n\n    This function iterates over a static dictionary of high-level themes for Surahs known to contain Muqatta'at.\n    For each Surah, it retrieves a hardcoded Muqatta'at letter sequence (assumed to be \"الم\") and logs a message in a\n    clear, readable format to the results log.",
+          "description": "Perform thematic analysis for Surahs with Muqatta'at by associating each Surah with a predefined theme.\n\nThis function iterates over a static dictionary of high-level themes for Surahs known to contain Muqatta'at.\nFor each Surah, it retrieves a hardcoded Muqatta'at letter sequence (assumed to be \"الم\") and logs a message in a\nclear, readable format to the results log.",
           "parameters": [],
           "return_type": "None"
         },
         {
           "name": "analyze_muqattaat_context",
-          "description": "Analyze the verses that immediately follow the Muqatta'at in Surahs that begin with them.\n\n    This function processes the preprocessed Quran text to group verses by Surah,\n    identifies Surahs that begin with Muqatta'at (using a predefined list),\n    and for each such Surah, extracts the verse immediately following the first verse (which contains the Muqatta'at).\n    The context verse is then preprocessed using existing text normalization and tokenization functions,\n    and the word frequencies across all context verses are calculated.\n    The top 10 most frequent words are logged to the results log file, with any words that are unusually frequent flagged.\n\n    Args:\n        text (str): The preprocessed Quran text.\n\n    Returns:\n        dict: A dictionary mapping words to their frequency counts from the context verses.",
+          "description": "Analyze the verses that immediately follow the Muqatta'at in Surahs that begin with them.\n\nThis function processes the preprocessed Quran text to group verses by Surah,\nidentifies Surahs that begin with Muqatta'at (using a predefined list),\nand for each such Surah, extracts the verse immediately following the first verse (which contains the Muqatta'at).\nThe context verse is then preprocessed using existing text normalization and tokenization functions,\nand the word frequencies across all context verses are calculated.\nThe top 10 most frequent words are logged to the results log file, with any words that are unusually frequent flagged.\n\nArgs:\n    text (str): The preprocessed Quran text.\n\nReturns:\n    dict: A dictionary mapping words to their frequency counts from the context verses.",
           "parameters": [
             {
               "name": "text",
@@ -355,7 +355,7 @@
         },
         {
           "name": "categorize_surahs_by_muqattaat",
-          "description": "Categorize Surahs into those with and without Muqatta'at.\n    \n    This function parses the preprocessed Quran text, extracts Surah numbers from each line,\n    and uses the existing analyze_muqattaat() function to identify Surahs that begin with Muqatta'at.\n    \n    Args:\n        text (str): The preprocessed Quran text.\n    \n    Returns:\n        tuple: A tuple containing two lists:\n            - muqattaat_surahs: List of Surah numbers (str) with Muqatta'at.\n            - non_muqattaat_surahs: List of Surah numbers (str) without Muqatta'at.",
+          "description": "Categorize Surahs into those with and without Muqatta'at.\n    \nThis function parses the preprocessed Quran text, extracts Surah numbers from each line,\nand uses the existing analyze_muqattaat() function to identify Surahs that begin with Muqatta'at.\n    \nArgs:\n    text (str): The preprocessed Quran text.\n    \nReturns:\n    tuple: A tuple containing two lists:\n        - muqattaat_surahs: List of Surah numbers (str) with Muqatta'at.\n        - non_muqattaat_surahs: List of Surah numbers (str) without Muqatta'at.",
           "parameters": [
             {
               "name": "text",
@@ -367,53 +367,19 @@
         },
         {
           "name": "compare_surahs_muqattaat_vs_non_muqattaat",
-          "description": "Compare Surahs with and without Muqatta'at, computing average verse lengths and top word frequencies.\n    \n    This function categorizes the Surahs into those with Muqatta'at and those without,\n    computes the average verse lengths and the top 10 most frequent words in each category,\n    and returns a dictionary containing the comparisons.\n    \n    Args:\n        text (str): The preprocessed Quran text.\n        \n    Returns:\n        dict: A dictionary with keys:\n            'muqattaat_surahs': list of Surah numbers with Muqatta'at,\n            'non_muqattaat_surahs': list of Surah numbers without Muqatta'at,\n            'avg_verse_length_muq': average verse length (words) for Muqatta'at Surahs,\n            'avg_verse_length_non_muq': average verse length for non-Muqatta'at Surahs,\n            'top_words_muq': list of tuples (word, frequency) for the top 10 words in Muqatta'at Surahs,\n            'top_words_non_muq': list of tuples (word, frequency) for the top 10 words in non-Muqatta'at Surahs.",
+          "description": "Compare Surahs with and without Muqatta'at, computing average verse lengths and top word frequencies.\n    \nThis function categorizes the Surahs into those with Muqatta'at and those without,\ncomputes the average verse lengths and the top 10 most frequent words in each category,\nand returns a dictionary containing the comparisons.\n    \nArgs:\n    text (str): The preprocessed Quran text.\n        \nReturns:\n    dict: A dictionary with keys:\n        'muqattaat_surahs': list of Surah numbers with Muqatta'at,\n        'non_muqattaat_surahs': list of Surah numbers without Muqatta'at,\n        'avg_verse_length_muq': average verse length (words) for Muqatta'at Surahs,\n        'avg_verse_length_non_muq': average verse length for non-Muqatta'at Surahs,\n        'top_words_muq': list of tuples (word, frequency) for the top 10 words in Muqatta'at Surahs,\n        'top_words_non_muq': list of tuples (word, frequency) for the top 10 words in non-Muqatta'at Surahs.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
               "description": "The preprocessed Quran text."
-            }
-          ],
-          "return_type": "dict"
-        },
-        {
-          "name": "analyze_grouped_root_frequencies",
-          "description": "Aggregate Arabic root word frequencies for the specified Surahs.\n    \n    This function retrieves all verses belonging to the Surahs in the provided list,\n    concatenates their text, performs root word analysis using the existing analyze_root_words function,\n    and returns an aggregated dictionary of root word frequencies.\n    \n    Args:\n        text (str): The preprocessed Quran text.\n        surah_list (list): List of Surah numbers (as strings) to analyze.\n    \n    Returns:\n        dict: A dictionary mapping root words to their aggregated frequencies.",
-          "parameters": [
-            {
-              "name": "text",
-              "type": "str",
-              "description": "The preprocessed Quran text."
-            },
-            {
-              "name": "surah_list",
-              "type": "list",
-              "description": "List of Surah numbers (as strings) to analyze."
-            }
-          ],
-          "return_type": "dict"
-        },
-        {
-          "name": "analyze_grouped_lemma_frequencies",
-          "description": "Aggregate lemma frequencies for the specified Surahs.\n    \n    This function retrieves all verses belonging to the given Surahs,\n    concatenates their text, performs lemma analysis by extracting lemmas for each word (using CAMeL Tools if available),\n    and returns an aggregated dictionary of lemma frequencies.\n    \n    Args:\n        text (str): The preprocessed Quran text.\n        surah_list (list): List of Surah numbers (as strings) to analyze.\n    \n    Returns:\n        dict: A dictionary mapping lemmas to their aggregated frequencies.",
-          "parameters": [
-            {
-              "name": "text",
-              "type": "str",
-              "description": "The preprocessed Quran text."
-            },
-            {
-              "name": "surah_list",
-              "type": "list",
-              "description": "List of Surah numbers (as strings) to analyze."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_correlations",
-          "description": "Analyze correlations across different analytical dimensions.\n\n    This is a stub implementation.\n    \n    Args:\n        text (str): The preprocessed Quran text.\n        verse_lengths (dict): Results from verse length analysis.\n        muqattaat_data (dict): Results from Muqatta'at analysis.\n        word_frequency_result (tuple): Results from word frequency analysis.\n        flagged_words (list): Flagged words from frequency analysis.\n        verse_repetitions_data (dict): Results from verse repetitions analysis.\n        enhanced_symmetry_data (dict): Results from enhanced semantic symmetry analysis.\n        abjad_anomalies (list): Results from Abjad numeral analysis.\n\n    Returns:\n        list: A list of correlation messages (currently empty).",
+          "description": "Analyze correlations across different analytical dimensions.\n\nThis is a stub implementation.\n    \nArgs:\n    text (str): The preprocessed Quran text.\n    verse_lengths (dict): Results from verse length analysis.\n    muqattaat_data (dict): Results from Muqatta'at analysis.\n    word_frequency_result (tuple): Results from word frequency analysis.\n    flagged_words (list): Flagged words from frequency analysis.\n    verse_repetitions_data (dict): Results from verse repetitions analysis.\n    enhanced_symmetry_data (dict): Results from enhanced semantic symmetry analysis.\n    abjad_anomalies (list): Results from Abjad numeral analysis.\n\nReturns:\n    list: A list of correlation messages (currently empty).",
           "parameters": [
             {
               "name": "text",
@@ -457,6 +423,57 @@
             }
           ],
           "return_type": "list"
+        },
+        {
+          "name": "analyze_muqattaat_distribution_meccan_medinan",
+          "description": "Analyze the distribution of Muqatta'at in Meccan versus Medinan Surahs.\n\nThis function processes the Quran text to identify Surahs that begin with Muqatta'at.\nIt then uses the provided surah_classification dictionary to count:\n  - Total number of Meccan Surahs.\n  - Total number of Medinan Surahs.\n  - Number of Meccan Surahs with Muqatta'at.\n  - Number of Medinan Surahs with Muqatta'at.\nProportions are calculated and logged, and if the difference in proportions exceeds 10%,\na potential secret is flagged.\n\nArgs:\n    text (str): The preprocessed Quran text.\n    surah_classification (dict): Dictionary mapping Surah numbers (int) to 'Meccan' or 'Medinan'.\n\nReturns:\n    None",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "The preprocessed Quran text."
+            },
+            {
+              "name": "surah_classification",
+              "type": "dict",
+              "description": "Dictionary mapping Surah numbers (int) to 'Meccan' or 'Medinan'."
+            }
+          ],
+          "return_type": "None"
+        },
+        {
+          "name": "analyze_grouped_root_frequencies",
+          "description": "Analyze root word frequencies for a group of Surahs.\n\nArgs:\n    text (str): The preprocessed Quran text.\n    surah_list (list): List of surah numbers to include in the analysis.\n\nReturns:\n    dict: Dictionary of root word frequencies.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "The preprocessed Quran text."
+            },
+            {
+              "name": "surah_list",
+              "type": "list",
+              "description": "List of surah numbers to include in the analysis."
+            }
+          ],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_grouped_lemma_frequencies",
+          "description": "Analyze lemma frequencies for a group of Surahs.\n\nArgs:\n    text (str): The preprocessed Quran text.\n    surah_list (list): List of surah numbers to include in the analysis.\n\nReturns:\n    dict: Dictionary of lemma frequencies.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "The preprocessed Quran text."
+            },
+            {
+              "name": "surah_list",
+              "type": "list",
+              "description": "List of surah numbers to include in the analysis."
+            }
+          ],
+          "return_type": "dict"
         }
       ],
       "dependencies": [
@@ -906,7 +923,7 @@
     {
       "path": "tests/test_main.py",
       "language": "python",
-      "description": "Integration test for the main module to execute end-to-end analysis.",
+      "description": "Integration test for the main module to execute end-to-end analysis. This test suite includes integration tests for the main module of the Quran Secrets application. It focuses on testing the end-to-end execution of the analysis pipeline, ensuring that all components work together correctly. Test cases cover scenarios with and without CAMeL Tools availability, and also include specific tests for comparative analysis functions. The suite aims to validate the overall functionality and robustness of the application in an integrated environment.",
       "classes": [
         {
           "name": "TestMainIntegration",

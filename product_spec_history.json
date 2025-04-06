@@ -98,5 +98,10 @@
         "iteration": 19,
         "date": "2025-04-05",
         "iteration_goal": "This increment focuses on comparing Surahs with and without Muqatta'at based on grouped root word and lemma frequency analysis. We will categorize Surahs, analyze root and lemma frequencies for each group, log the top frequencies, and perform a comparative analysis to identify potential linguistic differences or similarities. The results will be logged in `results.log`, and the integration test will be updated to include this new functionality. This step aims to uncover whether Surahs with Muqatta'at exhibit distinct linguistic patterns at the root and lemma levels compared to those without."
+    },
+    {
+        "iteration": 20,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment focuses on analyzing the distribution of Muqatta'at (mysterious letters) in the Quran based on whether the Surahs containing them were revealed in Mecca or Medina. It involves creating a function to categorize Surahs as Meccan or Medinan, count how many of each category contain Muqatta'at, and calculate the proportions. The results, including counts and proportions, will be logged to `results.log`. A 'POTENTIAL SECRET FOUND' tag will be added if a significant difference in Muqatta'at distribution between Meccan and Medinan Surahs is observed. This analysis aims to explore potential contextual or temporal patterns related to Muqatta'at."
     }
 ]
