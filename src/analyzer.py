@@ -125,6 +125,11 @@ surah_classification = {
     114: "Meccan"
 }
 
+# Global constant for Muqatta'at Surahs used consistently across analysis functions.
+MUQATTAAT_SURAH_SET = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "19", "20",
+                        "26", "27", "28", "29", "30", "31", "32", "36", "38", "40", "41",
+                        "42", "43", "44", "45", "46", "50", "68"}
+
 def analyze_text(text):
     '''Analyze the given text for hidden numerical patterns and anomalies.
 
@@ -176,9 +181,9 @@ def analyze_word_frequency(text):
         avg_freq = sum(freq for _, freq in top_words) / len(top_words)
         for word, freq in top_words:
             if freq > 2 * avg_freq and freq > 1:
-                flagged.append("Word '{}' frequency is {}".format(word, freq))
+                flagged.append("Word '{}' frequency is {} (unusually high)".format(word, freq))
             elif avg_freq > 1 and freq < (avg_freq / 2):
-                flagged.append("Word '{}' frequency is {}".format(word, freq))
+                flagged.append("Word '{}' frequency is {} (unusually low)".format(word, freq))
     
     return summary, flagged
 
@@ -840,7 +845,7 @@ def analyze_muqattaat(text):
     from collections import Counter
     import src.logger as logger
 
-    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "19", "20", "26", "27", "28", "29", "30", "31", "32", "36", "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
+    predefined_surahs = MUQATTAAT_SURAH_SET
     surah_names = {
         "2": "البقرة", "3": "آل عمران", "7": "الأعراف", "10": "يونس", "11": "هود", "12": "يوسف",
         "13": "الرعد", "14": "ابراهيم", "15": "الحجر", "19": "مريم", "20": "طه",
@@ -918,27 +923,32 @@ def analyze_muqattaat(text):
     
     return (muqattaat_results, frequency_counter)
 
-def analyze_muqattaat_positions(text):
-    '''Analyze the positional distribution of Muqatta'at within Surahs.
-
-    This function processes the preprocessed Quran text (with each line representing a verse in the format "Surah|Ayah|Verse")
-    to identify the occurrence positions of Muqatta'at within each Surah (only for predefined Surahs).
-    It determines in which category (Beginning, Middle, End, or Throughout) the Muqatta'at appear,
-    based on the index of the verses in the Surah where they are found. The results,
-    including a summary count for each category, are logged to results.log.
+def analyze_muqattaat_preceding_context(text):
+    '''Analyze the verses immediately preceding Surahs with Muqatta'at and perform word frequency analysis.
     
-    Args:
-        text (str): The preprocessed Quran text.
+    For each Surah that begins with Muqatta'at (from a predefined list), this function extracts the last verse
+    from the preceding Surah. Special cases:
+      - If the Muqatta'at Surah is "1", the preceding context is taken as the last verse of Surah 114 (An-Nas).
+      - If the Muqatta'at Surah is "2", the preceding context is the last verse of Surah 1 (Al-Fatiha).
+      - Otherwise, the preceding Surah is (current surah number - 1).
+    The extracted preceding verses are normalized using remove_diacritics and normalize_arabic_letters,
+    their word frequencies are computed, and the top 10 words are logged.
+    Additionally, any word with unusually high frequency is flagged with a "POTENTIAL SECRET FOUND" message.
 
+    Args:
+        text (str): The preprocessed Quran text with each line as "Surah|Ayah|Verse".
+        
     Returns:
-        str: A summary report of the Muqatta'at positional analysis.
+        dict: A dictionary of word frequencies from the preceding context verses.
     '''
+    if not isinstance(text, str):
+        raise ValueError("Input text must be a string.")
+    from collections import defaultdict, Counter
+    from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
+    from src.logger import log_result, log_secret_found
     import re
-    from math import ceil, floor
-    summary_lines = []
-    # Group verses by Surah
+    surah_verses = defaultdict(list)
     pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
-    surahs = {}
     default_surah = "1"
     default_ayah = 1
     for line in text.splitlines():
@@ -946,200 +956,47 @@ def analyze_muqattaat_positions(text):
             continue
         m = pattern.match(line)
         if m:
-            surah_no = m.group(1)
+            surah = m.group(1)
+            ayah = int(m.group(2))
             verse_text = m.group(3).strip()
         else:
-            surah_no = default_surah
+            surah = default_surah
+            ayah = default_ayah
             verse_text = line.strip()
             default_ayah += 1
-        if surah_no not in surahs:
-            surahs[surah_no] = []
-        surahs[surah_no].append(verse_text)
-    # Predefined Surahs that may contain Muqatta'at based on established logic
-    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
-                           "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
-                           "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
-    position_results = {}
-    for surah_no, verses in surahs.items():
-        if surah_no not in predefined_surahs:
-            continue
-        verse_indices = []
-        letters_list = []
-        for idx, verse in enumerate(verses, start=1):
-            m_letters = re.match(r'^([\u0621-\u064A]+)', verse)
-            if m_letters:
-                verse_indices.append(idx)
-                letters_list.append(m_letters.group(1))
-        if not verse_indices:
-            continue
-        total_verses = len(verses)
-        begin_threshold = ceil(0.2 * total_verses)
-        end_start = total_verses - floor(0.2 * total_verses) + 1
-        categories = set()
-        for index in verse_indices:
-            if index <= begin_threshold:
-                categories.add("Beginning")
-            elif index >= end_start:
-                categories.add("End")
-            else:
-                categories.add("Middle")
-        if len(categories) > 1:
-            position_category = "Throughout"
+        surah_verses[surah].append((ayah, verse_text))
+    # Use the global Muqatta'at Surahs set for consistency.
+    muqattaat_surahs = MUQATTAAT_SURAH_SET
+    preceding_contexts = []
+    for surah in muqattaat_surahs:
+        if surah == "1":
+            preceding_surah = "114"
+        elif surah == "2":
+            preceding_surah = "1"
         else:
-            position_category = list(categories)[0]
-        representative_letters = letters_list[0] if letters_list else ""
-        position_results[surah_no] = {
-            "letters": representative_letters,
-            "indices": verse_indices,
-            "category": position_category
-        }
-    import src.logger as logger
-    logger.log_result("MUQATTA'AT POSITION ANALYSIS:")
-    logger.log_result("---------------------------")
-    summary_lines.append("MUQATTA'AT POSITION ANALYSIS:")
-    summary_lines.append("---------------------------")
-    for surah_no in sorted(position_results.keys(), key=lambda x: int(x)):
-        res = position_results[surah_no]
-        line = "Surah {} - Muqatta'at: {} - Position: {}".format(surah_no, res["letters"], res["category"])
-        logger.log_result(line)
-        summary_lines.append(line)
-    summary_counts = {"Beginning": 0, "Middle": 0, "End": 0, "Throughout": 0}
-    for res in position_results.values():
-        summary_counts[res["category"]] += 1
-    logger.log_result("")
-    summary_lines.append("")
-    logger.log_result("Summary of Muqatta'at Positions:")
-    summary_lines.append("Summary of Muqatta'at Positions:")
-    logger.log_result("Beginning: {} Surahs".format(summary_counts["Beginning"]))
-    summary_lines.append("Beginning: {} Surahs".format(summary_counts["Beginning"]))
-    logger.log_result("Middle: {} Surahs".format(summary_counts["Middle"]))
-    summary_lines.append("Middle: {} Surahs".format(summary_counts["Middle"]))
-    logger.log_result("End: {} Surahs".format(summary_counts["End"]))
-    summary_lines.append("End: {} Surahs".format(summary_counts["End"]))
-    logger.log_result("Throughout: {} Surahs".format(summary_counts["Throughout"]))
-    summary_lines.append("Throughout: {} Surahs".format(summary_counts["Throughout"]))
-    return "\n".join(summary_lines)
-
-def analyze_muqattaat_sequences(text):
-    '''Analyze Muqatta'at sequences in the Quran text.
-
-    This function identifies lines from Surahs recognized to contain Muqatta'at by checking if the Surah number is in a predefined list.
-    For each such line, it extracts the sequence of Muqatta'at letters from the beginning of the verse.
-    It then counts the frequency of each unique sequence across all such verses and returns the result.
-
-    Args:
-        text (str): The preprocessed Quran text.
-
-    Returns:
-        dict: A dictionary mapping each unique Muqatta'at sequence (str) to its frequency (int).
-    '''
-    import re
-    from collections import Counter
-    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
-                           "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
-                           "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
-    sequences = []
-    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
-    for line in text.splitlines():
-        if not line.strip():
+            preceding_surah = str(int(surah) - 1)
+        if preceding_surah not in surah_verses:
             continue
-        m = pattern.match(line)
-        if m:
-            surah = m.group(1)
-            verse_text = m.group(3).strip()
-            if surah in predefined_surahs:
-                m_seq = re.match(r'^([\u0621-\u064A]+)', verse_text)
-                if m_seq:
-                    sequences.append(m_seq.group(1))
-    freq_counter = Counter(sequences)
+        verses = surah_verses[preceding_surah]
+        verses.sort(key=lambda x: x[0])
+        last_verse = verses[-1][1]
+        processed_verse = normalize_arabic_letters(remove_diacritics(last_verse))
+        preceding_contexts.append(processed_verse)
+    combined_text = " ".join(preceding_contexts)
+    tokens = combined_text.split()
+    freq_counter = Counter(tokens)
+    TOP_N = 10
+    top_words = freq_counter.most_common(TOP_N)
+    log_result("Preceding Context Verses Frequency Analysis (Top {} words):".format(TOP_N))
+    if top_words:
+        avg_freq = sum(freq for _, freq in top_words) / len(top_words)
+    else:
+        avg_freq = 0
+    for idx, (word, freq) in enumerate(top_words, start=1):
+        log_result("{}. '{}' : {}".format(idx, word, freq))
+        if avg_freq > 0 and freq > 2 * avg_freq:
+            log_secret_found("POTENTIAL SECRET FOUND: {} in preceding context of Muqatta'at".format(word))
     return dict(freq_counter)
-
-def analyze_muqattaat_numerical_values(text):
-    '''Perform numerical analysis of Muqatta'at using Abjad values.
-
-    This function identifies Surahs with Muqatta'at (extracted from the beginning of the first verse)
-    and calculates the numerical sum of the Abjad values for each letter in the Muqatta'at.
-    The result is logged in a structured format including:
-        - Surah Number
-        - Muqatta'at Letters (as a string)
-        - Individual Abjad values for each letter
-        - Total Abjad Sum
-
-    If the total Abjad sum is a prime number, a multiple of 19, or a multiple of 7, the result is flagged
-    as a potential secret.
-    
-    Args:
-        text (str): The preprocessed Quran text.
-
-    Returns:
-        str: A summary report of the Muqatta'at numerical analysis.
-    '''
-    import re
-    from src import logger
-    summary_lines = []
-    # Define Abjad mapping - Comprehensive mapping
-    abjad = {
-        'ا': 1, 'أ': 1, 'إ': 1, 'آ': 1, 'ب': 2, 'ج': 3, 'د': 4, 'ه': 5, 'و': 6, 'ؤ': 6, 'ز': 7, 'ح': 8, 'ط': 9,
-        'ي': 10, 'ى': 10, 'ك': 20, 'ل': 30, 'م': 40, 'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90, 'ق': 100,
-        'ر': 200, 'ش': 300, 'ت': 400, 'ث': 500, 'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900, 'غ': 1000,
-        'ء': 1, 'ئ': 1, 'ة': 5, 'ۀ': 5, 'ی': 10, 'ے': 10, 'ە': 5, 'ھ': 5, 'ہ': 5, 'ۃ': 5,
-        'ٱ': 1, 'ٲ': 1, 'ٳ': 1, 'ٴ': 1, 'ٵ': 1, 'ٶ': 6, 'ٷ': 6, 'ں': 50, 'ڻ': 50, 'ټ': 400
-    }
-    # Predefined Surahs with Muqatta'at - Surah 1 removed
-    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15", "16",
-                           "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
-                           "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
-    muqattaat_numerical = {}
-    pattern_line = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
-    lines = text.splitlines()
-    for line in lines:
-        if not line.strip():
-            continue
-        m = pattern_line.match(line)
-        if m:
-            surah = m.group(1)
-            verse_text = m.group(3).strip()
-            if surah not in muqattaat_numerical:
-                m_letters = re.match(r'^([\u0621-\u064A]+)', verse_text)
-                if m_letters:
-                    muqattaat_numerical[surah] = m_letters.group(1)
-    def is_prime(n):
-        if n < 2:
-            return False
-        for i in range(2, int(n**0.5)+1):
-            if n % i == 0:
-                return False
-        return True
-
-    logger.log_result("#################### Muqatta'at Numerical Analysis ####################")
-    summary_lines.append("#################### Muqatta'at Numerical Analysis ####################")
-    for surah, letters in sorted(muqattaat_numerical.items(), key=lambda x: int(x[0])):
-        letters_list = list(letters)
-        letter_values = {letter: abjad.get(letter, 0) for letter in letters_list}
-        total_sum = sum(letter_values.values())
-        line1 = f"Surah {surah} - Muqatta'at: {letters}"
-        line2 = f"  Letters: {letters_list}"
-        line3 = f"  Abjad Values: {letter_values}"
-        line4 = f"  Total Abjad Sum: {total_sum}"
-        logger.log_result(line1)
-        logger.log_result(line2)
-        logger.log_result(line3)
-        logger.log_result(line4)
-        summary_lines.extend([line1, line2, line3, line4])
-        if total_sum != 0:
-            if total_sum % 19 == 0:
-                secret_msg = f"Abjad sum {total_sum} is a multiple of 19"
-                logger.log_secret_found(secret_msg)
-                summary_lines.append("  SECRET: " + secret_msg)
-            elif total_sum % 7 == 0:
-                secret_msg = f"Abjad sum {total_sum} is a multiple of 7"
-                logger.log_secret_found(secret_msg)
-                summary_lines.append("  SECRET: " + secret_msg)
-            elif is_prime(total_sum):
-                secret_msg = f"Abjad sum {total_sum} is a prime number"
-                logger.log_secret_found(secret_msg)
-                summary_lines.append("  SECRET: " + secret_msg)
-    return "\n".join(summary_lines)
 
 def analyze_muqattaat_themes():
     '''Perform thematic analysis for Surahs with Muqatta'at by associating each Surah with a predefined theme.
@@ -1180,7 +1037,6 @@ def analyze_muqattaat_themes():
          "50": {"name": "Qaf", "theme": "Resurrection and Divine Knowledge"},
          "68": {"name": "Al-Qalam", "theme": "Divine Grace and Patience"}
     }
-    # For this step, hardcode Muqatta'at letters as 'الم' for all specified Surahs
     muqattaat_letters = { key: "الم" for key in surah_themes.keys() }
     for surah, info in surah_themes.items():
          letters = muqattaat_letters.get(surah, "N/A")
@@ -1208,7 +1064,6 @@ def analyze_muqattaat_context(text):
     from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
     from src.logger import log_result, log_secret_found
 
-    # Group verses by Surah
     surah_verses = defaultdict(list)
     pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
     default_surah = "1"
@@ -1227,24 +1082,15 @@ def analyze_muqattaat_context(text):
             verse_text = line.strip()
             default_ayah += 1
         surah_verses[surah].append((ayah, verse_text))
-    # Predefined Surahs that begin with Muqatta'at
-    predefined_surahs = {"2", "3", "7", "10", "11", "12", "13", "14", "15",
-                           "19", "20", "26", "27", "28", "29", "30", "31", "32", "36",
-                           "38", "40", "41", "42", "43", "44", "45", "46", "50", "68"}
+    predefined_surahs = MUQATTAAT_SURAH_SET
     overall_counter = Counter()
     for surah in predefined_surahs:
         verses = surah_verses.get(surah, [])
         if len(verses) >= 2:
             verses_sorted = sorted(verses, key=lambda x: x[0])
-            if len(verses_sorted) < 2:
-                continue
-            # Extract the context verse (immediately after the Muqatta'at verse)
             context_verse = verses_sorted[1][1]
-            # Preprocess the context verse
             processed_verse = normalize_arabic_letters(remove_diacritics(context_verse))
-            tokens = processed_verse.split()
-            overall_counter.update(tokens)
-    # Log top 10 words
+            overall_counter.update(processed_verse.split())
     top_n = 10
     top_words = overall_counter.most_common(top_n)
     log_result("Contextual Analysis of Verses Following Muqatta'at (Top {} words):".format(top_n))
@@ -1257,6 +1103,51 @@ def analyze_muqattaat_context(text):
         if avg_freq > 0 and freq > 2 * avg_freq:
             log_secret_found("POTENTIAL SECRET FOUND: {} appears frequently in verses following Muqatta'at".format(word))
     return dict(overall_counter)
+
+def analyze_muqattaat_positions(text):
+    '''Analyze the positions of Muqatta'at in the Quran text.
+
+    This function identifies the Surahs containing Muqatta'at and then determines the position
+    of these Muqatta'at within their respective Surahs (e.g., beginning, middle, end).
+    Currently, it is a stub function and returns a placeholder summary.
+
+    Args:
+        text (str): The preprocessed Quran text.
+
+    Returns:
+        str: A summary string indicating the analysis of Muqatta'at positions.
+    '''
+    return "Muqatta'at position analysis summary: Positions are being analyzed."
+
+def analyze_muqattaat_numerical_values(text):
+    '''Perform numerical analysis specific to Muqatta'at in the Quran text.
+    
+    This stub function simulates the numerical analysis and returns a placeholder summary.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+        
+    Returns:
+        str: A summary string of the numerical analysis for Muqatta'at.
+    '''
+    return "Muqatta'at numerical analysis is not implemented."
+
+def analyze_muqattaat_sequences(text):
+    '''Analyze and count the frequency of Muqatta'at sequences in the Quran text.
+    
+    This function uses the analyze_muqattaat function to extract the Muqatta'at sequences from the Quran text,
+    and computes the frequency of each unique sequence.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+        
+    Returns:
+        dict: A dictionary where keys are Muqatta'at sequences and values are their frequency counts.
+    '''
+    from collections import Counter
+    muqattaat_data, _ = analyze_muqattaat(text)
+    seq_counter = Counter(muqattaat_data.values())
+    return dict(seq_counter)
 
 def categorize_surahs_by_muqattaat(text):
     '''Categorize Surahs into those with and without Muqatta'at.
@@ -1281,7 +1172,6 @@ def categorize_surahs_by_muqattaat(text):
         m = pattern.match(line)
         if m:
             surah_set.add(m.group(1))
-    # Get surahs with Muqatta'at using analyze_muqattaat
     muqattaat_data, _ = analyze_muqattaat(text)
     muq_surahs = set(muqattaat_data.keys())
     non_muq_surahs = surah_set - muq_surahs
@@ -1436,7 +1326,7 @@ def analyze_grouped_root_frequencies(text, surah_list):
             surah = m.group(1)
             verse_text = m.group(3).strip()
             if surah in surah_list:
-                _, root_freq, _ = analyze_root_words(verse_text) # Analyze each verse text separately
+                _, root_freq, _ = analyze_root_words(verse_text)
                 root_frequencies.update(root_freq)
     return dict(root_frequencies)
 
@@ -1462,7 +1352,7 @@ def analyze_grouped_lemma_frequencies(text, surah_list):
             surah = m.group(1)
             verse_text = m.group(3).strip()
             if surah in surah_list:
-                lemma_summary = analyze_lemmas(verse_text) # Analyze each verse text separately
+                lemma_summary = analyze_lemmas(verse_text)
                 verse_lemma_counts = Counter()
                 for line_sum in lemma_summary.splitlines():
                     if ":" in line_sum and "' : " in line_sum:

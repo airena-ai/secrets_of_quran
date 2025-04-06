@@ -103,5 +103,10 @@
         "iteration": 20,
         "date": "2025-04-05",
         "iteration_goal": "Introduce `surah_classification` data and `analyze_muqattaat_distribution_meccan_medinan()` function in the `analysis` module to analyze Muqatta'at distribution across Meccan and Medinan Surahs. Update `main()` to call the new function and integration tests to verify its output, maintaining modularity."
+    },
+    {
+        "iteration": 21,
+        "date": "2025-04-05",
+        "iteration_goal": "A new function `analyze_muqattaat_preceding_context()` is added to the `analysis` module to analyze verses preceding Muqatta'at. This function reuses `data_loader`, `text_preprocessing`, and `logging` modules. `main()` and integration tests are updated to include this new analysis, maintaining the modular architecture and extending analysis capabilities."
     }
 ]

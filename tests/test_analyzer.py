@@ -2,9 +2,9 @@
 
 import unittest
 from unittest.mock import MagicMock
+import src
 from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry
 import importlib.util
-import src.logger
 
 class TestAnalyzer(unittest.TestCase):
     def setUp(self):
@@ -149,8 +149,8 @@ class TestAnalyzer(unittest.TestCase):
         import src.logger
         sample_text = ("1|1| This is test\n"
                        "1|2| That is a trial\n"
-                       "2|1| Short\n"
-                       "2|2| This is a much longer verse than others")
+                       "2|1|Short\n"
+                       "2|2|This is a much longer verse than others")
         log_results = []
         log_secrets = []
         original_log_result = src.logger.log_result
@@ -160,12 +160,10 @@ class TestAnalyzer(unittest.TestCase):
         
         results = analyze_verse_lengths_distribution(sample_text)
         
-        # For Surah 1: "This is test" (3 words) and "That is a trial" (4 words) -> avg = 3.5, stddev = 0.5, consistent True.
         self.assertAlmostEqual(results["1"]["average"], 3.5)
         self.assertAlmostEqual(results["1"]["stddev"], 0.5)
         self.assertTrue(results["1"]["consistent"])
         
-        # For Surah 2: "Short" (1 word) and "This is a much longer verse than others" (8 words) -> avg = 4.5, stddev = 3.5, not consistent.
         self.assertAlmostEqual(results["2"]["average"], 4.5)
         self.assertAlmostEqual(results["2"]["stddev"], 3.5)
         self.assertFalse(results["2"]["consistent"])
@@ -229,6 +227,36 @@ class TestAnalyzer(unittest.TestCase):
         results = analyze_enhanced_semantic_symmetry(sample_text, symmetry_threshold=0.5)
         self.assertIn("4", results)
         self.assertEqual(results["4"]["symmetry_score"], 0)
+        
+    def test_analyze_muqattaat_preceding_context(self):
+        '''Test analyze_muqattaat_preceding_context extracts correct preceding context verses and logs output.'''
+        import src
+        from src.analyzer import analyze_muqattaat_preceding_context
+        sample_text = "1|1| صلاة\n1|2| الحمد لله\n2|1|الم بداية السورة\n2|2| هذه الآية التانية"
+        captured_results = []
+        captured_secrets = []
+        original_log_result = src.logger.log_result
+        original_log_secret = src.logger.log_secret_found
+        src.logger.log_result = lambda msg: captured_results.append(msg)
+        src.logger.log_secret_found = lambda msg: captured_secrets.append(msg)
+        import src.text_preprocessor
+        original_remove_diacritics = src.text_preprocessor.remove_diacritics
+        original_normalize = src.text_preprocessor.normalize_arabic_letters
+        src.text_preprocessor.remove_diacritics = lambda text: text
+        src.text_preprocessor.normalize_arabic_letters = lambda text: text
+        try:
+            freq_dict = analyze_muqattaat_preceding_context(sample_text)
+        finally:
+            src.text_preprocessor.remove_diacritics = original_remove_diacritics
+            src.text_preprocessor.normalize_arabic_letters = original_normalize
+        self.assertEqual(freq_dict.get("الحمد"), 1)
+        self.assertEqual(freq_dict.get("لله"), 1)
+        
+        header_found = any("Preceding Context Verses Frequency Analysis" in msg for msg in captured_results)
+        self.assertTrue(header_found, "Header log not found")
+        
+        src.logger.log_result = original_log_result
+        src.logger.log_secret_found = original_log_secret
 
 if __name__ == '__main__':
     unittest.main()

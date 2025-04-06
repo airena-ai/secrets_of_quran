@@ -103,5 +103,10 @@
         "iteration": 20,
         "date": "2025-04-05",
         "iteration_goal": "This increment focuses on analyzing the distribution of Muqatta'at (mysterious letters) in the Quran based on whether the Surahs containing them were revealed in Mecca or Medina. It involves creating a function to categorize Surahs as Meccan or Medinan, count how many of each category contain Muqatta'at, and calculate the proportions. The results, including counts and proportions, will be logged to `results.log`. A 'POTENTIAL SECRET FOUND' tag will be added if a significant difference in Muqatta'at distribution between Meccan and Medinan Surahs is observed. This analysis aims to explore potential contextual or temporal patterns related to Muqatta'at."
+    },
+    {
+        "iteration": 21,
+        "date": "2025-04-05",
+        "iteration_goal": "This increment focuses on analyzing the verses immediately *preceding* the Surahs that begin with Muqatta'at. A new function `analyze_muqattaat_preceding_context()` will be developed to extract these 'preceding context verses', perform word frequency analysis on them, and log the most frequent words. This aims to identify potential semantic links or patterns in the verses that appear right before the Muqatta'at, offering a contrasting perspective to the analysis of verses following Muqatta'at. The `main()` function and integration tests will be updated to include this new analysis."
     }
 ]

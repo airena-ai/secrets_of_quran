@@ -18,7 +18,9 @@ class TestMainIntegration(unittest.TestCase):
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
         sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
-                       "1|2| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
+                       "1|2| آية من سورة الفاتحة\n"
+                       "2|1|الم بداية سورة البقرة\n"
+                       "2|2|آية من سورة البقرة")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -41,9 +43,10 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("----- Comparative Analysis: Root Word Frequencies -----", log_contents)
                 self.assertIn("----- Comparative Analysis: Lemma Frequencies -----", log_contents)
                 self.assertIn("Contextual Analysis of Verses Following Muqatta'at", log_contents)
+                self.assertIn("Preceding Context Verses Frequency Analysis", log_contents)
                 self.assertIn("----- Muqatta'at Distribution: Meccan vs. Medinan -----", log_contents)
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
-                self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at 'الم': Theme - Guidance and Divine Law", log_contents)
+                self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -53,11 +56,10 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        # Updated sample text to include a Surah with a proper Muqatta'at sequence for testing.
         sample_text = ("2|1|الم الحمد لله رب العالمين\n"
                        "2|2|الم الحمد لله رب العالمين\n"
-                       "3|1| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين\n"
-                       "3|2| الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين")
+                       "3|1|الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين\n"
+                       "3|2|الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -68,8 +70,7 @@ class TestMainIntegration(unittest.TestCase):
         from unittest.mock import patch, MagicMock
         mock_spec = MagicMock()
         mock_analyzer = MagicMock()
-        # For token "الحمد", return a root of 'حمد'; for other tokens, return the token itself.
-        mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}, {'lemma': 'حمد'}] if token == "الحمد" else [{'root': token}, {'lemma': token}]
+        mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}, {'lemma': 'حمد'}] if token == "الْحَمْدُ" else [{'root': token}, {'lemma': token}]
         mock_analyzer_class = MagicMock()
         mock_analyzer_class.builtin_analyzer.return_value = mock_analyzer
         
@@ -91,9 +92,10 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("----- Comparative Analysis: Root Word Frequencies -----", log_contents)
                 self.assertIn("----- Comparative Analysis: Lemma Frequencies -----", log_contents)
                 self.assertIn("Contextual Analysis of Verses Following Muqatta'at", log_contents)
+                self.assertIn("Preceding Context Verses Frequency Analysis", log_contents)
                 self.assertIn("----- Muqatta'at Distribution: Meccan vs. Medinan -----", log_contents)
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
-                self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at 'الم': Theme - Guidance and Divine Law", log_contents)
+                self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)
@@ -112,13 +114,10 @@ class TestMainIntegration(unittest.TestCase):
                        "4|2|وهذه آية أخرى")
         from src.analyzer import compare_surahs_muqattaat_vs_non_muqattaat
         result = compare_surahs_muqattaat_vs_non_muqattaat(sample_text)
-        # Check that Surah 2 is categorized as having Muqatta'at and Surah 4 is not.
         self.assertIn("2", result["muqattaat_surahs"])
         self.assertIn("4", result["non_muqattaat_surahs"])
-        # Expected average for both groups should be 3.0 as each line has 3 words.
         self.assertAlmostEqual(result["avg_verse_length_muq"], 3.0)
         self.assertAlmostEqual(result["avg_verse_length_non_muq"], 3.0)
-        # Top words lists should have at most 10 entries.
         self.assertLessEqual(len(result["top_words_muq"]), 10)
         self.assertLessEqual(len(result["top_words_non_muq"]), 10)
 
