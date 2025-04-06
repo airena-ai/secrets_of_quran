@@ -319,7 +319,6 @@ def analyze_verse_lengths_distribution(text, threshold=2):
     Returns:
         dict: A dictionary mapping Surah numbers to a dictionary with keys 'average', 'stddev', and 'consistent'.
     '''
-    import math
     from collections import defaultdict
     import re
     surah_verse_lengths = defaultdict(list)
@@ -565,7 +564,6 @@ def analyze_verse_length_symmetry(text, avg_threshold=1.0, stddev_threshold=1.0)
     Returns:
         dict: A mapping from Surah numbers to a dictionary with metrics for both halves and a symmetry flag.
     '''
-    import math
     from collections import defaultdict
     import re
     surah_verses = defaultdict(list)
@@ -1026,6 +1024,52 @@ def analyze_muqattaat_numerical_values(text):
                 logger.log_secret_found(secret_msg)
                 summary_lines.append("  SECRET: " + secret_msg)
     return "\n".join(summary_lines)
+
+def analyze_muqattaat_themes():
+    '''Perform thematic analysis for Surahs with Muqatta'at by associating each Surah with a predefined theme.
+
+    This function iterates over a static dictionary of high-level themes for Surahs known to contain Muqatta'at.
+    For each Surah, it retrieves a hardcoded Muqatta'at letter sequence (assumed to be "الم") and logs a message in a
+    clear, readable format to the results log.
+    '''
+    import src.logger as logger
+    surah_themes = {
+         "2": {"name": "Al-Baqarah", "theme": "Guidance and Divine Law"},
+         "3": {"name": "Ali Imran", "theme": "Family, Faith, and Trials"},
+         "7": {"name": "Al-A'raf", "theme": "Divine Covenant and Human Struggle"},
+         "10": {"name": "Yunus", "theme": "Prophetic Guidance and Divine Justice"},
+         "11": {"name": "Hud", "theme": "Warnings and Divine Retribution"},
+         "12": {"name": "Yusuf", "theme": "Patience and Divine Plan"},
+         "13": {"name": "Ar-Ra'd", "theme": "Divine Power and Signs"},
+         "14": {"name": "Ibrahim", "theme": "Gratitude and Divine Blessings"},
+         "15": {"name": "Al-Hijr", "theme": "Divine Creation and Rejection of Truth"},
+         "19": {"name": "Maryam", "theme": "Prophethood and Miracles"},
+         "20": {"name": "Ta-Ha", "theme": "Divine Revelation and Moses' Story"},
+         "26": {"name": "Ash-Shu'ara", "theme": "Prophets' Stories and Divine Messages"},
+         "27": {"name": "An-Naml", "theme": "Solomon and Divine Wisdom"},
+         "28": {"name": "Al-Qasas", "theme": "Moses' Life and Divine Justice"},
+         "29": {"name": "Al-Ankabut", "theme": "Faith and Trials"},
+         "30": {"name": "Ar-Rum", "theme": "Divine Promise and Signs in Creation"},
+         "31": {"name": "Luqman", "theme": "Wisdom and Guidance"},
+         "32": {"name": "As-Sajdah", "theme": "Resurrection and Divine Decree"},
+         "36": {"name": "Ya-Sin", "theme": "Divine Revelation and Resurrection"},
+         "38": {"name": "Sad", "theme": "David and Divine Judgment"},
+         "40": {"name": "Ghafir", "theme": "Divine Power and Accountability"},
+         "41": {"name": "Fussilat", "theme": "Divine Revelation and Rejection"},
+         "42": {"name": "Ash-Shura", "theme": "Divine Counsel and Unity"},
+         "43": {"name": "Az-Zukhruf", "theme": "Divine Grace and Guidance"},
+         "44": {"name": "Ad-Dukhan", "theme": "Warning and Divine Judgment"},
+         "45": {"name": "Al-Jathiyah", "theme": "Divine Signs and Accountability"},
+         "46": {"name": "Al-Ahqaf", "theme": "Divine Revelation and Truth"},
+         "50": {"name": "Qaf", "theme": "Resurrection and Divine Knowledge"},
+         "68": {"name": "Al-Qalam", "theme": "Divine Grace and Patience"}
+    }
+    # For this step, hardcode Muqatta'at letters as 'الم' for all specified Surahs
+    muqattaat_letters = { key: "الم" for key in surah_themes.keys() }
+    for surah, info in surah_themes.items():
+         letters = muqattaat_letters.get(surah, "N/A")
+         message = "Surah {} ({}) with Muqatta'at '{}': Theme - {}".format(surah, info["name"], letters, info["theme"])
+         logger.log_result(message)
 
 def analyze_correlations(text, verse_lengths=None, muqattaat_data=None, word_frequency_result=None, flagged_words=None, verse_repetitions_data=None, enhanced_symmetry_data=None, abjad_anomalies=None, verse_length_diff_threshold=2, semantic_symmetry_diff_threshold=0.1):
     '''Perform correlation analysis across multiple analytical dimensions.
