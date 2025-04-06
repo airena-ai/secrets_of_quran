@@ -255,8 +255,8 @@ class TestAnalyzer(unittest.TestCase):
         # Check that the average similarity for group "الم" was logged.
         avg_logged = any("Average Semantic Similarity for Muqatta'at Group 'الم'" in msg for msg in log_results)
         self.assertTrue(avg_logged)
-        # Since Surahs 2 and 3 have identical text for first parts, similarity should be high and secret found logged.
-        secret_logged = any("POTENTIAL SECRET FOUND: [Surah 2] and [Surah 3] (Muqatta'at: الم)" in msg for msg in log_secrets)
+        # Refined assertion: check for log message that indicates high semantic similarity with a similarity score.
+        secret_logged = any("POTENTIAL SECRET FOUND:" in msg and "[Surah 2]" in msg and "[Surah 3]" in msg and "(Muqatta'at: الم)" in msg and "have high semantic similarity:" in msg for msg in log_secrets)
         self.assertTrue(secret_logged)
 
 if __name__ == '__main__':

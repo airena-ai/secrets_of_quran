@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_preceding_context, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat, analyze_muqattaat_distribution_meccan_medinan, surah_classification, categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies, analyze_muqattaat_length, generate_muqattaat_report, review_muqattaat_report
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_preceding_context, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat, analyze_muqattaat_distribution_meccan_medinan, surah_classification, categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies, analyze_muqattaat_length, generate_muqattaat_report, review_muqattaat_report, synthesize_muqattaat_analyses, analyze_muqattaat_semantic_similarity
 
 def main():
     '''Main entry point for the Quran Secrets analysis.'''
@@ -54,8 +54,9 @@ def main():
         log_result("Within Surah - Surah {}: Verse '{}' repeated {} times at Ayahs {}".format(
             item["surah"], item["verse"], item["repetition"], item["ayah_numbers"]))
     for item in verse_repetitions.get("across_quran", []):
-        log_result("Across Quran - Verse '{}' repeated {} times at locations: {}".format(
-            item["verse"], item["repetition"], item["occurrences"]))
+        logResultMsg = "Across Quran - Verse '{}' repeated {} times at locations: {}".format(
+            item["verse"], item["repetition"], item["occurrences"])
+        log_result(logResultMsg)
         surahs = {occ["surah"] for occ in item["occurrences"]}
         if len(surahs) > 1:
             log_secret_found("Verse '{}' is repeated across multiple Surahs: {}".format(item["verse"], list(surahs)))
@@ -100,7 +101,7 @@ def main():
     # NEW: Preceding Context Analysis of Verses Before Muqatta'at
     analyze_muqattaat_preceding_context(text)
     
-    # New: Comparative Analysis for Surahs with and without Muqatta'at based on Root and Lemma Frequencies
+    # New: Comparative Analysis for Surahs with and without Muqatta'at
     from src.analyzer import categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies
     muq_surahs, non_muq_surahs = categorize_surahs_by_muqattaat(text)
     root_freq_muq = analyze_grouped_root_frequencies(text, muq_surahs)
@@ -124,7 +125,8 @@ def main():
     if len(common_roots) < (0.5 * top_n):
          log_secret_found("POTENTIAL SECRET FOUND: Significant difference in top root words between Muqatta'at and Non-Muqatta'at Surahs.")
     
-    log_result("----- Comparative Analysis: Lemma Frequencies -----")
+    logResultLemma = "----- Comparative Analysis: Lemma Frequencies -----"
+    log_result(logResultLemma)
     sorted_lemmas_muq = sorted(lemma_freq_muq.items(), key=lambda x: x[1], reverse=True)[:top_n]
     log_result("Top {} Lemmas for Muqatta'at Surahs:".format(top_n))
     for idx, (lemma, freq) in enumerate(sorted_lemmas_muq, start=1):
@@ -149,6 +151,10 @@ def main():
     # NEW: Synthesize Muqatta'at Analyses Cross-Analysis
     from src.analyzer import synthesize_muqattaat_analyses
     synthesize_muqattaat_analyses(text)
+    
+    # NEW: Semantic Similarity Analysis of Surahs with Same Muqatta'at
+    log_result("Starting semantic similarity analysis for Muqatta'at...")
+    analyze_muqattaat_semantic_similarity(text, muqattaat_data)
     
     # Perform correlation analysis across various analytical dimensions.
     correlation_secrets = analyze_correlations(

@@ -133,5 +133,10 @@
         "iteration": 26,
         "date": "2025-04-06",
         "iteration_goal": "A `synthesize_muqattaat_analyses()` function is added to the `analysis` module to cross-analyze results from existing Muqatta'at analysis functions. This function identifies and logs potential correlations as 'POTENTIAL SECRET FOUND'. The `main()` function and integration tests are updated to include this new analysis, enhancing the application's analytical capabilities within the existing modular architecture."
+    },
+    {
+        "iteration": 27,
+        "date": "2025-04-06",
+        "iteration_goal": "A new function `analyze_muqattaat_semantic_similarity()` is introduced in the `analysis` module to compute semantic similarity between Surahs with the same Muqatta'at using TF-IDF and cosine similarity.  The results, including average similarity scores and significant pairs, are logged. The `main()` function and integration tests are updated to incorporate this new analysis, enhancing the application's analytical capabilities in a modular way."
     }
 ]

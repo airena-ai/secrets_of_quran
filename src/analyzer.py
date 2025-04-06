@@ -1130,7 +1130,7 @@ def analyze_muqattaat_root_cooccurrence(text: str, top_n: int = 5) -> None:
            - Muqatta'at sequence present in the Surah.
            - List of the top N root words with their frequency counts.
       e. Additionally, if a particular root word appears as a top frequent root in multiple Muqatta'at Surahs,
-         it logs a 'POTENTIAL SECRET FOUND' message indicating possible correlation.
+         it logs a "POTENTIAL SECRET FOUND" message indicating possible correlation.
 
     Args:
         text (str): The preprocessed Quran text.
@@ -1545,7 +1545,7 @@ def generate_muqattaat_report(text):
     # Invoke length analysis and root co-occurrence functions (their outputs are logged)
     analyze_muqattaat_length(text)
     analyze_muqattaat_root_cooccurrence(text)
-
+    
     # Build final report
     report_lines = []
     report_lines.append("FINAL MUQATTA'AT REPORT:")
@@ -1614,7 +1614,6 @@ def generate_muqattaat_report(text):
     
     final_report = "\n".join(report_lines)
     log_result(final_report)
-    
     try:
         with open("results.log", "a", encoding="utf-8") as f:
             f.write(final_report + "\n")
@@ -1661,7 +1660,7 @@ def synthesize_muqattaat_analyses(text):
     seq_freq = analyze_muqattaat_sequences(text)
     for seq, freq in seq_freq.items():
         if freq > 1:
-            log_secret_found(f"Correlation between Muqatta'at Sequence Frequency and Verse Structure: The sequence '{seq}' appears {freq} times, suggesting a potential structural emphasis.")
+            log_secret_found(f"POTENTIAL SECRET FOUND: [Surah {seq}] and similar patterns have high sequence frequency: {freq} occurrences")
     
     # Compare Surahs with and without Muqatta'at
     comparison = compare_surahs_muqattaat_vs_non_muqattaat(text)
@@ -1694,3 +1693,129 @@ def synthesize_muqattaat_analyses(text):
     log_secret_found("Numerical Value and Sequence Length Correlation: Surahs with Muqatta'at sequences having higher Abjad numerical values tend to have shorter verse lengths on average, observed from cross-analysis of numerical and structural data.")
     
     # End of synthesis function
+
+def compute_tfidf(docs):
+    '''Compute the TF-IDF vectors for a set of documents.
+    
+    Args:
+        docs (dict): Dictionary mapping document identifiers to lists of tokens.
+    
+    Returns:
+        tuple: A tuple containing:
+            - vocab (list): List of unique words in all documents.
+            - tfidf (dict): Dictionary mapping document identifiers to their TF-IDF vectors.
+    '''
+    from collections import Counter
+    import math
+    vocab = set()
+    for tokens in docs.values():
+        vocab.update(tokens)
+    vocab = list(vocab)
+    N_docs = len(docs)
+    tf = {}
+    for doc, tokens in docs.items():
+        count = Counter(tokens)
+        total = len(tokens) if tokens else 1
+        tf[doc] = { word: count[word] / total for word in count }
+    df = {}
+    for word in vocab:
+        df[word] = sum(1 for tokens in docs.values() if word in tokens)
+    idf = {}
+    for word in vocab:
+        idf[word] = math.log((N_docs + 1) / (df[word] + 1)) + 1
+    tfidf = {}
+    for doc in docs:
+        tfidf[doc] = { word: tf[doc].get(word, 0) * idf[word] for word in vocab }
+    return vocab, tfidf
+
+def cosine_similarity(vec1, vec2, vocab):
+    '''Compute cosine similarity between two TF-IDF vectors.
+    
+    Args:
+        vec1 (dict): TF-IDF vector for document 1.
+        vec2 (dict): TF-IDF vector for document 2.
+        vocab (list): Vocabulary list of words.
+    
+    Returns:
+        float: Cosine similarity score.
+    '''
+    import math
+    dot = sum(vec1[word] * vec2[word] for word in vocab)
+    norm1 = math.sqrt(sum((vec1[word])**2 for word in vocab))
+    norm2 = math.sqrt(sum((vec2[word])**2 for word in vocab))
+    if norm1 == 0 or norm2 == 0:
+        return 0
+    return dot / (norm1 * norm2)
+
+def analyze_muqattaat_semantic_similarity(text, muqattaat_mapping):
+    '''Analyze semantic similarity between Surahs that share the same Muqatta'at sequence.
+
+    This function groups Surahs by their identical Muqatta'at sequences using the provided mapping.
+    For each group with more than one Surah, it extracts the full text (from the preprocessed Quran text),
+    tokenizes the text, and computes TF-IDF vectors based on the term frequency within each Surah and the inverse document frequency
+    calculated across all Surahs in the group. It then computes pairwise cosine similarity between the TF-IDF vectors.
+    The average similarity for the group is logged, and for each pair with a similarity score above the threshold (0.6),
+    a "POTENTIAL SECRET FOUND" message is logged.
+
+    Args:
+        text (str): The preprocessed Quran text.
+        muqattaat_mapping (dict): A dictionary mapping Surah numbers (as strings) to their Muqatta'at sequence.
+    '''
+    if not isinstance(text, str):
+        raise ValueError("Input text must be a string.")
+    if not isinstance(muqattaat_mapping, dict):
+        raise ValueError("Muqattaat mapping must be a dictionary.")
+    for key, value in muqattaat_mapping.items():
+        if not isinstance(key, str) or not isinstance(value, str):
+            raise ValueError("Muqattaat mapping keys and values must be strings.")
+
+    from collections import defaultdict
+    import re
+    from src.logger import log_result, log_secret_found
+
+    # Build a mapping of Surah to its full text.
+    surah_texts = defaultdict(str)
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            verse = m.group(3).strip()
+        else:
+            surah = "1"
+            verse = line.strip()
+        if surah in muqattaat_mapping:
+            surah_texts[surah] += " " + verse
+
+    # Group Surahs by identical Muqatta'at sequence.
+    groups = defaultdict(list)
+    for surah, seq in muqattaat_mapping.items():
+        groups[seq].append(surah)
+    threshold = 0.6
+
+    # Process each group with more than one Surah.
+    for seq, surah_list in groups.items():
+        if len(surah_list) < 2:
+            continue
+        docs = {}
+        for surah in surah_list:
+            tokens = surah_texts.get(surah, "").split()
+            docs[surah] = tokens
+
+        # Compute TF-IDF vectors using helper function.
+        vocab, tfidf = compute_tfidf(docs)
+
+        similarities = []
+        surah_list_sorted = sorted(surah_list, key=lambda s: int(s))
+        for i in range(len(surah_list_sorted)):
+            for j in range(i+1, len(surah_list_sorted)):
+                s1 = surah_list_sorted[i]
+                s2 = surah_list_sorted[j]
+                sim = cosine_similarity(tfidf[s1], tfidf[s2], vocab)
+                similarities.append(sim)
+                if sim > threshold:
+                    log_secret_found(f"POTENTIAL SECRET FOUND: [Surah {s1}] and [Surah {s2}] (Muqatta'at: {seq}) have high semantic similarity: {sim:.2f}")
+        avg_sim = sum(similarities) / len(similarities) if similarities else 0
+        log_result(f"Average Semantic Similarity for Muqatta'at Group '{seq}' (Surahs: {', '.join(surah_list_sorted)}): {avg_sim:.2f}")

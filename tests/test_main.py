@@ -17,10 +17,12 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
+        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
                        "1|2| آية من سورة الفاتحة\n"
                        "2|1|الم بداية سورة البقرة\n"
-                       "2|2|آية من سورة البقرة")
+                       "2|2|آية من سورة البقرة\n"
+                       "3|1|الم بداية سورة آل عمران\n"
+                       "3|2|آية من سورة آل عمران")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -53,6 +55,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
                 self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
                 self.assertIn("--- Muqatta'at Cross-Analysis Synthesis ---", log_contents)
+                # New assertion to verify semantic similarity analysis log.
+                self.assertIn("Average Semantic Similarity for Muqatta'at Group", log_contents)
                 condition = ("POTENTIAL SOLUTION TO MUQATTAَAT MYSTERY FOUND:" in log_contents or 
                              "MUQATTAَAT MYSTERY REMAINS UNSOLVED:" in log_contents)
                 self.assertTrue(condition)
@@ -67,8 +71,8 @@ class TestMainIntegration(unittest.TestCase):
         os.makedirs(data_dir, exist_ok=True)
         sample_text = ("2|1|الم الحمد لله رب العالمين\n"
                        "2|2|الم الحمد لله رب العالمين\n"
-                       "3|1|الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين\n"
-                       "3|2|الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين")
+                       "3|1|الم الحمد لله رب العالمين\n"
+                       "3|2|الم الحمد لله رب العالمين")
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
         
@@ -111,6 +115,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
                 self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
                 self.assertIn("--- Muqatta'at Cross-Analysis Synthesis ---", log_contents)
+                # New assertion for semantic similarity analysis.
+                self.assertIn("Average Semantic Similarity for Muqatta'at Group", log_contents)
                 condition = ("POTENTIAL SOLUTION TO MUQATTAَAT MYSTERY FOUND:" in log_contents or 
                              "MUQATTAَAT MYSTERY REMAINS UNSOLVED:" in log_contents)
                 self.assertTrue(condition)
