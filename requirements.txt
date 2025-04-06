@@ -1,1 +1,2 @@
 camel_tools
+scipy

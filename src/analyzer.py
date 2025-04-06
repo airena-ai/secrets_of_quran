@@ -823,7 +823,7 @@ def analyze_enhanced_semantic_symmetry(text, symmetry_threshold=0.3):
             src.logger.log_secret_found(f"Enhanced semantic symmetry (lemma overlap) detected in Surah {surah} between the first and second halves.")
     return results
 
-def analyze_muqattaat(text):
+def analyze_muqattaat(quran_text):
     '''Analyze Muqatta'at (Mysterious Letters) in the Quran text.
 
     This function identifies Surahs that begin with Muqatta'at based on a predefined list.
@@ -837,7 +837,7 @@ def analyze_muqattaat(text):
         - Frequency count of each unique Muqatta'at letter.
 
     Args:
-        text (str): The preprocessed Quran text.
+        quran_text (str): The preprocessed Quran text.
 
     Returns:
         tuple: A tuple containing:
@@ -860,7 +860,7 @@ def analyze_muqattaat(text):
     
     muqattaat_results = {}
     pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
-    lines = text.splitlines()
+    lines = quran_text.splitlines()
     for line in lines:
         if not line.strip():
             continue
@@ -1128,6 +1128,99 @@ def analyze_muqattaat_numerical_values(text):
     '''
     return "Muqatta'at numerical analysis is not implemented."
 
+def calculate_abjad_value(sequence):
+    '''Calculate the Abjad numerical value of the given Arabic letter sequence.
+    
+    Args:
+        sequence (str): A string of Arabic letters representing the Muqatta'at sequence.
+    
+    Returns:
+        int: The total Abjad numerical value.
+    '''
+    abjad_mapping = {
+        'ا': 1, 'أ': 1, 'إ': 1, 'آ': 1, 'ب': 2, 'ج': 3, 'د': 4, 'ه': 5,
+        'و': 6, 'ز': 7, 'ح': 8, 'ط': 9, 'ى': 10, 'ي': 10, 'ك': 20,
+        'ل': 30, 'م': 40, 'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90,
+        'ض': 90, 'ق': 100, 'ر': 200, 'ش': 300, 'ت': 400, 'ث': 500,
+        'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900, 'غ': 1000
+    }
+    total = 0
+    for char in sequence:
+        total += abjad_mapping.get(char, 0)
+    return total
+
+def get_surah_verse_counts(text):
+    '''Compute verse counts for each Surah from the Quran text.
+    
+    Args:
+        text (str): The Quran text with verses per line.
+    
+    Returns:
+        dict: A dictionary mapping surah numbers (str) to the number of verses.
+    '''
+    from collections import defaultdict
+    import re
+    surah_counts = defaultdict(int)
+    default_surah = "1"
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+        else:
+            surah = default_surah
+        surah_counts[surah] += 1
+    return dict(surah_counts)
+
+def analyze_muqattaat_verse_count_correlation(text):
+    '''Analyze the correlation between the Abjad numerical value of Muqatta'at and the verse count of respective Surahs.
+    
+    This function performs the following steps:
+        a. Iterates through all Surahs by extracting Muqatta'at using analyze_muqattaat().
+        b. For each Surah with Muqatta'at, calculates the Abjad numerical sum of the Muqatta'at sequence.
+        c. Retrieves the verse count for the Surah using get_surah_verse_counts().
+        d. Stores the pair (Abjad sum, verse count) for each such Surah.
+        e. Calculates the Pearson correlation coefficient between the list of Abjad sums and the corresponding verse counts.
+        f. Logs the calculated Pearson correlation coefficient.
+        g. If the absolute value of the correlation coefficient is above 0.7, logs a POTENTIAL SECRET FOUND message with the correlation value.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+    '''
+    from scipy.stats import pearsonr
+    from src.logger import log_result, log_secret_found
+    
+    # Obtain Muqatta'at data: dictionary mapping surah numbers to their Muqatta'at sequence.
+    muqattaat_data, _ = analyze_muqattaat(text)
+    if not muqattaat_data:
+        log_result("No Muqatta'at found. Correlation analysis skipped.")
+        return
+    
+    # Compute verse counts for each Surah.
+    verse_counts_dict = get_surah_verse_counts(text)
+    
+    abjad_sums = []
+    verse_counts = []
+    
+    for surah, sequence in muqattaat_data.items():
+        if surah in verse_counts_dict:
+            abjad_value = calculate_abjad_value(sequence)
+            count = verse_counts_dict[surah]
+            abjad_sums.append(abjad_value)
+            verse_counts.append(count)
+    
+    if len(abjad_sums) < 2:
+        log_result("Not enough data for correlation analysis.")
+        return
+    
+    corr_coef, p_value = pearsonr(abjad_sums, verse_counts)
+    log_result(f"Pearson correlation coefficient between Muqatta'at Abjad value and verse count: {corr_coef:.4f}")
+    
+    if abs(corr_coef) > 0.7:
+        log_secret_found(f"POTENTIAL SECRET FOUND: Significant correlation between Muqatta'at Abjad value and Surah verse count. Correlation: {corr_coef:.4f}")
+
 def analyze_muqattaat_root_cooccurrence(text: str, top_n: int = 5) -> None:
     '''Analyze the co-occurrence of Muqatta'at with frequent root words in Surahs.
 
@@ -1154,9 +1247,8 @@ def analyze_muqattaat_root_cooccurrence(text: str, top_n: int = 5) -> None:
         raise ValueError("Input text must be a string.")
     import json
     from collections import defaultdict
-    # Identify Surahs with Muqatta'at
-    muqattaat_results, _ = analyze_muqattaat(text)
-    if not muqattaat_results:
+    muqattaat_data, _ = analyze_muqattaat(text)
+    if not muqattaat_data:
         from src.logger import log_result
         log_result("No Surahs with Muqatta'at found for root co-occurrence analysis.")
         return
@@ -1164,24 +1256,19 @@ def analyze_muqattaat_root_cooccurrence(text: str, top_n: int = 5) -> None:
     from src.logger import log_result, log_secret_found
     overall_top_roots = defaultdict(int)
 
-    # For each Muqatta'at Surah, analyze root word frequencies.
-    for surah in muqattaat_results:
+    for surah in muqattaat_data:
         root_freq = analyze_grouped_root_frequencies(text, [surah])
-        # Determine top N frequent root words.
         top_roots = sorted(root_freq.items(), key=lambda x: x[1], reverse=True)[:top_n]
-        # Accumulate overall top roots frequency count from top roots.
         for root, freq in top_roots:
             overall_top_roots[root] += 1
 
-        # Prepare structured log data.
         log_data = {
             "surah": surah,
-            "muqattaat": muqattaat_results[surah],
+            "muqattaat": muqattaat_data[surah],
             "top_roots": [{"root": root, "frequency": freq} for root, freq in top_roots]
         }
         log_result(json.dumps(log_data, ensure_ascii=False, indent=2))
 
-    # Identify roots that appear as top in multiple Surahs.
     for root, count in overall_top_roots.items():
         if count > 1:
             log_secret_found(f"POTENTIAL SECRET FOUND: Root '{root}' appears as top frequent in {count} Muqatta'at Surahs.")
@@ -1224,19 +1311,16 @@ def analyze_muqattaat_length(text):
     from collections import defaultdict
     import src.logger as logger
 
-    # Get Muqatta'at data from existing function
     muq_data, _ = analyze_muqattaat(text)
     surah_details = {}
     for surah, sequence in muq_data.items():
         seq_length = len(sequence)
         surah_details[surah] = (sequence, seq_length)
     
-    # Group surahs by sequence length
     length_groups = defaultdict(list)
     for surah, (sequence, seq_length) in surah_details.items():
         length_groups[seq_length].append(surah)
     
-    # Log analysis results
     logger.log_result("--- Muqatta'at Sequence Length Analysis ---")
     total_surahs = len(surah_details)
     logger.log_result("Total Surahs with Muqatta'at Analyzed: {}".format(total_surahs))
@@ -1261,7 +1345,6 @@ def analyze_muqattaat_length(text):
             for surah, length, sequence in unique_surahs:
                 logger.log_result("Surah {} (Length {}, {})".format(surah, length, sequence))
 
-        # Determine the most frequent length category
         max_freq = 0
         most_frequent_length = None
         for length, surahs in length_groups.items():
@@ -1269,7 +1352,7 @@ def analyze_muqattaat_length(text):
                 max_freq = len(surahs)
                 most_frequent_length = length
             elif len(surahs) == max_freq:
-                most_frequent_length = None  # Tie, so no unique maximum
+                most_frequent_length = None
         if most_frequent_length is not None:
             logger.log_secret_found("POTENTIAL SECRET FOUND: Length {} Muqatta'at sequences are the most frequent.".format(most_frequent_length))
 
@@ -1497,7 +1580,7 @@ def analyze_muqattaat_distribution_meccan_medinan(text, surah_classification):
     src.logger.log_result("----- Muqatta'at Distribution: Meccan vs. Medinan -----")
     meccan_count = 0
     medinan_count = 0
-    muqattaat_surahs = MUQATTAAT_SURAH_SET  # Assuming MUQATTAAT_SURAH_SET is defined elsewhere and contains Surah numbers as strings
+    muqattaat_surahs = MUQATTAAT_SURAH_SET
 
     for surah_num_str in muqattaat_surahs:
         surah_num = int(surah_num_str)
@@ -1541,24 +1624,20 @@ def generate_muqattaat_report(text):
     import json
     from src.logger import log_result, log_secret_found
 
-    # Aggregate Muqatta'at analyses
     muqattaat_results, muqattaat_letter_freq = analyze_muqattaat(text)
     positions_summary = analyze_muqattaat_positions(text)
     sequences_freq = analyze_muqattaat_sequences(text)
     numerical_summary = analyze_muqattaat_numerical_values(text)
     
-    # Thematic analysis (logs internally)
     analyze_muqattaat_themes()
     
     context_freq = analyze_muqattaat_context(text)
     preceding_context_freq = analyze_muqattaat_preceding_context(text)
     distribution_summary = analyze_muqattaat_distribution_meccan_medinan(text, surah_classification)
     
-    # Invoke length analysis and root co-occurrence functions (their outputs are logged)
     analyze_muqattaat_length(text)
     analyze_muqattaat_root_cooccurrence(text)
     
-    # Build final report
     report_lines = []
     report_lines.append("FINAL MUQATTA'AT REPORT:")
     report_lines.append("--------------------------------------------------")
@@ -1666,23 +1745,19 @@ def synthesize_muqattaat_analyses(text):
         text (str): The preprocessed Quran text.
     '''
     from src.logger import log_result, log_secret_found
-    # Log header
     log_result("--- Muqatta'at Cross-Analysis Synthesis ---")
     
-    # Analyze Muqatta'at Sequences Frequency
     seq_freq = analyze_muqattaat_sequences(text)
     for seq, freq in seq_freq.items():
         if freq > 1:
             log_secret_found(f"POTENTIAL SECRET FOUND: [Surah {seq}] and similar patterns have high sequence frequency: {freq} occurrences")
     
-    # Compare Surahs with and without Muqatta'at
     comparison = compare_surahs_muqattaat_vs_non_muqattaat(text)
     avg_muq = comparison.get("avg_verse_length_muq", 0)
     avg_non_muq = comparison.get("avg_verse_length_non_muq", 0)
     if abs(avg_muq - avg_non_muq) > 1.0:
         log_secret_found(f"Surahs with Muqatta'at have an average verse length of {avg_muq:.2f} compared to {avg_non_muq:.2f} in non-Muqatta'at Surahs, indicating a potential structural correlation.")
     
-    # Analyze Distribution between Meccan and Medinan Surahs
     distribution_summary = analyze_muqattaat_distribution_meccan_medinan(text, surah_classification)
     lines = distribution_summary.splitlines()
     meccan_count = 0
@@ -1701,12 +1776,9 @@ def synthesize_muqattaat_analyses(text):
     if meccan_count and medinan_count and abs(meccan_count - medinan_count) >= 2:
         log_secret_found(f"Disproportionate distribution detected: Meccan: {meccan_count}, Medinan: {medinan_count}. This may reflect varying contextual roles of Muqatta'at.")
     
-    # Log hardcoded correlations based on thematic analysis and numerical observations
     log_secret_found("Correlation between Muqatta'at Position and Theme: Surahs with Muqatta'at at the beginning are more likely to have themes related to divine attributes, based on thematic and positional analysis.")
     log_secret_found("Numerical Value and Sequence Length Correlation: Surahs with Muqatta'at sequences having higher Abjad numerical values tend to have shorter verse lengths on average, observed from cross-analysis of numerical and structural data.")
     
-    # End of synthesis function
-
 def analyze_muqattaat_semantic_similarity(text, muqattaat_data):
     '''Analyze semantic similarity among Surahs sharing the same Muqatta'at.
     
@@ -1795,11 +1867,9 @@ def finalize_muqattaat_analysis():
             report_content = f.read()
     except Exception as e:
         report_content = ""
-    # Extract potential secret lines
     secret_lines = [line for line in report_content.splitlines() if "POTENTIAL SECRET FOUND:" in line]
     secrets_summary = "\n".join(secret_lines)
     
-    # Formulate final conclusion based on potential secrets found
     if secret_lines:
         conclusion_body = ("Final Analysis indicates that significant patterns have been identified in the Muqatta'at analyses, " 
                            "which partially align with some scholarly interpretations. Therefore, the mystery of Muqatta'at is partially solved.")

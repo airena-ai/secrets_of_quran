@@ -1,6 +1,6 @@
 product_spec_northstar: >
   ### Objective:
-  Solve the mystery of 'The mysterious letters (Muqattaʿat)' that are at the begining of the Quran.
+  Find secret messages in Quran based on secret code and muqatta analysis you will perform using novel strategies that haven't been explored before.
 
   ### Text Processing Requirements:
   
@@ -43,7 +43,7 @@ product_spec_northstar: >
   No mocks or partial runs — test the full analyzer as a real-world application
 
   * Final Goal:
-  Solve the mystery of 'The mysterious letters (Muqattaʿat)' that are at the begining of the Quran.
+  Find secret messages in Quran based on secret code and muqatta analysis you will perform using novel strategies that haven't been explored before.
 
 project_root_folder: C:\Github\secrets_of_quran
 product_spec_history_filename: product_spec_history.json

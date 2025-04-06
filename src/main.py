@@ -7,7 +7,6 @@ from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_word
 
 def main():
     '''Main entry point for the Quran Secrets analysis.'''
-    # Configure stdout to use UTF-8 encoding to handle Arabic characters
     sys.stdout.reconfigure(encoding='utf-8')
     
     file_path = "data/quran-uthmani-min.txt"
@@ -20,38 +19,28 @@ def main():
     text = remove_diacritics(text)
     text = normalize_arabic_letters(text)
     
-    # Perform verse length analysis and distribution.
     verse_lengths = analyze_verse_lengths_distribution(text)
-    
-    # Execute both numerical pattern analysis and word frequency analysis.
     anomalies = analyze_text(text)
     freq_summary, freq_flagged = analyze_word_frequency(text)
     
-    # Execute Arabic root word frequency analysis.
     root_summary, root_freq, top_roots = analyze_root_words(text)
     
-    # Perform bigram frequency analysis.
     tokenized_text = text.split()
     bigram_frequencies = analyze_bigrams(tokenized_text)
     from src.logger import log_bigram_frequencies
     log_bigram_frequencies(bigram_frequencies, top_n=20)
     
-    # Log the word frequency analysis summary with a timestamp.
     from src.logger import log_result, log_secret_found
     log_result(freq_summary)
     
-    # Log the Arabic root word analysis summary.
     log_result(root_summary)
     
-    # Log flagged words from frequency analysis as potential secrets.
     for flag in freq_flagged:
         log_secret_found(flag)
     
-    # Log other anomalies detected in the text.
     for anomaly in anomalies:
         log_secret_found(anomaly)
         
-    # Perform verse repetition analysis.
     verse_repetitions = analyze_verse_repetitions(text)
     log_result("Verse Repetition Analysis:")
     for item in verse_repetitions.get("within_surah", []):
@@ -65,30 +54,28 @@ def main():
         if len(surahs) > 1:
             log_secret_found("Verse '{}' is repeated across multiple Surahs: {}".format(item["verse"], list(surahs)))
     
-    # Advanced pattern analyses
     analyze_palindromes(text)
     abjad_anomalies = analyze_abjad_numerals(text)
     analyze_semantic_symmetry(text)
     
-    # New analysis for verse arrangement rhythm & balance
     analyze_verse_length_symmetry(text)
     enhanced_symmetry = analyze_enhanced_semantic_symmetry(text)
     
-    # New analysis functions for lemma analysis and surah verse counts
     analyze_lemmas(text)
     analyze_surah_verse_counts(text)
     
-    # New analysis for Muqatta'at
     muqattaat_data, _ = analyze_muqattaat(text)
     muqattaat_positions_summary = analyze_muqattaat_positions(text)
     numerical_summary = analyze_muqattaat_numerical_values(text)
-    # NEW: Distribution Analysis of Muqatta'at: Meccan vs. Medinan
+    
+    # NEW: Correlation Analysis between Muqatta'at Abjad value and Surah verse count
+    from src.analyzer import analyze_muqattaat_verse_count_correlation
+    analyze_muqattaat_verse_count_correlation(text)
+    
     from src.analyzer import surah_classification
     analyze_muqattaat_distribution_meccan_medinan(text, surah_classification)
-    # New: Thematic Analysis for Muqatta'at
     analyze_muqattaat_themes()
     
-    # New analysis for Muqatta'at sequences
     muqattaat_seq_freq = analyze_muqattaat_sequences(text)
     log_result("Muqatta'at Sequences Frequency Analysis:")
     for seq, freq in muqattaat_seq_freq.items():
@@ -96,16 +83,12 @@ def main():
         if freq > 1:
             log_secret_found("Sequence '{}' appears unusually often ({} times)".format(seq, freq))
     
-    # New: Muqatta'at Sequence Length Analysis
     analyze_muqattaat_length(text)
     
-    # New: Contextual Analysis of Verses Following Muqatta'at
     analyze_muqattaat_context(text)
     
-    # NEW: Preceding Context Analysis of Verses Before Muqatta'at
     analyze_muqattaat_preceding_context(text)
     
-    # New: Comparative Analysis for Surahs with and without Muqatta'at
     from src.analyzer import categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies
     muq_surahs, non_muq_surahs = categorize_surahs_by_muqattaat(text)
     root_freq_muq = analyze_grouped_root_frequencies(text, muq_surahs)
@@ -145,22 +128,17 @@ def main():
     if len(common_lemmas) < (0.5 * top_n):
          log_secret_found("POTENTIAL SECRET FOUND: Significant difference in top lemmas between Muqatta'at and Non-Muqatta'at Surahs.")
     
-    # New: Comparison between Surahs with and without Muqatta'at
     compare_surahs_muqattaat_vs_non_muqattaat(text)
     
-    # NEW: Analysis of Muqatta'at Root Co-occurrence with Frequent Root Words
     from src.analyzer import analyze_muqattaat_root_cooccurrence
     analyze_muqattaat_root_cooccurrence(text)
     
-    # NEW: Synthesize Muqatta'at Analyses Cross-Analysis
     from src.analyzer import synthesize_muqattaat_analyses
     synthesize_muqattaat_analyses(text)
     
-    # NEW: Semantic Similarity Analysis of Surahs with Same Muqatta'at
     log_result("Starting semantic similarity analysis for Muqatta'at...")
     analyze_muqattaat_semantic_similarity(text, muqattaat_data)
     
-    # Perform correlation analysis across various analytical dimensions.
     correlation_secrets = analyze_correlations(
         text,
         verse_lengths=verse_lengths,
@@ -172,7 +150,6 @@ def main():
         abjad_anomalies=abjad_anomalies
     )
     
-    # Generate enhanced final report.
     final_report_lines = []
     final_report_lines.append("FINAL REPORT: QURAN SECRETS ANALYSIS")
     final_report_lines.append("--------------------------------------------------")
@@ -229,9 +206,7 @@ def main():
     except Exception as e:
         log_result("Error writing human-readable report: " + str(e))
     
-    # NEW: Generate final Muqatta'at report
     generate_muqattaat_report(text)
-    # NEW: Append final conclusions based on Muqatta'at analysis review
     try:
         with open("results.log", "r", encoding="utf-8") as rep_file:
             report_content = rep_file.read()
@@ -241,13 +216,11 @@ def main():
     final_conclusion = review_muqattaat_report(report_content)
     log_result(final_conclusion)
     
-    # NEW: Compare scholarly interpretations with analysis findings.
     from src.data_loader import load_muqattaat_interpretations
     from src.analyzer import compare_interpretations_with_analysis
     interpretations = load_muqattaat_interpretations()
     compare_interpretations_with_analysis(interpretations)
     
-    # NEW: Final Synthesis and Conclusion on Muqatta'at
     from src.analyzer import finalize_muqattaat_analysis
     final_conclusion_text = finalize_muqattaat_analysis()
     
