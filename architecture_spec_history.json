@@ -153,5 +153,10 @@
         "iteration": 30,
         "date": "2025-04-06",
         "iteration_goal": "A new function `analyze_muqattaat_verse_count_correlation()` is added to the `analysis` module to calculate the correlation between Muqatta'at Abjad values and Surah verse counts. This reuses existing functions and data. The `main()` function and integration tests are updated to include this new analysis and verify the logged results, maintaining the modular architecture and enhancing Muqatta'at analysis capabilities."
+    },
+    {
+        "iteration": 31,
+        "date": "2025-04-06",
+        "iteration_goal": "A new analysis function `analyze_muqattaat_verse_parity()` is added to the `analysis` module to investigate verse count parity in Surahs with Muqatta'at. This function categorizes Surahs by even/odd verse counts, calculates statistics, compares to the overall Quran distribution, and logs results, flagging potential secrets. The `main()` function and integration tests are updated to include this new analysis."
     }
 ]

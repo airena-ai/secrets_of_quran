@@ -1,14 +1,12 @@
 '''Unit tests for the analyzer module.'''
 
 import unittest
-from unittest.mock import MagicMock
 import src
 from src.analyzer import (analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams,
                           analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry,
                           analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_verse_length_symmetry,
                           analyze_enhanced_semantic_symmetry, analyze_muqattaat_length, analyze_muqattaat,
                           analyze_muqattaat_semantic_similarity, compare_interpretations_with_analysis)
-import importlib.util
 
 class TestAnalyzer(unittest.TestCase):
     def setUp(self):
@@ -61,12 +59,12 @@ class TestAnalyzer(unittest.TestCase):
         mock_analyzer = MagicMock()
         mock_analyzer.analyze.side_effect = lambda token: [{'root': 'كتب'}] if token == "كتاب" else [{'root': 'درس'}] if token == "مدرسة" else [{'root': token}]
         mock_analyzer_class = MagicMock()
-        mock_analyzer_class.builtin_analyzer.return_value = mock_analyzer
         with patch('importlib.util.find_spec', return_value=mock_spec), \
              patch.dict('sys.modules', {'camel_tools': MagicMock(), 
                                           'camel_tools.morphology': MagicMock(),
                                           'camel_tools.morphology.analyzer': MagicMock()}), \
-             patch('camel_tools.morphology.analyzer.Analyzer', mock_analyzer_class):
+            patch('src.analyzer.Analyzer', return_value=mock_analyzer):                                          
+
             sample_text = "كتاب مدرسة كتاب"
             summary, root_freq, top_roots = analyze_root_words(sample_text)
             self.assertEqual(root_freq.get('كتب'), 2)

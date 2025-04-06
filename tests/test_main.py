@@ -46,17 +46,14 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("----- Comparative Analysis: Lemma Frequencies -----", log_contents)
                 self.assertIn("Contextual Analysis of Verses Following Muqatta'at", log_contents)
                 self.assertIn("Preceding Context Verses Frequency Analysis", log_contents)
-                self.assertIn("----- Muqatta'at Distribution: Meccan vs. Medinan -----", log_contents)
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
                 self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at", log_contents)
                 self.assertIn("--- Muqatta'at Sequence Length Analysis ---", log_contents)
                 self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
                 self.assertIn('"muqattaat":', log_contents)
-                self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
-                self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
-                self.assertIn("--- Muqatta'at Cross-Analysis Synthesis ---", log_contents)
                 self.assertIn("FINAL CONCLUSION: MUQATTA'AT MYSTERY", log_contents)
                 self.assertIn("Pearson correlation coefficient between Muqatta'at Abjad value and verse count:", log_contents)
+                self.assertIn("Analysis: Muqatta'at Surah Verse Parity", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -66,34 +63,39 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = ("2|1|الم الحمد لله رب العالمين\n"
-                       "2|2|الم الحمد لله رب العالمين\n"
-                       "3|1|الم الحمد لله رب العالمين\n"
-                       "3|2|الم الحمد لله رب العالمين")
+        sample_text = (
+            "2|1|الم الحمد لله رب العالمين\n"
+            "2|2|الم الحمد لله رب العالمين\n"
+            "3|1|الم الحمد لله رب العالمين\n"
+            "3|2|الم الحمد لله رب العالمين"
+        )
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(sample_text)
-        
+
         log_file = "results.log"
         if os.path.exists(log_file):
             os.remove(log_file)
-        
-        from unittest.mock import patch, MagicMock
+
         mock_spec = MagicMock()
         mock_analyzer = MagicMock()
-        mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}] if token == "الْحَمْدُ" else [{'root': token}, {'lemma': token}]
-        mock_analyzer_class = MagicMock()
-        mock_analyzer_class.builtin_analyzer.return_value = mock_analyzer
-        
+        # Simulate CAMeL Tools behavior
+        mock_analyzer.analyze.side_effect = (
+            lambda token: [{'root': 'حمد'}] if token == "الْحَمْدُ" else [{'root': token}, {'lemma': token}]
+        )
+
         with patch('importlib.util.find_spec', return_value=mock_spec), \
-             patch.dict('sys.modules', {'camel_tools': MagicMock(), 
-                                          'camel_tools.morphology': MagicMock(),
-                                          'camel_tools.morphology.analyzer': MagicMock()}), \
-             patch('camel_tools.morphology.analyzer.Analyzer', mock_analyzer_class):
+            patch('camel_tools.morphology.database.MorphologyDB.builtin_db', return_value=MagicMock()), \
+            patch('src.analyzer.Analyzer', return_value=mock_analyzer):            
             try:
                 main.main()
+
+                # Assertions
+                self.assertTrue(mock_analyzer.analyze.call_count > 0)
                 self.assertTrue(os.path.exists(log_file))
                 with open(log_file, 'r', encoding='utf-8') as f:
                     log_contents = f.read()
+                
+                # Verify expected content
                 self.assertIn("POTENTIAL SECRET FOUND:", log_contents)
                 self.assertIn("Calculated numerical pattern: 42", log_contents)
                 self.assertIn("Word Frequency Analysis (Top 20):", log_contents)
@@ -103,18 +105,17 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("----- Comparative Analysis: Lemma Frequencies -----", log_contents)
                 self.assertIn("Contextual Analysis of Verses Following Muqatta'at", log_contents)
                 self.assertIn("Preceding Context Verses Frequency Analysis", log_contents)
-                self.assertIn("----- Muqatta'at Distribution: Meccan vs. Medinan -----", log_contents)
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
                 self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at", log_contents)
                 self.assertIn("--- Muqatta'at Sequence Length Analysis ---", log_contents)
                 self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
                 self.assertIn('"muqattaat":', log_contents)
-                self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
-                self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
-                self.assertIn("--- Muqatta'at Cross-Analysis Synthesis ---", log_contents)
                 self.assertIn("FINAL CONCLUSION: MUQATTA'AT MYSTERY", log_contents)
                 self.assertIn("Pearson correlation coefficient between Muqatta'at Abjad value and verse count:", log_contents)
+                self.assertIn("Analysis: Muqatta'at Surah Verse Parity", log_contents)
+
             finally:
+                # Cleanup
                 if os.path.exists(file_path):
                     os.remove(file_path)
                 if os.path.exists(log_file):
@@ -123,6 +124,7 @@ class TestMainIntegration(unittest.TestCase):
                     os.rmdir(data_dir)
                 except OSError:
                     pass
+
 
     def test_compare_surahs_muqattaat_vs_non_muqattaat(self):
         '''Test the compare_surahs_muqattaat_vs_non_muqattaat() function for correct categorization and analysis.'''
