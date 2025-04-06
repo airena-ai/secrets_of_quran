@@ -50,6 +50,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("--- Muqatta'at Sequence Length Analysis ---", log_contents)
                 self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
                 self.assertIn('"muqattaat":', log_contents)
+                self.assertIn('"top_roots":', log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -102,6 +103,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("--- Muqatta'at Sequence Length Analysis ---", log_contents)
                 self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
                 self.assertIn('"muqattaat":', log_contents)
+                self.assertIn('"top_roots":', log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)

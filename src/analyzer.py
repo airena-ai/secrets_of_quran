@@ -553,7 +553,7 @@ def analyze_abjad_numerals(quran_text):
     abjad = {
         'ا': 1, 'أ': 1, 'إ': 1, 'آ': 1, 'ب': 2, 'ج': 3, 'د': 4, 'ه': 5, 'و': 6,
         'ز': 7, 'ح': 8, 'ط': 9, 'ى': 10, 'ي': 10, 'ك': 20, 'ل': 30, 'م': 40,
-        'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90, 'ق': 100, 'ر': 200,
+        'ن': 50, 'س': 60, 'ع': 70, 'ف': 80, 'ص': 90, 'ض': 90, 'ق': 100, 'ر': 200,
         'ش': 300, 'ت': 400, 'ث': 500, 'خ': 600, 'ذ': 700, 'ض': 800, 'ظ': 900, 'غ': 1000
     }
     
@@ -1104,21 +1104,6 @@ def analyze_muqattaat_context(text):
             log_secret_found("POTENTIAL SECRET FOUND: {} appears frequently in verses following Muqatta'at".format(word))
     return dict(overall_counter)
 
-def analyze_muqattaat_positions(text):
-    '''Analyze the positions of Muqatta'at in the Quran text.
-
-    This function identifies the Surahs containing Muqatta'at and then determines the position
-    of these Muqatta'at within their respective Surahs (e.g., beginning, middle, end).
-    Currently, it is a stub function and returns a placeholder summary.
-
-    Args:
-        text (str): The preprocessed Quran text.
-
-    Returns:
-        str: A summary string indicating the analysis of Muqatta'at positions.
-    '''
-    return "Muqatta'at position analysis summary: Positions are being analyzed."
-
 def analyze_muqattaat_numerical_values(text):
     '''Perform numerical analysis specific to Muqatta'at in the Quran text.
     
@@ -1131,6 +1116,64 @@ def analyze_muqattaat_numerical_values(text):
         str: A summary string of the numerical analysis for Muqatta'at.
     '''
     return "Muqatta'at numerical analysis is not implemented."
+
+def analyze_muqattaat_root_cooccurrence(text: str, top_n: int = 5) -> None:
+    '''Analyze the co-occurrence of Muqatta'at with frequent root words in Surahs.
+
+    This function performs the following steps:
+      a. Identifies Surahs that begin with Muqatta'at using the existing analyze_muqattaat function.
+      b. For each identified Surah, it retrieves the root word frequencies by analyzing only the verses
+         belonging to that Surah via the analyze_grouped_root_frequencies function.
+      c. Determines the top N most frequent root words (default N=5) for each Surah.
+      d. Logs the following information in a structured JSON format to the results log:
+           - Surah number.
+           - Muqatta'at sequence present in the Surah.
+           - List of the top N root words with their frequency counts.
+      e. Additionally, if a particular root word appears as a top frequent root in multiple Muqatta'at Surahs,
+         it logs a 'POTENTIAL SECRET FOUND' message indicating possible correlation.
+
+    Args:
+        text (str): The preprocessed Quran text.
+        top_n (int, optional): The number of top root words to consider. Defaults to 5.
+
+    Returns:
+        None
+    '''
+    if not isinstance(text, str):
+        raise ValueError("Input text must be a string.")
+    import json
+    from collections import defaultdict
+    # Identify Surahs with Muqatta'at
+    muqattaat_results, _ = analyze_muqattaat(text)
+    if not muqattaat_results:
+        from src.logger import log_result
+        log_result("No Surahs with Muqatta'at found for root co-occurrence analysis.")
+        return
+
+    from src.logger import log_result, log_secret_found
+    overall_top_roots = defaultdict(int)
+
+    # For each Muqatta'at Surah, analyze root word frequencies.
+    for surah in muqattaat_results:
+        root_freq = analyze_grouped_root_frequencies(text, [surah])
+        # Determine top N frequent root words.
+        top_roots = sorted(root_freq.items(), key=lambda x: x[1], reverse=True)[:top_n]
+        # Accumulate overall top roots frequency count from top roots.
+        for root, freq in top_roots:
+            overall_top_roots[root] += 1
+
+        # Prepare structured log data.
+        log_data = {
+            "surah": surah,
+            "muqattaat": muqattaat_results[surah],
+            "top_roots": [{"root": root, "frequency": freq} for root, freq in top_roots]
+        }
+        log_result(json.dumps(log_data, ensure_ascii=False, indent=2))
+
+    # Identify roots that appear as top in multiple Surahs.
+    for root, count in overall_top_roots.items():
+        if count > 1:
+            log_secret_found(f"POTENTIAL SECRET FOUND: Root '{root}' appears as top frequent in {count} Muqatta'at Surahs.")
 
 def analyze_muqattaat_sequences(text):
     '''Analyze and count the frequency of Muqatta'at sequences in the Quran text.
@@ -1425,7 +1468,7 @@ def analyze_correlations(text, verse_lengths, muqattaat_data, word_frequency_res
         list: A list of correlation messages (currently empty).
     '''
     return []
-
+    
 def analyze_muqattaat_distribution_meccan_medinan(text, surah_classification):
     '''Analyze the distribution of Muqatta'at across Meccan and Medinan Surahs.
 
@@ -1457,3 +1500,17 @@ def analyze_muqattaat_distribution_meccan_medinan(text, surah_classification):
                f"- Medinan Surahs with Muqatta'at: {medinan_count}")
     src.logger.log_result(summary)
     return summary
+
+def analyze_muqattaat_positions(text):
+    '''Analyze the positions of Muqatta'at within the Quran text.
+
+    This function is a placeholder and currently returns a message indicating
+    that the functionality is not yet implemented.
+
+    Args:
+        text (str): The preprocessed Quran text.
+
+    Returns:
+        str: A placeholder summary string.
+    '''
+    return "Muqattaat positions analysis not implemented."

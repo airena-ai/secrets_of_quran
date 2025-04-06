@@ -3,7 +3,6 @@
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
 from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_preceding_context, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat, analyze_muqattaat_distribution_meccan_medinan, surah_classification, categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies, analyze_muqattaat_length
-from src.logger import log_secret_found, log_result, log_bigram_frequencies
 
 def main():
     '''Main entry point for the Quran Secrets analysis.'''
@@ -30,9 +29,11 @@ def main():
     # Perform bigram frequency analysis.
     tokenized_text = text.split()
     bigram_frequencies = analyze_bigrams(tokenized_text)
+    from src.logger import log_bigram_frequencies
     log_bigram_frequencies(bigram_frequencies, top_n=20)
     
     # Log the word frequency analysis summary with a timestamp.
+    from src.logger import log_result, log_secret_found
     log_result(freq_summary)
     
     # Log the Arabic root word analysis summary.
@@ -77,6 +78,7 @@ def main():
     muqattaat_positions_summary = analyze_muqattaat_positions(text)
     numerical_summary = analyze_muqattaat_numerical_values(text)
     # NEW: Distribution Analysis of Muqatta'at: Meccan vs. Medinan
+    from src.analyzer import surah_classification
     analyze_muqattaat_distribution_meccan_medinan(text, surah_classification)
     # New: Thematic Analysis for Muqatta'at
     analyze_muqattaat_themes()
@@ -139,6 +141,10 @@ def main():
     
     # New: Comparison between Surahs with and without Muqatta'at
     compare_surahs_muqattaat_vs_non_muqattaat(text)
+    
+    # NEW: Analysis of Muqatta'at Root Co-occurrence with Frequent Root Words
+    from src.analyzer import analyze_muqattaat_root_cooccurrence
+    analyze_muqattaat_root_cooccurrence(text)
     
     # Perform correlation analysis across various analytical dimensions.
     correlation_secrets = analyze_correlations(
