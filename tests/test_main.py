@@ -52,6 +52,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn('"muqattaat":', log_contents)
                 self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
                 self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
+                self.assertIn("--- Muqatta'at Cross-Analysis Synthesis ---", log_contents)
                 condition = ("POTENTIAL SOLUTION TO MUQATTAَAT MYSTERY FOUND:" in log_contents or 
                              "MUQATTAَAT MYSTERY REMAINS UNSOLVED:" in log_contents)
                 self.assertTrue(condition)
@@ -109,6 +110,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn('"muqattaat":', log_contents)
                 self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
                 self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
+                self.assertIn("--- Muqatta'at Cross-Analysis Synthesis ---", log_contents)
                 condition = ("POTENTIAL SOLUTION TO MUQATTAَAT MYSTERY FOUND:" in log_contents or 
                              "MUQATTAَAT MYSTERY REMAINS UNSOLVED:" in log_contents)
                 self.assertTrue(condition)

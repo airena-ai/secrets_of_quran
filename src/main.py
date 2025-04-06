@@ -146,6 +146,10 @@ def main():
     from src.analyzer import analyze_muqattaat_root_cooccurrence
     analyze_muqattaat_root_cooccurrence(text)
     
+    # NEW: Synthesize Muqatta'at Analyses Cross-Analysis
+    from src.analyzer import synthesize_muqattaat_analyses
+    synthesize_muqattaat_analyses(text)
+    
     # Perform correlation analysis across various analytical dimensions.
     correlation_secrets = analyze_correlations(
         text,
