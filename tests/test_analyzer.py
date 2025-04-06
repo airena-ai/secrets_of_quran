@@ -1,9 +1,9 @@
 '''Unit tests for the analyzer module.'''
 
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 import src
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_muqattaat_length, analyze_muqattaat
 import importlib.util
 
 class TestAnalyzer(unittest.TestCase):
@@ -228,35 +228,106 @@ class TestAnalyzer(unittest.TestCase):
         self.assertIn("4", results)
         self.assertEqual(results["4"]["symmetry_score"], 0)
         
-    def test_analyze_muqattaat_preceding_context(self):
-        '''Test analyze_muqattaat_preceding_context extracts correct preceding context verses and logs output.'''
-        import src
-        from src.analyzer import analyze_muqattaat_preceding_context
-        sample_text = "1|1| صلاة\n1|2| الحمد لله\n2|1|الم بداية السورة\n2|2| هذه الآية التانية"
+class TestAnalyzeMuqattaatLength(unittest.TestCase):
+    '''Unit tests for analyze_muqattaat_length function.'''
+    def setUp(self):
+        self.maxDiff = None
+
+    def test_analyze_muqattaat_length_empty(self):
+        '''Test that an empty text logs analysis with zero Surahs.'''
         captured_results = []
         captured_secrets = []
         original_log_result = src.logger.log_result
         original_log_secret = src.logger.log_secret_found
         src.logger.log_result = lambda msg: captured_results.append(msg)
         src.logger.log_secret_found = lambda msg: captured_secrets.append(msg)
-        import src.text_preprocessor
-        original_remove_diacritics = src.text_preprocessor.remove_diacritics
-        original_normalize = src.text_preprocessor.normalize_arabic_letters
-        src.text_preprocessor.remove_diacritics = lambda text: text
-        src.text_preprocessor.normalize_arabic_letters = lambda text: text
-        try:
-            freq_dict = analyze_muqattaat_preceding_context(sample_text)
-        finally:
-            src.text_preprocessor.remove_diacritics = original_remove_diacritics
-            src.text_preprocessor.normalize_arabic_letters = original_normalize
-        self.assertEqual(freq_dict.get("الحمد"), 1)
-        self.assertEqual(freq_dict.get("لله"), 1)
-        
-        header_found = any("Preceding Context Verses Frequency Analysis" in msg for msg in captured_results)
-        self.assertTrue(header_found, "Header log not found")
-        
+        from src.analyzer import analyze_muqattaat_length
+        mock_analyze_muqattaat = MagicMock(return_value=({}, {}))
+        with patch('src.analyzer.analyze_muqattaat', mock_analyze_muqattaat):
+            analyze_muqattaat_length("")
         src.logger.log_result = original_log_result
         src.logger.log_secret_found = original_log_secret
+        self.assertTrue(any("--- Muqatta'at Sequence Length Analysis ---" in msg for msg in captured_results))
+        self.assertTrue(any("Total Surahs with Muqatta'at Analyzed: 0" in msg for msg in captured_results))
+        self.assertEqual(len(captured_secrets), 0)
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_analyze_muqattaat_length_sample(self):
+        '''Test analyze_muqattaat_length with sample text having Muqatta'at sequences.'''
+        sample_text = (
+            "2|1|الم بداية سورة البقرة\n"
+            "3|1|الم بداية سورة آل عمران\n"
+            "7|1|المص البداية"
+        )
+        captured_results = []
+        captured_secrets = []
+        original_log_result = src.logger.log_result
+        original_log_secret = src.logger.log_secret_found
+        src.logger.log_result = lambda msg: captured_results.append(msg)
+        src.logger.log_secret_found = lambda msg: captured_secrets.append(msg)
+        from src.analyzer import analyze_muqattaat_length
+        mock_analyze_muqattaat = MagicMock(return_value=({'2': 'الم', '3': 'الم', '7': 'المص'}, {}))
+        with patch('src.analyzer.analyze_muqattaat', mock_analyze_muqattaat):
+            analyze_muqattaat_length(sample_text)
+        src.logger.log_result = original_log_result
+        src.logger.log_secret_found = original_log_secret
+        header_found = any("--- Muqatta'at Sequence Length Analysis ---" in msg for msg in captured_results)
+        self.assertTrue(header_found)
+        total_found = any("Total Surahs with Muqatta'at Analyzed: 3" in msg for msg in captured_results)
+        self.assertTrue(total_found)
+        surah2_found = any("Surah 2: الم (Length: 3)" in msg for msg in captured_results)
+        surah3_found = any("Surah 3: الم (Length: 3)" in msg for msg in captured_results)
+        surah7_found = any("Surah 7: المص (Length: 4)" in msg for msg in captured_results)
+        self.assertTrue(surah2_found)
+        self.assertTrue(surah3_found)
+        self.assertTrue(surah7_found)
+        freq_length3 = any("Length 3: 2 occurrences" in msg for msg in captured_results)
+        freq_length4 = any("Length 4: 1 occurrences" in msg for msg in captured_results)
+        self.assertTrue(freq_length3)
+        self.assertTrue(freq_length4)
+        unique_found = any("Unique Length Surahs:" in msg for msg in captured_results)
+        self.assertTrue(unique_found)
+        unique_entry = any("Surah 7 (Length 4, المص)" in msg for msg in captured_results)
+        self.assertTrue(unique_entry)
+        potential_secret_logged = any("POTENTIAL SECRET FOUND: Length 3 Muqatta'at sequences are the most frequent." in msg for msg in captured_secrets)
+        self.assertTrue(potential_secret_logged)
+
+    def test_analyze_muqattaat_length_no_muqattaat(self):
+        '''Test analyze_muqattaat_length with text that has no Muqatta'at Surahs.'''
+        sample_text = "4|1| آية بدون Muqatta'at\n5|1| آية أخرى"
+        captured_results = []
+        captured_secrets = []
+        original_log_result = src.logger.log_result
+        original_log_secret = src.logger.log_secret_found
+        src.logger.log_result = lambda msg: captured_results.append(msg)
+        src.logger.log_secret_found = lambda msg: captured_secrets.append(msg)
+        from src.analyzer import analyze_muqattaat_length
+        mock_analyze_muqattaat = MagicMock(return_value=({}, {}))
+        with patch('src.analyzer.analyze_muqattaat', mock_analyze_muqattaat):
+            analyze_muqattaat_length(sample_text)
+        src.logger.log_result = original_log_result
+        src.logger.log_secret_found = original_log_secret
+        total_found = any("Total Surahs with Muqatta'at Analyzed: 0" in msg for msg in captured_results)
+        self.assertTrue(total_found)
+        length_freq_not_found = not any("Muqatta'at Length Frequency:" in msg for msg in captured_results)
+        self.assertTrue(length_freq_not_found)
+        surah_details_not_found = not any("Surah Details:" in msg for msg in captured_results)
+        self.assertTrue(surah_details_not_found)
+        unique_length_not_found = not any("Unique Length Surahs:" in msg for msg in captured_results)
+        self.assertTrue(unique_length_not_found)
+        secret_not_logged = len(captured_secrets) == 0
+        self.assertTrue(secret_not_logged)
+
+    def test_analyze_muqattaat_length_interaction(self):
+        '''Test the interaction between analyze_muqattaat_length and analyze_muqattaat using mocks.'''
+        sample_text = "2|1|الم بداية سورة البقرة"
+        captured_results = []
+        original_log_result = src.logger.log_result
+        src.logger.log_result = lambda msg: captured_results.append(msg)
+        from src.analyzer import analyze_muqattaat_length
+        mock_analyze_muqattaat = MagicMock(return_value=({'2': 'الم'}, {}))
+        with patch('src.analyzer.analyze_muqattaat', mock_analyze_muqattaat) as mocked_muqattaat:
+            analyze_muqattaat_length(sample_text)
+            mocked_muqattaat.assert_called_once_with(sample_text)
+        src.logger.log_result = original_log_result
+        surah_details_logged = any("Surah 2: الم (Length: 3)" in msg for msg in captured_results)
+        self.assertTrue(surah_details_logged)

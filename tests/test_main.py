@@ -47,6 +47,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("----- Muqatta'at Distribution: Meccan vs. Medinan -----", log_contents)
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
                 self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at", log_contents)
+                self.assertIn("--- Muqatta'at Sequence Length Analysis ---", log_contents)
+                self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -96,6 +98,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("----- Muqatta'at Distribution: Meccan vs. Medinan -----", log_contents)
                 self.assertIn("Muqatta'at Sequences Frequency Analysis:", log_contents)
                 self.assertIn("Surah 2 (Al-Baqarah) with Muqatta'at", log_contents)
+                self.assertIn("--- Muqatta'at Sequence Length Analysis ---", log_contents)
+                self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)

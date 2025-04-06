@@ -1087,8 +1087,8 @@ def analyze_muqattaat_context(text):
     for surah in predefined_surahs:
         verses = surah_verses.get(surah, [])
         if len(verses) >= 2:
-            verses_sorted = sorted(verses, key=lambda x: x[0])
-            context_verse = verses_sorted[1][1]
+            verses.sort(key=lambda x: x[0])
+            context_verse = verses[1][1]
             processed_verse = normalize_arabic_letters(remove_diacritics(context_verse))
             overall_counter.update(processed_verse.split())
     top_n = 10
@@ -1149,6 +1149,76 @@ def analyze_muqattaat_sequences(text):
     seq_counter = Counter(muqattaat_data.values())
     return dict(seq_counter)
 
+def analyze_muqattaat_length(text):
+    '''Analyze Muqatta'at sequence lengths in the Quran text.
+
+    This function identifies Surahs that begin with Muqatta'at using the existing analyze_muqattaat() function.
+    For each identified Surah, it extracts the Muqatta'at sequence, calculates its length, and categorizes the Surahs
+    based on the sequence length (e.g., lengths 1, 2, 3, 4, and 5). It logs the following information:
+        - Total Surahs with Muqatta'at Analyzed.
+        - For each Surah with Muqatta'at: Surah Number, Muqatta'at Sequence, and its sequence length.
+        - Frequency distribution of Muqatta'at sequence lengths.
+        - Unique Length Surahs (if any length category has only one Surah).
+        - A potential secret if a particular length is the most frequent.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+    
+    Returns:
+        None
+    '''
+    from collections import defaultdict
+    import src.logger as logger
+
+    # Get Muqatta'at data from existing function
+    muq_data, _ = analyze_muqattaat(text)
+    surah_details = {}
+    for surah, sequence in muq_data.items():
+        seq_length = len(sequence)
+        surah_details[surah] = (sequence, seq_length)
+    
+    # Group surahs by sequence length
+    length_groups = defaultdict(list)
+    for surah, (sequence, seq_length) in surah_details.items():
+        length_groups[seq_length].append(surah)
+    
+    # Log analysis results
+    logger.log_result("--- Muqatta'at Sequence Length Analysis ---")
+    total_surahs = len(surah_details)
+    logger.log_result("Total Surahs with Muqatta'at Analyzed: {}".format(total_surahs))
+    
+    if total_surahs > 0:
+        logger.log_result("Surah Details:")
+        for surah in sorted(surah_details.keys(), key=lambda x: int(x)):
+            sequence, seq_length = surah_details[surah]
+            logger.log_result("Surah {}: {} (Length: {})".format(surah, sequence, seq_length))
+    
+        logger.log_result("Muqatta'at Length Frequency:")
+        for length in sorted(length_groups.keys()):
+            count = len(length_groups[length])
+            logger.log_result("Length {}: {} occurrences".format(length, count))
+
+        unique_surahs = []
+        for length, surahs in length_groups.items():
+            if len(surahs) == 1:
+                unique_surahs.append((surahs[0], length, surah_details[surahs[0]][0]))
+        if unique_surahs:
+            logger.log_result("Unique Length Surahs:")
+            for surah, length, sequence in unique_surahs:
+                logger.log_result("Surah {} (Length {}, {})".format(surah, length, sequence))
+
+        # Determine the most frequent length category
+        max_freq = 0
+        most_frequent_length = None
+        for length, surahs in length_groups.items():
+            if len(surahs) > max_freq:
+                max_freq = len(surahs)
+                most_frequent_length = length
+            elif len(surahs) == max_freq:
+                most_frequent_length = None  # Tie, so no unique maximum
+        if most_frequent_length is not None:
+            logger.log_secret_found("POTENTIAL SECRET FOUND: Length {} Muqatta'at sequences are the most frequent.".format(most_frequent_length))
+
 def categorize_surahs_by_muqattaat(text):
     '''Categorize Surahs into those with and without Muqatta'at.
     
@@ -1176,6 +1246,106 @@ def categorize_surahs_by_muqattaat(text):
     muq_surahs = set(muqattaat_data.keys())
     non_muq_surahs = surah_set - muq_surahs
     return (sorted(list(muq_surahs), key=lambda x: int(x)), sorted(list(non_muq_surahs), key=lambda x: int(x)))
+
+def analyze_grouped_root_frequencies(text, surahs):
+    '''Analyze and compute grouped Arabic root word frequencies for specified Surahs.
+    
+    Args:
+        text (str): The preprocessed Quran text where each line represents a verse.
+        surahs (list): A list of surah numbers (as strings) to include in the analysis.
+    
+    Returns:
+        dict: A dictionary mapping Arabic root words to their aggregated frequency counts
+              from the specified Surahs.
+    '''
+    from collections import Counter
+    import re
+    import importlib.util
+    root_counter = Counter()
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    
+    camel_tools_available = importlib.util.find_spec("camel_tools") is not None
+    analyzer = None
+    if camel_tools_available:
+        try:
+            from camel_tools.morphology.analyzer import Analyzer
+            analyzer = Analyzer.builtin_analyzer()
+        except Exception:
+            analyzer = None
+    
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1).strip()
+            verse_text = m.group(3).strip()
+            if surah in surahs:
+                tokens = verse_text.split()
+                for token in tokens:
+                    if analyzer:
+                        try:
+                            analyses = analyzer.analyze(token)
+                            if analyses and 'root' in analyses[0]:
+                                root = analyses[0]['root']
+                            else:
+                                root = token
+                        except Exception:
+                            root = token
+                    else:
+                        root = token
+                    root_counter[root] += 1
+    return dict(root_counter)
+
+def analyze_grouped_lemma_frequencies(text, surahs):
+    '''Analyze and compute grouped lemma frequencies for specified Surahs.
+    
+    Args:
+        text (str): The preprocessed Quran text where each line represents a verse.
+        surahs (list): A list of surah numbers (as strings) to include in the analysis.
+    
+    Returns:
+        dict: A dictionary mapping lemmas to their aggregated frequency counts
+              from the specified Surahs.
+    '''
+    from collections import Counter
+    import re
+    import importlib.util
+    lemma_counter = Counter()
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    
+    camel_tools_available = importlib.util.find_spec("camel_tools") is not None
+    analyzer = None
+    if camel_tools_available:
+        try:
+            from camel_tools.morphology.analyzer import Analyzer
+            analyzer = Analyzer.builtin_analyzer()
+        except Exception:
+            analyzer = None
+    
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1).strip()
+            verse_text = m.group(3).strip()
+            if surah in surahs:
+                tokens = verse_text.split()
+                for token in tokens:
+                    if analyzer:
+                        try:
+                            analyses = analyzer.analyze(token)
+                            if analyses and 'lemma' in analyses[0]:
+                                lemma = analyses[0]['lemma']
+                            else:
+                                lemma = token
+                        except Exception:
+                            lemma = token
+                    else:
+                        lemma = token
+                    lemma_counter[lemma] += 1
+    return dict(lemma_counter)
 
 def compare_surahs_muqattaat_vs_non_muqattaat(text):
     '''Compare Surahs with and without Muqatta'at, computing average verse lengths and top word frequencies.
@@ -1257,109 +1427,33 @@ def analyze_correlations(text, verse_lengths, muqattaat_data, word_frequency_res
     return []
 
 def analyze_muqattaat_distribution_meccan_medinan(text, surah_classification):
-    '''Analyze the distribution of Muqatta'at in Meccan versus Medinan Surahs.
+    '''Analyze the distribution of Muqatta'at across Meccan and Medinan Surahs.
 
-    This function processes the Quran text to identify Surahs that begin with Muqatta'at.
-    It then uses the provided surah_classification dictionary to count:
-      - Total number of Meccan Surahs.
-      - Total number of Medinan Surahs.
-      - Number of Meccan Surahs with Muqatta'at.
-      - Number of Medinan Surahs with Muqatta'at.
-    Proportions are calculated and logged, and if the difference in proportions exceeds 10%,
-    a potential secret is flagged.
+    This function categorizes Surahs with Muqatta'at as either Meccan or Medinan based on the provided `surah_classification` dictionary.
+    It then counts the number of Muqatta'at-containing Surahs in each category and logs a summary of this distribution.
 
     Args:
-        text (str): The preprocessed Quran text.
-        surah_classification (dict): Dictionary mapping Surah numbers (int) to 'Meccan' or 'Medinan'.
+        text (str): The preprocessed Quran text (not directly used in this function, but kept for interface consistency).
+        surah_classification (dict): A dictionary mapping Surah numbers (as integers or strings) to their classification ("Meccan" or "Medinan").
 
     Returns:
-        None
+        str: A summary string of the Muqatta'at distribution analysis.
     '''
-    muqattaat_data, _ = analyze_muqattaat(text)
-    total_meccan = sum(1 for k, v in surah_classification.items() if v == "Meccan")
-    total_medinan = sum(1 for k, v in surah_classification.items() if v == "Medinan")
-    meccan_with_muq = 0
-    medinan_with_muq = 0
-    for surah_str in muqattaat_data.keys():
-        try:
-            surah_num = int(surah_str)
-        except ValueError:
-            continue
-        classification = surah_classification.get(surah_num, None)
+    src.logger.log_result("----- Muqatta'at Distribution: Meccan vs. Medinan -----")
+    meccan_count = 0
+    medinan_count = 0
+    muqattaat_surahs = MUQATTAAT_SURAH_SET  # Assuming MUQATTAAT_SURAH_SET is defined elsewhere and contains Surah numbers as strings
+
+    for surah_num_str in muqattaat_surahs:
+        surah_num = int(surah_num_str)
+        classification = surah_classification.get(surah_num)
         if classification == "Meccan":
-            meccan_with_muq += 1
+            meccan_count += 1
         elif classification == "Medinan":
-            medinan_with_muq += 1
+            medinan_count += 1
 
-    prop_meccan = (meccan_with_muq / total_meccan * 100) if total_meccan else 0
-    prop_medinan = (medinan_with_muq / total_medinan * 100) if total_medinan else 0
-
-    import src.logger as logger
-    logger.log_result("----- Muqatta'at Distribution: Meccan vs. Medinan -----")
-    logger.log_result("Total Meccan Surahs Count: {}".format(total_meccan))
-    logger.log_result("Total Medinan Surahs Count: {}".format(total_medinan))
-    logger.log_result("Meccan Surahs with Muqatta'at Count: {}".format(meccan_with_muq))
-    logger.log_result("Medinan Surahs with Muqatta'at Count: {}".format(medinan_with_muq))
-    logger.log_result("Proportion of Meccan Surahs with Muqatta'at: {:.2f}%".format(prop_meccan))
-    logger.log_result("Proportion of Medinan Surahs with Muqatta'at: {:.2f}%".format(prop_medinan))
-    if abs(prop_meccan - prop_medinan) > 10:
-        logger.log_secret_found("POTENTIAL SECRET FOUND: Muqatta'at distribution differs between Meccan and Medinan Surahs.")
-
-def analyze_grouped_root_frequencies(text, surah_list):
-    '''Analyze root word frequencies for a group of Surahs.
-
-    Args:
-        text (str): The preprocessed Quran text.
-        surah_list (list): List of surah numbers to include in the analysis.
-
-    Returns:
-        dict: Dictionary of root word frequencies.
-    '''
-    root_frequencies = Counter()
-    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
-    lines = text.splitlines()
-    for line in lines:
-        if not line.strip():
-            continue
-        m = pattern.match(line)
-        if m:
-            surah = m.group(1)
-            verse_text = m.group(3).strip()
-            if surah in surah_list:
-                _, root_freq, _ = analyze_root_words(verse_text)
-                root_frequencies.update(root_freq)
-    return dict(root_frequencies)
-
-
-def analyze_grouped_lemma_frequencies(text, surah_list):
-    '''Analyze lemma frequencies for a group of Surahs.
-
-    Args:
-        text (str): The preprocessed Quran text.
-        surah_list (list): List of surah numbers to include in the analysis.
-
-    Returns:
-        dict: Dictionary of lemma frequencies.
-    '''
-    lemma_frequencies = Counter()
-    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
-    lines = text.splitlines()
-    for line in lines:
-        if not line.strip():
-            continue
-        m = pattern.match(line)
-        if m:
-            surah = m.group(1)
-            verse_text = m.group(3).strip()
-            if surah in surah_list:
-                lemma_summary = analyze_lemmas(verse_text)
-                verse_lemma_counts = Counter()
-                for line_sum in lemma_summary.splitlines():
-                    if ":" in line_sum and "' : " in line_sum:
-                        parts = line_sum.split("' : ")
-                        lemma = parts[0].split(". '")[1]
-                        count = int(parts[1])
-                        verse_lemma_counts[lemma] = count
-                lemma_frequencies.update(verse_lemma_counts)
-
-    return dict(lemma_frequencies)
+    summary = (f"Muqatta'at Distribution:\n"
+               f"- Meccan Surahs with Muqatta'at: {meccan_count}\n"
+               f"- Medinan Surahs with Muqatta'at: {medinan_count}")
+    src.logger.log_result(summary)
+    return summary
