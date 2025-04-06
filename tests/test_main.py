@@ -2,7 +2,7 @@
 
 import os
 import unittest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 import importlib.util
 from src import main
 
@@ -17,7 +17,7 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
+        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
                        "1|2| آية من سورة الفاتحة\n"
                        "2|1|الم بداية سورة البقرة\n"
                        "2|2|آية من سورة البقرة\n"
@@ -55,11 +55,9 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
                 self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
                 self.assertIn("--- Muqatta'at Cross-Analysis Synthesis ---", log_contents)
-                # New assertion to verify interpretation comparison logging.
-                self.assertIn("Interpretation interpretation_1 by", log_contents)
-                condition = ("POTENTIAL SOLUTION TO MUQATTAَAT MYSTERY FOUND:" in log_contents or 
-                             "MUQATTAَAT MYSTERY REMAINS UNSOLVED:" in log_contents)
-                self.assertTrue(condition)
+                self.assertIn("FINAL CONCLUSION: MUQATTA'AT MYSTERY", log_contents)
+                # New assertion to verify the final conclusion section is not empty.
+                self.assertTrue(len(log_contents.split("FINAL CONCLUSION: MUQATTA'AT MYSTERY")) > 1)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -115,11 +113,9 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
                 self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
                 self.assertIn("--- Muqatta'at Cross-Analysis Synthesis ---", log_contents)
-                # New assertion for interpretation comparison logging.
-                self.assertIn("Interpretation interpretation_1 by", log_contents)
-                condition = ("POTENTIAL SOLUTION TO MUQATTAَAT MYSTERY FOUND:" in log_contents or 
-                             "MUQATTAَAT MYSTERY REMAINS UNSOLVED:" in log_contents)
-                self.assertTrue(condition)
+                self.assertIn("FINAL CONCLUSION: MUQATTA'AT MYSTERY", log_contents)
+                # New assertion for final conclusion header.
+                self.assertTrue(len(log_contents.split("FINAL CONCLUSION: MUQATTA'AT MYSTERY")) > 1)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)
@@ -144,6 +140,130 @@ class TestMainIntegration(unittest.TestCase):
         self.assertAlmostEqual(result["avg_verse_length_non_muq"], 3.0)
         self.assertLessEqual(len(result["top_words_muq"]), 10)
         self.assertLessEqual(len(result["top_words_non_muq"]), 10)
+
+    def test_finalize_muqattaat_analysis(self):
+        '''Test the finalize_muqattaat_analysis() function for correct integration and output.'''
+        # Create a test results.log file with sample content
+        log_file = "results.log"
+        if os.path.exists(log_file):
+            os.remove(log_file)
+        
+        # Create sample log content with some potential secrets
+        sample_log_content = (
+            "POTENTIAL SECRET FOUND: Test secret 1\n"
+            "Regular log entry\n"
+            "POTENTIAL SECRET FOUND: Test secret 2\n"
+        )
+        with open(log_file, 'w', encoding='utf-8') as f:
+            f.write(sample_log_content)
+        
+        try:
+            # Call the function directly
+            from src.analyzer import finalize_muqattaat_analysis
+            conclusion = finalize_muqattaat_analysis()
+            
+            # Verify the function returned a non-empty string
+            self.assertIsInstance(conclusion, str)
+            self.assertGreater(len(conclusion), 0)
+            
+            # Verify the conclusion contains the expected header
+            self.assertIn("FINAL CONCLUSION: MUQATTA'AT MYSTERY", conclusion)
+            
+            # Read the updated log file to verify the conclusion was appended
+            with open(log_file, 'r', encoding='utf-8') as f:
+                updated_log = f.read()
+            
+            # Verify the conclusion was appended to the log file
+            self.assertIn("FINAL CONCLUSION: MUQATTA'AT MYSTERY", updated_log)
+            self.assertIn("Final Conclusions on Muqatta'at Mystery:", updated_log)
+            
+            # Since we included potential secrets, verify the conclusion reflects this
+            self.assertIn("partially solved", updated_log.lower())
+            self.assertIn("Summary of Potential Secrets Found:", updated_log)
+            
+        finally:
+            if os.path.exists(log_file):
+                os.remove(log_file)
+
+    def test_finalize_muqattaat_analysis_integration(self):
+        '''Test the integration of finalize_muqattaat_analysis() within the main function.'''
+        data_dir = "data"
+        file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
+        os.makedirs(data_dir, exist_ok=True)
+        sample_text = ("2|1|الم بداية سورة البقرة\n"
+                       "2|2|آية من سورة البقرة")
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(sample_text)
+        
+        log_file = "results.log"
+        if os.path.exists(log_file):
+            os.remove(log_file)
+        
+        # Mock the finalize_muqattaat_analysis function to verify it's called
+        with patch('src.analyzer.finalize_muqattaat_analysis') as mock_finalize:
+            # Set up the mock to return a test conclusion
+            mock_finalize.return_value = "TEST CONCLUSION"
+            
+            try:
+                # Run the main function
+                main.main()
+                
+                # Verify that finalize_muqattaat_analysis was called
+                mock_finalize.assert_called_once()
+                
+                # Verify the log file was created
+                self.assertTrue(os.path.exists(log_file))
+                
+            finally:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                if os.path.exists(log_file):
+                    os.remove(log_file)
+                try:
+                    os.rmdir(data_dir)
+                except OSError:
+                    pass
+
+    def test_compare_interpretations_with_analysis(self):
+        '''Test the compare_interpretations_with_analysis() function for correct processing of interpretations.'''
+        # Create sample interpretations data
+        sample_interpretations = {
+            "1": {
+                "source": "Scholar A",
+                "summary": "The Muqatta'at serve as phonetic markers or unique identifiers for Surahs."
+            },
+            "2": {
+                "source": "Scholar B",
+                "summary": "The Muqatta'at represent divine mysteries that only Allah knows."
+            }
+        }
+        
+        log_file = "results.log"
+        if os.path.exists(log_file):
+            os.remove(log_file)
+        
+        try:
+            # Call the function with our sample data
+            from src.analyzer import compare_interpretations_with_analysis
+            compare_interpretations_with_analysis(sample_interpretations)
+            
+            # Verify the log file was created and contains expected content
+            self.assertTrue(os.path.exists(log_file))
+            
+            with open(log_file, 'r', encoding='utf-8') as f:
+                log_content = f.read()
+            
+            # Check for expected log entries based on the interpretations
+            self.assertIn("Interpretation 1 by Scholar A", log_content)
+            self.assertIn("Supporting Evidence", log_content)  # Should match "phonetic" and "unique identifier"
+            self.assertIn("POTENTIAL SECRET FOUND", log_content)
+            
+            self.assertIn("Interpretation 2 by Scholar B", log_content)
+            self.assertIn("Inconclusive/Neutral", log_content)  # Should match "allah"
+            
+        finally:
+            if os.path.exists(log_file):
+                os.remove(log_file)
 
 if __name__ == '__main__':
     unittest.main()

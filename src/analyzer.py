@@ -1776,3 +1776,46 @@ def compare_interpretations_with_analysis(interpretations):
         log_result(f"Interpretation {interp_id} by {source}: {evidence}. Reasoning: {reasoning}")
         if evidence == "Supporting Evidence":
             log_secret_found(f"POTENTIAL SECRET FOUND: Interpretation {interp_id} ({source}) is strongly supported by analysis data.")
+
+def finalize_muqattaat_analysis():
+    '''Synthesize all Muqatta'at analyses and formulate a final conclusion regarding the Muqatta'at mystery.
+
+    This function collects the results from previous Muqatta'at analyses by reading the "results.log" file,
+    aggregates all findings, particularly the messages tagged as "POTENTIAL SECRET FOUND", and compares them with
+    scholarly interpretations. It then formulates a final conclusive statement indicating whether the analyses have
+    revealed statistically significant or meaningful patterns that align with or contradict scholarly interpretations.
+    The final conclusion is logged to the "results.log" file under the header "FINAL CONCLUSION: MUQATTA'AT MYSTERY".
+    
+    Returns:
+        str: The final conclusion text that was logged.
+    '''
+    final_conclusion = ""
+    try:
+        with open("results.log", "r", encoding="utf-8") as f:
+            report_content = f.read()
+    except Exception as e:
+        report_content = ""
+    # Extract potential secret lines
+    secret_lines = [line for line in report_content.splitlines() if "POTENTIAL SECRET FOUND:" in line]
+    secrets_summary = "\n".join(secret_lines)
+    
+    # Formulate final conclusion based on potential secrets found
+    if secret_lines:
+        conclusion_body = ("Final Analysis indicates that significant patterns have been identified in the Muqatta'at analyses, " 
+                           "which partially align with some scholarly interpretations. Therefore, the mystery of Muqatta'at is partially solved.")
+    else:
+        conclusion_body = ("Final Analysis indicates that the Muqatta'at analyses did not reveal significant or consistent patterns " 
+                           "to support a definitive solution. The Muqatta'at mystery remains unsolved.")
+    
+    final_conclusion += "FINAL CONCLUSION: MUQATTA'AT MYSTERY\n"
+    final_conclusion += "Final Conclusions on Muqatta'at Mystery:\n"
+    final_conclusion += conclusion_body + "\n"
+    if secrets_summary:
+        final_conclusion += "Summary of Potential Secrets Found:\n" + secrets_summary + "\n"
+    
+    try:
+        with open("results.log", "a", encoding="utf-8") as f:
+            f.write(final_conclusion + "\n")
+    except Exception as e:
+        pass
+    return final_conclusion

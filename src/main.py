@@ -1,11 +1,15 @@
 '''Main driver for the Quran Secrets application.'''
 
+import sys
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_preceding_context, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat, analyze_muqattaat_distribution_meccan_medinan, surah_classification, categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies, analyze_muqattaat_length, generate_muqattaat_report, review_muqattaat_report, synthesize_muqattaat_analyses, analyze_muqattaat_semantic_similarity
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_preceding_context, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat, analyze_muqattaat_distribution_meccan_medinan, surah_classification, categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies, analyze_muqattaat_length, generate_muqattaat_report, review_muqattaat_report, synthesize_muqattaat_analyses, analyze_muqattaat_semantic_similarity, finalize_muqattaat_analysis
 
 def main():
     '''Main entry point for the Quran Secrets analysis.'''
+    # Configure stdout to use UTF-8 encoding to handle Arabic characters
+    sys.stdout.reconfigure(encoding='utf-8')
+    
     file_path = "data/quran-uthmani-min.txt"
     try:
         text = read_quran_text(file_path)
@@ -243,7 +247,12 @@ def main():
     interpretations = load_muqattaat_interpretations()
     compare_interpretations_with_analysis(interpretations)
     
+    # NEW: Final Synthesis and Conclusion on Muqatta'at
+    from src.analyzer import finalize_muqattaat_analysis
+    final_conclusion_text = finalize_muqattaat_analysis()
+    
     print("Quran Secrets Analysis Completed.")
+    print(final_conclusion_text)
 
 if __name__ == '__main__':
     main()
