@@ -51,6 +51,10 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
                 self.assertIn('"muqattaat":', log_contents)
                 self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
+                self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
+                condition = ("POTENTIAL SOLUTION TO MUQATTAَAT MYSTERY FOUND:" in log_contents or 
+                             "MUQATTAَAT MYSTERY REMAINS UNSOLVED:" in log_contents)
+                self.assertTrue(condition)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -104,6 +108,10 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
                 self.assertIn('"muqattaat":', log_contents)
                 self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
+                self.assertIn("Final Conclusions on Muqatta'at Mystery:", log_contents)
+                condition = ("POTENTIAL SOLUTION TO MUQATTAَAT MYSTERY FOUND:" in log_contents or 
+                             "MUQATTAَAT MYSTERY REMAINS UNSOLVED:" in log_contents)
+                self.assertTrue(condition)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)

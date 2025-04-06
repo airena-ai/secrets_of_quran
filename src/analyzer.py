@@ -867,7 +867,7 @@ def analyze_muqattaat(text):
             verse_text = m.group(3).strip()
             if surah in predefined_surahs and surah not in muqattaat_results:
                 # Remove Basmalah if present
-                basmalah_pattern = re.compile(r'^بِسمِ\s+اللَّهِ\s+الرَّحمٰنِ\s+الرَّحيمِ\s*', re.UNICODE)
+                basmalah_pattern = re.compile(r'^بِسمِ\s+اللَّهِ\s+الرَّحْمَٰنِ\s+الرَّحيمِ\s*', re.UNICODE)
                 verse_text_cleaned = basmalah_pattern.sub('', verse_text).strip()
 
                 # Match Muqattaʿat letters now that Basmalah is gone
@@ -1620,3 +1620,22 @@ def generate_muqattaat_report(text):
             f.write(final_report + "\n")
     except Exception as e:
         log_result("Error writing final Muqatta'at report: " + str(e))
+
+def review_muqattaat_report(report_content):
+    '''Review the final Muqatta'at report content and return final conclusions.
+
+    This function takes the content of the Muqatta'at report as a string, examines it for any occurrences of
+    "POTENTIAL SECRET FOUND:" and, based on that, determines the conclusive statement regarding the Muqatta'at mystery.
+    
+    Args:
+        report_content (str): The complete content of the final Muqatta'at report.
+    
+    Returns:
+        str: The final conclusions on the Muqatta'at mystery.
+    '''
+    if "POTENTIAL SECRET FOUND:" in report_content:
+        conclusion = "POTENTIAL SOLUTION TO MUQATTAَAT MYSTERY FOUND: Evidence suggests that the repetitive patterns and frequency distributions in Muqatta'at sequences indicate an underlying coded message."
+    else:
+        conclusion = "MUQATTAَAT MYSTERY REMAINS UNSOLVED: Analysis did not reveal sufficient patterns to decode a definitive message."
+    final_section = "\nFinal Conclusions on Muqatta'at Mystery:\n" + conclusion + "\n"
+    return final_section

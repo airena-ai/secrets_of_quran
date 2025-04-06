@@ -27,21 +27,20 @@
     {
       "path": "src/main.py",
       "language": "Python",
-      "description": "Main driver module for the Quran Secrets application. Integrates various analysis methods and orchestrates the execution of the Quran text analysis workflow.",
+      "description": "Main driver for the Quran Secrets application. Orchestrates reading input text, preprocessing, performing multiple analyses, and logging final reports.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main entry point for the Quran Secrets analysis. Reads input file, processes text, runs various analyses, and generates final reports.",
+          "description": "Main entry point for the Quran Secrets analysis. It reads the Quran text, preprocesses it, invokes various analytical functions, and logs the final results and report.",
           "parameters": [],
           "return_type": "None"
         }
       ],
       "dependencies": [
-        "src.file_reader",
-        "src.text_preprocessor",
-        "src.analyzer",
-        "src.logger"
+        "src/file_reader",
+        "src/text_preprocessor",
+        "src/analyzer"
       ]
     },
     {
@@ -103,12 +102,12 @@
     {
       "path": "src/analyzer.py",
       "language": "Python",
-      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Contains functions for word frequency analysis, root word analysis, bigrams, verse repetition, Muqatta'at analysis, and other advanced analytical methods.",
+      "description": "Module for analyzing the Quran text for hidden patterns and anomalies. Contains multiple functions for text analysis including word frequency, root word analysis, bigram generation, palindrome detection, Abjad numeral analysis, and extensive Muqatta'at analyses.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_text",
-          "description": "Analyzes the given text for hidden numerical patterns and anomalies. Returns a list of anomaly messages if a pattern is detected.",
+          "description": "Analyzes the given text for hidden numerical patterns and returns a list of anomaly messages.",
           "parameters": [
             {
               "name": "text",
@@ -120,7 +119,7 @@
         },
         {
           "name": "analyze_word_frequency",
-          "description": "Performs word frequency analysis on the provided Quran text. Returns a formatted summary and a list of flagged words.",
+          "description": "Performs word frequency analysis and returns a summary string along with a list of flagged words.",
           "parameters": [
             {
               "name": "text",
@@ -132,7 +131,7 @@
         },
         {
           "name": "analyze_root_words",
-          "description": "Performs Arabic root word analysis on the Quran text, returning a summary, frequency dictionary, and top roots list.",
+          "description": "Performs Arabic root word analysis and returns a summary, a dictionary of root frequencies, and a list of top roots.",
           "parameters": [
             {
               "name": "text",
@@ -144,36 +143,36 @@
         },
         {
           "name": "analyze_bigrams",
-          "description": "Generates n-grams from tokenized text and counts their frequency.",
+          "description": "Generates n-gram frequencies (bigrams by default) from the tokenized text.",
           "parameters": [
             {
               "name": "tokenized_text",
               "type": "list",
-              "description": "List of tokens from the Quran text."
+              "description": "The tokenized Quran text."
             },
             {
               "name": "n",
               "type": "int",
-              "description": "Number of words in each n-gram, default is 2."
+              "description": "The number of words in each n-gram, default is 2."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_verse_repetitions",
-          "description": "Analyzes verse repetitions within each Surah and across the entire Quran.",
+          "description": "Analyzes verse repetitions within each Surah and across the Quran, returning details of repeated verses.",
           "parameters": [
             {
               "name": "preprocessed_text",
               "type": "str",
-              "description": "The preprocessed Quran text."
+              "description": "The preprocessed Quran text with verses."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_lemmas",
-          "description": "Performs lemma analysis on the Quran text using CAMeL Tools, returning a summary of lemma frequencies.",
+          "description": "Performs lemma analysis on the text and returns a formatted summary of lemma frequencies.",
           "parameters": [
             {
               "name": "text",
@@ -185,19 +184,19 @@
         },
         {
           "name": "analyze_surah_verse_counts",
-          "description": "Counts the number of verses per Surah in the Quran text and returns a formatted summary.",
+          "description": "Analyzes and returns a summary of verse counts per Surah in the Quran text.",
           "parameters": [
             {
               "name": "text",
               "type": "str",
-              "description": "The Quran text data."
+              "description": "The Quran text."
             }
           ],
           "return_type": "str"
         },
         {
           "name": "analyze_verse_lengths_distribution",
-          "description": "Analyzes verse length distribution per Surah and identifies consistent verse lengths based on a threshold.",
+          "description": "Analyzes verse lengths distribution across Surahs and returns average and standard deviation metrics.",
           "parameters": [
             {
               "name": "text",
@@ -214,7 +213,7 @@
         },
         {
           "name": "analyze_palindromes",
-          "description": "Detects palindromic structures within each verse of the Quran text and returns a list of detected palindromes.",
+          "description": "Detects palindromic words and phrases within verses and returns a list of detected palindromes with their locations.",
           "parameters": [
             {
               "name": "quran_text",
@@ -226,7 +225,7 @@
         },
         {
           "name": "analyze_abjad_numerals",
-          "description": "Calculates Abjad numeral sums for each verse and logs notable numerical patterns.",
+          "description": "Performs Abjad numeral analysis on the text and returns a list of verses with notable numerical patterns.",
           "parameters": [
             {
               "name": "quran_text",
@@ -238,7 +237,7 @@
         },
         {
           "name": "analyze_semantic_symmetry",
-          "description": "Analyzes semantic symmetry through word overlap between segments of each Surah.",
+          "description": "Analyzes semantic symmetry between two halves of each Surah using word overlap and returns symmetry details.",
           "parameters": [
             {
               "name": "quran_text",
@@ -250,7 +249,7 @@
         },
         {
           "name": "analyze_verse_length_symmetry",
-          "description": "Analyzes verse length symmetry between two halves of each Surah and returns statistical metrics.",
+          "description": "Analyzes symmetry of verse length distribution between two halves of each Surah.",
           "parameters": [
             {
               "name": "text",
@@ -260,19 +259,19 @@
             {
               "name": "avg_threshold",
               "type": "float",
-              "description": "Max allowed difference in average verse length."
+              "description": "Maximum allowed difference in average verse length between halves."
             },
             {
               "name": "stddev_threshold",
               "type": "float",
-              "description": "Max allowed difference in standard deviation."
+              "description": "Maximum allowed difference in standard deviation between halves."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_enhanced_semantic_symmetry",
-          "description": "Performs enhanced semantic symmetry analysis using lemma overlap between two halves of each Surah.",
+          "description": "Performs enhanced semantic symmetry analysis using lemma overlap and returns symmetry scores and lemma sets.",
           "parameters": [
             {
               "name": "text",
@@ -282,14 +281,14 @@
             {
               "name": "symmetry_threshold",
               "type": "float",
-              "description": "Minimum normalized overlap required, default is 0.3."
+              "description": "Threshold for considering symmetry significant, default is 0.3."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_muqattaat",
-          "description": "Identifies and analyzes Muqatta'at sequences in the Quran text, returning extracted sequences and letter frequency.",
+          "description": "Identifies Muqatta'at in the Quran text and returns a mapping of Surah numbers to their Muqatta'at letters along with a frequency counter.",
           "parameters": [
             {
               "name": "text",
@@ -301,7 +300,7 @@
         },
         {
           "name": "analyze_muqattaat_preceding_context",
-          "description": "Analyzes verses preceding Muqatta'at Surahs and computes word frequency of the preceding context.",
+          "description": "Analyzes verses preceding Muqatta'at Surahs and returns word frequency counts from the preceding context.",
           "parameters": [
             {
               "name": "text",
@@ -313,13 +312,13 @@
         },
         {
           "name": "analyze_muqattaat_themes",
-          "description": "Performs thematic analysis for Surahs with Muqatta'at by associating them with predefined themes.",
+          "description": "Performs thematic analysis for Surahs with Muqatta'at and logs the associated themes.",
           "parameters": [],
           "return_type": "None"
         },
         {
           "name": "analyze_muqattaat_context",
-          "description": "Analyzes verses following the Muqatta'at in Surahs and returns word frequency counts.",
+          "description": "Analyzes the verses following the Muqatta'at and returns word frequency counts from the context.",
           "parameters": [
             {
               "name": "text",
@@ -331,7 +330,7 @@
         },
         {
           "name": "analyze_muqattaat_numerical_values",
-          "description": "Performs numerical analysis specific to Muqatta'at and returns a summary string.",
+          "description": "Performs numerical analysis on Muqatta'at and returns a summary string.",
           "parameters": [
             {
               "name": "text",
@@ -343,7 +342,7 @@
         },
         {
           "name": "analyze_muqattaat_root_cooccurrence",
-          "description": "Analyzes co-occurrence of Muqatta'at with frequent root words in Surahs and logs structured data.",
+          "description": "Analyzes the co-occurrence of Muqatta'at with frequent root words and logs correlated results.",
           "parameters": [
             {
               "name": "text",
@@ -353,14 +352,14 @@
             {
               "name": "top_n",
               "type": "int",
-              "description": "Number of top root words to consider, default is 5."
+              "description": "Number of top root words to analyze, default is 5."
             }
           ],
           "return_type": "None"
         },
         {
           "name": "analyze_muqattaat_sequences",
-          "description": "Analyzes and counts the frequency of Muqatta'at sequences in the Quran text.",
+          "description": "Counts the frequency of Muqatta'at sequences in the text and returns a mapping of sequences to their occurrence counts.",
           "parameters": [
             {
               "name": "text",
@@ -372,7 +371,7 @@
         },
         {
           "name": "analyze_muqattaat_length",
-          "description": "Analyzes the lengths of Muqatta'at sequences, categorizes Surahs based on sequence length, and logs frequency distribution.",
+          "description": "Analyzes Muqatta'at sequence lengths and logs detailed analysis including frequency distribution.",
           "parameters": [
             {
               "name": "text",
@@ -384,7 +383,7 @@
         },
         {
           "name": "categorize_surahs_by_muqattaat",
-          "description": "Categorizes Surahs into those with and without Muqatta'at.",
+          "description": "Categorizes Surahs into those with and without Muqatta'at and returns two lists of Surah numbers.",
           "parameters": [
             {
               "name": "text",
@@ -396,7 +395,7 @@
         },
         {
           "name": "analyze_grouped_root_frequencies",
-          "description": "Computes grouped Arabic root word frequencies for specified Surahs.",
+          "description": "Computes aggregated root word frequencies for the specified Surahs.",
           "parameters": [
             {
               "name": "text",
@@ -406,14 +405,14 @@
             {
               "name": "surahs",
               "type": "list",
-              "description": "List of Surah numbers as strings."
+              "description": "List of Surah numbers to analyze."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_grouped_lemma_frequencies",
-          "description": "Computes grouped lemma frequencies for specified Surahs.",
+          "description": "Computes aggregated lemma frequencies for the specified Surahs.",
           "parameters": [
             {
               "name": "text",
@@ -423,14 +422,14 @@
             {
               "name": "surahs",
               "type": "list",
-              "description": "List of Surah numbers as strings."
+              "description": "List of Surah numbers to analyze."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "compare_surahs_muqattaat_vs_non_muqattaat",
-          "description": "Compares Surahs with and without Muqatta'at by computing average verse lengths and top word frequencies.",
+          "description": "Compares Surahs with and without Muqatta'at based on average verse lengths and top word frequencies.",
           "parameters": [
             {
               "name": "text",
@@ -442,7 +441,7 @@
         },
         {
           "name": "analyze_correlations",
-          "description": "Analyzes correlations across various analytical dimensions of the Quran text.",
+          "description": "Analyzes correlations among various analytical dimensions and returns a list of correlation messages.",
           "parameters": [
             {
               "name": "text",
@@ -452,17 +451,17 @@
             {
               "name": "verse_lengths",
               "type": "dict",
-              "description": "Results from verse length analysis."
+              "description": "Verse length analysis results."
             },
             {
               "name": "muqattaat_data",
               "type": "dict",
-              "description": "Results from Muqatta'at analysis."
+              "description": "Muqatta'at analysis results."
             },
             {
               "name": "word_frequency_result",
               "type": "tuple",
-              "description": "Results from word frequency analysis."
+              "description": "Word frequency analysis summary and flagged words."
             },
             {
               "name": "flagged_words",
@@ -472,24 +471,24 @@
             {
               "name": "verse_repetitions_data",
               "type": "dict",
-              "description": "Results from verse repetitions analysis."
+              "description": "Verse repetition analysis results."
             },
             {
               "name": "enhanced_symmetry_data",
               "type": "dict",
-              "description": "Results from enhanced semantic symmetry analysis."
+              "description": "Enhanced semantic symmetry analysis results."
             },
             {
               "name": "abjad_anomalies",
               "type": "list",
-              "description": "Results from Abjad numeral analysis."
+              "description": "Abjad numeral anomalies."
             }
           ],
           "return_type": "list"
         },
         {
           "name": "analyze_muqattaat_distribution_meccan_medinan",
-          "description": "Analyzes the distribution of Muqatta'at across Meccan and Medinan Surahs based on classification.",
+          "description": "Analyzes the distribution of Muqatta'at in Meccan and Medinan Surahs and returns a summary string.",
           "parameters": [
             {
               "name": "text",
@@ -499,14 +498,14 @@
             {
               "name": "surah_classification",
               "type": "dict",
-              "description": "Mapping of Surah numbers to classification ('Meccan' or 'Medinan')."
+              "description": "Mapping of Surah numbers to their classification."
             }
           ],
           "return_type": "str"
         },
         {
           "name": "analyze_muqattaat_positions",
-          "description": "Analyzes the positions of Muqatta'at within the Quran text. Placeholder for future implementation.",
+          "description": "Analyzes the positions of Muqatta'at within the Quran text and returns a summary string.",
           "parameters": [
             {
               "name": "text",
@@ -518,7 +517,7 @@
         },
         {
           "name": "generate_muqattaat_report",
-          "description": "Generates a comprehensive final report synthesizing all Muqatta'at analyses.",
+          "description": "Generates a comprehensive final report synthesizing all Muqatta'at analyses and logs the results.",
           "parameters": [
             {
               "name": "text",
@@ -527,11 +526,23 @@
             }
           ],
           "return_type": "None"
+        },
+        {
+          "name": "review_muqattaat_report",
+          "description": "Reviews the final Muqatta'at report and returns conclusive statements regarding the Muqatta'at mystery.",
+          "parameters": [
+            {
+              "name": "report_content",
+              "type": "str",
+              "description": "The complete content of the final Muqatta'at report."
+            }
+          ],
+          "return_type": "str"
         }
       ],
       "dependencies": [
-        "src.logger",
-        "src.text_preprocessor"
+        "src/logger",
+        "src/text_preprocessor"
       ]
     },
     {
@@ -903,61 +914,37 @@
     {
       "path": "tests/test_main.py",
       "language": "Python",
-      "description": "Integration tests for the main module of the Quran Secrets application. Contains tests for end-to-end execution, main function integration, and Surah comparison analysis.",
+      "description": "Integration tests for the main module of the Quran Secrets application. This file contains end-to-end tests that simulate execution scenarios and validate the overall behavior of the application using the unittest framework.",
       "classes": [
         {
           "name": "TestMainIntegration",
-          "description": "Integration tests for end-to-end execution of the Quran Secrets application.",
+          "description": "Integration test class for end-to-end analysis of the Quran Secrets application.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "setUp",
-              "description": "Sets up test environment and configurations for assertions.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestMainIntegration",
-                  "description": "Instance of the test class."
-                }
-              ],
+              "description": "Setup method for initializing test parameters and configurations.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_fallback",
-              "description": "Tests full execution of main() function end-to-end using CAMeL Tools fallback.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestMainIntegration",
-                  "description": "Instance of the test class."
-                }
-              ],
+              "description": "Tests the full execution of the main() function using a fallback scenario when CAMeL Tools are not available.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_main_integration_with_camel_tools",
-              "description": "Tests full execution of main() function end-to-end with CAMeL Tools available.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestMainIntegration",
-                  "description": "Instance of the test class."
-                }
-              ],
+              "description": "Tests the full execution of the main() function when CAMeL Tools are available, simulating morphological analysis.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_compare_surahs_muqattaat_vs_non_muqattaat",
-              "description": "Tests the compare_surahs_muqattaat_vs_non_muqattaat function for correct categorization and analysis.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestMainIntegration",
-                  "description": "Instance of the test class."
-                }
-              ],
+              "description": "Tests the function that compares Surahs with and without Muqatta'at to ensure correct categorization and analysis.",
+              "parameters": [],
               "return_type": "None"
             }
           ]
@@ -965,9 +952,7 @@
       ],
       "functions": [],
       "dependencies": [
-        "os",
-        "unittest",
-        "src.main"
+        "src/main.py"
       ]
     },
     {

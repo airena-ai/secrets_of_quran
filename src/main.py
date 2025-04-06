@@ -2,7 +2,7 @@
 
 from src.file_reader import read_quran_text
 from src.text_preprocessor import remove_diacritics, normalize_arabic_letters
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_preceding_context, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat, analyze_muqattaat_distribution_meccan_medinan, surah_classification, categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies, analyze_muqattaat_length, generate_muqattaat_report
+from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_lemmas, analyze_surah_verse_counts, analyze_muqattaat, analyze_muqattaat_positions, analyze_muqattaat_sequences, analyze_muqattaat_numerical_values, analyze_muqattaat_preceding_context, analyze_muqattaat_themes, analyze_muqattaat_context, analyze_correlations, compare_surahs_muqattaat_vs_non_muqattaat, analyze_muqattaat_distribution_meccan_medinan, surah_classification, categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies, analyze_muqattaat_length, generate_muqattaat_report, review_muqattaat_report
 
 def main():
     '''Main entry point for the Quran Secrets analysis.'''
@@ -217,6 +217,15 @@ def main():
     
     # NEW: Generate final Muqatta'at report
     generate_muqattaat_report(text)
+    # NEW: Append final conclusions based on Muqatta'at analysis review
+    try:
+        with open("results.log", "r", encoding="utf-8") as rep_file:
+            report_content = rep_file.read()
+    except Exception as e:
+        log_result("Error reading results.log: " + str(e))
+        report_content = ""
+    final_conclusion = review_muqattaat_report(report_content)
+    log_result(final_conclusion)
     
     print("Quran Secrets Analysis Completed.")
 
