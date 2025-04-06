@@ -1514,3 +1514,109 @@ def analyze_muqattaat_positions(text):
         str: A placeholder summary string.
     '''
     return "Muqattaat positions analysis not implemented."
+
+def generate_muqattaat_report(text):
+    '''Generate comprehensive final report synthesizing all Muqatta'at analyses.
+
+    This function aggregates results from various Muqatta'at analysis functions,
+    interprets the synthesized data to identify patterns or notable correlations,
+    and automatically tags significant findings as "POTENTIAL SECRET FOUND".
+    The final report is then logged to the results.log file.
+
+    Args:
+        text (str): The preprocessed Quran text.
+    '''
+    import json
+    from src.logger import log_result, log_secret_found
+
+    # Aggregate Muqatta'at analyses
+    muqattaat_results, muqattaat_letter_freq = analyze_muqattaat(text)
+    positions_summary = analyze_muqattaat_positions(text)
+    sequences_freq = analyze_muqattaat_sequences(text)
+    numerical_summary = analyze_muqattaat_numerical_values(text)
+    
+    # Thematic analysis (logs internally)
+    analyze_muqattaat_themes()
+    
+    context_freq = analyze_muqattaat_context(text)
+    preceding_context_freq = analyze_muqattaat_preceding_context(text)
+    distribution_summary = analyze_muqattaat_distribution_meccan_medinan(text, surah_classification)
+    
+    # Invoke length analysis and root co-occurrence functions (their outputs are logged)
+    analyze_muqattaat_length(text)
+    analyze_muqattaat_root_cooccurrence(text)
+
+    # Build final report
+    report_lines = []
+    report_lines.append("FINAL MUQATTA'AT REPORT:")
+    report_lines.append("--------------------------------------------------")
+    report_lines.append("Muqatta'at Surahs:")
+    if muqattaat_results:
+        sorted_surahs = sorted(muqattaat_results.keys(), key=lambda x: int(x))
+        report_lines.append(", ".join(sorted_surahs))
+    else:
+        report_lines.append("None")
+    report_lines.append("")
+    
+    report_lines.append("Muqatta'at Letter Frequencies:")
+    for letter, count in muqattaat_letter_freq.items():
+        report_lines.append(f"{letter}: {count}")
+    report_lines.append("")
+
+    report_lines.append("Positions Analysis Summary:")
+    report_lines.append(positions_summary)
+    report_lines.append("")
+    
+    report_lines.append("Muqatta'at Sequences Frequency Analysis:")
+    if sequences_freq:
+        for seq, freq in sequences_freq.items():
+            report_lines.append(f"Sequence '{seq}': {freq} occurrences")
+            if freq > 1:
+                report_lines.append(f"POTENTIAL SECRET FOUND: Sequence '{seq}' appears unusually often ({freq} times)")
+    else:
+        report_lines.append("No sequences found.")
+    report_lines.append("")
+    
+    report_lines.append("Numerical Analysis Summary:")
+    report_lines.append(numerical_summary)
+    report_lines.append("")
+    
+    report_lines.append("Contextual Analysis (Verses Following Muqatta'at) - Top Words:")
+    if context_freq:
+        for word, freq in context_freq.items():
+            report_lines.append(f"{word}: {freq}")
+            if freq > 5:
+                report_lines.append(f"POTENTIAL SECRET FOUND: Word '{word}' appears very frequently ({freq} times) in the context following Muqatta'at")
+    else:
+        report_lines.append("No contextual data found.")
+    report_lines.append("")
+    
+    report_lines.append("Preceding Context Analysis (Verses Before Muqatta'at) - Top Words:")
+    if preceding_context_freq:
+        for word, freq in preceding_context_freq.items():
+            report_lines.append(f"{word}: {freq}")
+            if freq > 5:
+                report_lines.append(f"POTENTIAL SECRET FOUND: Word '{word}' appears very frequently ({freq} times) in the preceding context of Muqatta'at")
+    else:
+        report_lines.append("No preceding context data found.")
+    report_lines.append("")
+    
+    report_lines.append("Muqatta'at Distribution (Meccan vs. Medinan):")
+    report_lines.append(distribution_summary)
+    report_lines.append("")
+    
+    report_lines.append("Final Interpretation:")
+    if not muqattaat_results:
+        report_lines.append("No Muqatta'at detected in the text.")
+    else:
+        report_lines.append("Muqatta'at analysis reveals consistent patterns across analyzed Surahs.")
+    report_lines.append("--------------------------------------------------")
+    
+    final_report = "\n".join(report_lines)
+    log_result(final_report)
+    
+    try:
+        with open("results.log", "a", encoding="utf-8") as f:
+            f.write(final_report + "\n")
+    except Exception as e:
+        log_result("Error writing final Muqatta'at report: " + str(e))

@@ -17,7 +17,7 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
+        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
                        "1|2| آية من سورة الفاتحة\n"
                        "2|1|الم بداية سورة البقرة\n"
                        "2|2|آية من سورة البقرة")
@@ -50,6 +50,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("--- Muqatta'at Sequence Length Analysis ---", log_contents)
                 self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
                 self.assertIn('"muqattaat":', log_contents)
+                self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -73,7 +74,7 @@ class TestMainIntegration(unittest.TestCase):
         from unittest.mock import patch, MagicMock
         mock_spec = MagicMock()
         mock_analyzer = MagicMock()
-        mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}, {'lemma': 'حمد'}] if token == "الْحَمْدُ" else [{'root': token}, {'lemma': token}]
+        mock_analyzer.analyze.side_effect = lambda token: [{'root': 'حمد'}] if token == "الْحَمْدُ" else [{'root': token}, {'lemma': token}]
         mock_analyzer_class = MagicMock()
         mock_analyzer_class.builtin_analyzer.return_value = mock_analyzer
         
@@ -102,6 +103,7 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("--- Muqatta'at Sequence Length Analysis ---", log_contents)
                 self.assertIn("Total Surahs with Muqatta'at Analyzed:", log_contents)
                 self.assertIn('"muqattaat":', log_contents)
+                self.assertIn("FINAL MUQATTA'AT REPORT:", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)
