@@ -237,6 +237,12 @@ def main():
     final_conclusion = review_muqattaat_report(report_content)
     log_result(final_conclusion)
     
+    # NEW: Compare scholarly interpretations with analysis findings.
+    from src.data_loader import load_muqattaat_interpretations
+    from src.analyzer import compare_interpretations_with_analysis
+    interpretations = load_muqattaat_interpretations()
+    compare_interpretations_with_analysis(interpretations)
+    
     print("Quran Secrets Analysis Completed.")
 
 if __name__ == '__main__':

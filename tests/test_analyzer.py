@@ -1,9 +1,13 @@
 '''Unit tests for the analyzer module.'''
 
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 import src
-from src.analyzer import analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams, analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry, analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_verse_length_symmetry, analyze_enhanced_semantic_symmetry, analyze_muqattaat_length, analyze_muqattaat, analyze_muqattaat_semantic_similarity
+from src.analyzer import (analyze_text, analyze_word_frequency, analyze_root_words, analyze_bigrams,
+                          analyze_palindromes, analyze_abjad_numerals, analyze_semantic_symmetry,
+                          analyze_verse_repetitions, analyze_verse_lengths_distribution, analyze_verse_length_symmetry,
+                          analyze_enhanced_semantic_symmetry, analyze_muqattaat_length, analyze_muqattaat,
+                          analyze_muqattaat_semantic_similarity, compare_interpretations_with_analysis)
 import importlib.util
 
 class TestAnalyzer(unittest.TestCase):
@@ -247,17 +251,59 @@ class TestAnalyzer(unittest.TestCase):
         src.logger.log_result = lambda msg: log_results.append(msg)
         src.logger.log_secret_found = lambda msg: log_secrets.append(msg)
         
+        from src.analyzer import analyze_muqattaat_semantic_similarity
         analyze_muqattaat_semantic_similarity(sample_text, muqattaat_mapping)
         
         src.logger.log_result = original_log_result
         src.logger.log_secret_found = original_log_secret
         
-        # Check that the average similarity for group "الم" was logged.
         avg_logged = any("Average Semantic Similarity for Muqatta'at Group 'الم'" in msg for msg in log_results)
         self.assertTrue(avg_logged)
-        # Since Surahs 2 and 3 have identical text for first parts, similarity should be high and secret found logged.
         secret_logged = any("POTENTIAL SECRET FOUND: [Surah 2] and [Surah 3] (Muqatta'at: الم)" in msg for msg in log_secrets)
         self.assertTrue(secret_logged)
+
+    def test_compare_interpretations_with_analysis(self):
+        '''Test the compare_interpretations_with_analysis function with different interpretations.'''
+        interpretations = {
+            "interpretation_1": {
+                "source": "Journal A",
+                "summary": "This interpretation is based on rhythmic patterns and unique identifier markers."
+            },
+            "interpretation_2": {
+                "source": "Journal B",
+                "summary": "This interpretation emphasizes divine mystery and is more theological."
+            },
+            "interpretation_3": {
+                "source": "Journal C",
+                "summary": "An ambiguous interpretation with no clear markers."
+            }
+        }
+        captured_results = []
+        captured_secrets = []
+        original_log_result = src.logger.log_result
+        original_log_secret = src.logger.log_secret_found
+        src.logger.log_result = lambda msg: captured_results.append(msg)
+        src.logger.log_secret_found = lambda msg: captured_secrets.append(msg)
+        
+        compare_interpretations_with_analysis(interpretations)
+        
+        src.logger.log_result = original_log_result
+        src.logger.log_secret_found = original_log_secret
+
+        result_1 = next((msg for msg in captured_results if "interpretation_1" in msg.lower()), "")
+        self.assertIn("Supporting Evidence", result_1)
+        secret_1 = next((msg for msg in captured_secrets if "interpretation_1" in msg.lower()), "")
+        self.assertIn("POTENTIAL SECRET FOUND", secret_1)
+        
+        result_2 = next((msg for msg in captured_results if "interpretation_2" in msg.lower()), "")
+        self.assertIn("Inconclusive/Neutral", result_2)
+        secret_2 = next((msg for msg in captured_secrets if "interpretation_2" in msg.lower()), None)
+        self.assertIsNone(secret_2)
+        
+        result_3 = next((msg for msg in captured_results if "interpretation_3" in msg.lower()), "")
+        self.assertIn("Inconclusive/Neutral", result_3)
+        secret_3 = next((msg for msg in captured_secrets if "interpretation_3" in msg.lower()), None)
+        self.assertIsNone(secret_3)
 
 if __name__ == '__main__':
     unittest.main()
