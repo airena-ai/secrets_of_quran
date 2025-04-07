@@ -363,6 +363,7 @@ def main():
         # Integrate Anomaly Detection Analysis
         from src.anomaly_detector import analyze_anomaly_detection
         analysis_results = {
+            "gematria_cooccurrence": gematria_cooccurrence,
             "word_frequencies": word_frequencies,
             "surah_word_frequencies": surah_frequencies,
             "ayah_word_frequencies": ayah_frequencies,
@@ -392,7 +393,29 @@ def main():
         analyze_quran_text_complexity()
         analyze_surah_text_complexity()
         analyze_ayah_text_complexity()
-        
+
+        # NEW: Integrate Flesch Reading Ease and Flesch-Kincaid Grade Level Analyses
+        from src.text_complexity_analyzer import (
+            analyze_quran_flesch_reading_ease,
+            analyze_quran_flesch_kincaid_grade_level,
+            analyze_surah_flesch_reading_ease,
+            analyze_surah_flesch_kincaid_grade_level,
+            analyze_ayah_flesch_reading_ease,
+            analyze_ayah_flesch_kincaid_grade_level
+        )
+        logger.info("Starting Flesch Reading Ease Analysis at Quran level.")
+        quran_flesch = analyze_quran_flesch_reading_ease()
+        logger.info("Starting Flesch-Kincaid Grade Level Analysis at Quran level.")
+        quran_fk = analyze_quran_flesch_kincaid_grade_level()
+        logger.info("Starting Surah-level Flesch Reading Ease Analysis.")
+        surah_flesch = analyze_surah_flesch_reading_ease()
+        logger.info("Starting Surah-level Flesch-Kincaid Grade Level Analysis.")
+        surah_fk = analyze_surah_flesch_kincaid_grade_level()
+        logger.info("Starting Ayah-level Flesch Reading Ease Analysis.")
+        ayah_flesch = analyze_ayah_flesch_reading_ease()
+        logger.info("Starting Ayah-level Flesch-Kincaid Grade Level Analysis.")
+        ayah_fk = analyze_ayah_flesch_kincaid_grade_level()
+
         # NEW: Integrate Semantic Complexity Distribution Analysis by Semantic Group Frequency at Ayah Level
         from src.semantic_distribution_analyzer import analyze_semantic_complexity_distribution_ayah
         logger.info("Starting Semantic Complexity Distribution Analysis by Semantic Group Frequency at Ayah Level.")

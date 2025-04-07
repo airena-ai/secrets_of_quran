@@ -116,49 +116,48 @@
     {
       "path": "src/main.py",
       "language": "python",
-      "description": "Main entry point for the Quran text analysis application. This module orchestrates data loading, text preprocessing, and integrates various analyses including text complexity, Gematria distribution, frequency analysis, anomaly detection, and semantic complexity. It defines several analysis functions and a main function to run the complete workflow.",
+      "description": "This is the main entry point of the application which orchestrates data loading, text preprocessing, and various analyses including text complexity, gematria, frequency, co-occurrence, and anomaly detection on Quran text. It integrates multiple modules to perform end-to-end processing and analysis.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_quran_text_complexity",
-          "description": "Analyze text complexity for the entire Quran by loading data, concatenating preprocessed text, and computing complexity metrics using analyze_text_complexity.",
+          "description": "Analyzes text complexity for the entire Quran by loading Quran data, preprocessing text, and invoking the analyze_text_complexity function.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "analyze_surah_text_complexity",
-          "description": "Analyze text complexity for each Surah by grouping verses, processing text, and computing metrics with analyze_text_complexity, returning a mapping of Surah to their complexity statistics.",
+          "description": "Analyzes text complexity for each Surah by grouping verses and computing their complexity metrics.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "analyze_ayah_text_complexity",
-          "description": "Analyze text complexity for each Ayah by preprocessing verse text and computing complexity metrics using analyze_text_complexity, returning a dictionary mapping Ayah identifiers to their metrics.",
+          "description": "Analyzes text complexity for each Ayah by processing individual verses and mapping complexity metrics to a 'surah|ayah' key.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "main",
-          "description": "Main function to orchestrate various analyses including data loading, preprocessing, Gematria analysis, frequency analysis, anomaly detection, and text complexity assessment. It serves as the central entry point for the application.",
+          "description": "Main function that drives the application by integrating various analyses including gematria, frequency, co-occurrence, and text complexity. It loads data, processes text, logs analytics, and coordinates the overall workflow.",
           "parameters": [],
-          "return_type": "None"
+          "return_type": "dict"
         }
       ],
       "dependencies": [
         "src/logger_config.py",
         "src/data_loader.py",
         "src/text_preprocessor.py",
-        "src/text_complexity_analyzer.py",
         "src/gematria_analyzer.py",
         "src/correlation_analyzer.py",
         "src/frequency_analyzer.py",
         "src/distribution_analyzer.py",
         "src/cooccurrence_analyzer.py",
         "src/collocation_analyzer.py",
-        "src/semantic_distribution_analyzer.py",
-        "src/semantic_analyzer.py",
         "src/anomaly_detector.py",
-        "src/ngram_analyzer.py"
+        "src/ngram_analyzer.py",
+        "src/semantic_analyzer.py",
+        "src/semantic_distribution_analyzer.py"
       ]
     },
     {
@@ -1513,24 +1512,86 @@
     {
       "path": "src/text_complexity_analyzer.py",
       "language": "Python",
-      "description": "This module provides functionality to analyze the complexity of Arabic text. It tokenizes the input text, calculates average word and sentence lengths, logs the metrics, and returns them in a dictionary. This analysis is essential for understanding the structural complexity of the text.",
+      "description": "This file provides functionality for analyzing text complexity metrics for Arabic text, particularly focused on the Quran. It includes functions to calculate various readability metrics such as average word length, average sentence length, Flesch Reading Ease score, and Flesch-Kincaid Grade Level. The file also contains functions to analyze these metrics at different levels of granularity: for the entire Quran, for each Surah, and for each Ayah.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_text_complexity",
-          "description": "Analyzes text complexity by splitting the input text into words, calculating the average word length and sentence length, logging the metrics, and returning the results as a dictionary.",
+          "description": "Analyzes basic text complexity metrics for a preprocessed Arabic text by calculating average word length and average sentence length. Sentences are assumed to be separated by newline characters.",
           "parameters": [
             {
               "name": "text",
-              "type": "string",
+              "type": "str",
               "description": "Preprocessed Arabic text as a string."
             }
           ],
           "return_type": "dict"
+        },
+        {
+          "name": "calculate_flesch_reading_ease",
+          "description": "Calculates the Flesch Reading Ease score for the given preprocessed text using the formula: 206.835 - 1.015*(total words/total sentences) - 84.6*(total syllables/total words). Syllables are approximated as the count of vowels in each word.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "Preprocessed text as a string."
+            }
+          ],
+          "return_type": "float"
+        },
+        {
+          "name": "calculate_flesch_kincaid_grade_level",
+          "description": "Calculates the Flesch-Kincaid Grade Level for the given preprocessed text using the formula: 0.39*(total words/total sentences) + 11.8*(total syllables/total words) - 14.59. Syllables are approximated as the count of vowels in each word.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "Preprocessed text as a string."
+            }
+          ],
+          "return_type": "float"
+        },
+        {
+          "name": "analyze_quran_flesch_reading_ease",
+          "description": "Analyzes and logs the Flesch Reading Ease score for the entire Quran by loading the Quran data, preprocessing the text, and calculating the score.",
+          "parameters": [],
+          "return_type": "float"
+        },
+        {
+          "name": "analyze_quran_flesch_kincaid_grade_level",
+          "description": "Analyzes and logs the Flesch-Kincaid Grade Level for the entire Quran by loading the Quran data, preprocessing the text, and calculating the grade level.",
+          "parameters": [],
+          "return_type": "float"
+        },
+        {
+          "name": "analyze_surah_flesch_reading_ease",
+          "description": "Analyzes and logs the Flesch Reading Ease score for each Surah by grouping the Quran data by Surah and calculating the score for each group.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_surah_flesch_kincaid_grade_level",
+          "description": "Analyzes and logs the Flesch-Kincaid Grade Level for each Surah by grouping the Quran data by Surah and calculating the grade level for each group.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_ayah_flesch_reading_ease",
+          "description": "Analyzes and logs the Flesch Reading Ease score for each Ayah by processing each Ayah individually and calculating its score.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_ayah_flesch_kincaid_grade_level",
+          "description": "Analyzes and logs the Flesch-Kincaid Grade Level for each Ayah by processing each Ayah individually and calculating its grade level.",
+          "parameters": [],
+          "return_type": "dict"
         }
       ],
       "dependencies": [
-        "src/logger_config.py"
+        "src/logger_config.py",
+        "src/data_loader.py",
+        "src/text_preprocessor.py"
       ]
     },
     {
@@ -1635,6 +1696,109 @@
       "functions": [],
       "dependencies": [
         "src/semantic_distribution_analyzer.py"
+      ]
+    },
+    {
+      "path": "tests/test_text_complexity_enhancement.py",
+      "language": "python",
+      "description": "This test module contains unit and integration tests for verifying the functionality of text complexity enhancement functions. It tests computations for Flesch Reading Ease and Flesch-Kincaid Grade Level at Quran, Surah, and Ayah levels.",
+      "classes": [
+        {
+          "name": "TestFleschMetrics",
+          "description": "Unit tests for Flesch Reading Ease and Flesch-Kincaid Grade Level calculations.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_calculate_flesch_reading_ease_empty",
+              "description": "Tests that calculate_flesch_reading_ease returns 0.0 when provided with an empty string.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestFleschMetrics",
+                  "description": "Instance of TestFleschMetrics"
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_flesch_kincaid_grade_level_empty",
+              "description": "Tests that calculate_flesch_kincaid_grade_level returns 0.0 when provided with an empty string.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestFleschMetrics",
+                  "description": "Instance of TestFleschMetrics"
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_flesch_reading_ease_known",
+              "description": "Tests calculate_flesch_reading_ease with a known input to verify correct score computation.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestFleschMetrics",
+                  "description": "Instance of TestFleschMetrics"
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_flesch_kincaid_grade_level_known",
+              "description": "Tests calculate_flesch_kincaid_grade_level with a known input to verify correct grade level computation.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestFleschMetrics",
+                  "description": "Instance of TestFleschMetrics"
+                }
+              ],
+              "return_type": "None"
+            }
+          ]
+        },
+        {
+          "name": "TestFleschIntegrationAnalysis",
+          "description": "Integration tests for Quran, Surah, and Ayah level Flesch analyses.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_integration_quran_level",
+              "description": "Tests the integration of Quran level Flesch analysis functions by verifying numeric outputs.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestFleschIntegrationAnalysis",
+                  "description": "Instance of TestFleschIntegrationAnalysis"
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_integration_surah_and_ayah_level",
+              "description": "Tests the integration of Surah and Ayah level Flesch analysis functions by verifying dictionary outputs with expected keys.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestFleschIntegrationAnalysis",
+                  "description": "Instance of TestFleschIntegrationAnalysis"
+                }
+              ],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/text_complexity_analyzer.py",
+        "os",
+        "unittest"
       ]
     }
   ]
