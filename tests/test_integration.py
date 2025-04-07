@@ -54,7 +54,7 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Starting word co-occurrence analysis.", log_content)
         self.assertIn("Co-occurrence analysis returned", log_content)
         
-        # Assertions for Surah and Ayah level analyses
+        # Assertions for Surah and Ayah level analyses (word frequency)
         self.assertIn("Starting Surah-level word frequency analysis.", log_content)
         self.assertIn("Surah-level word frequency analysis completed.", log_content)
         self.assertIn("Surah-level Frequency Analysis - Surah 1 Top 10 Words:", log_content)
@@ -96,7 +96,15 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Lemma word frequency analysis completed.", log_content)
         self.assertIn("Starting Lemma Word Co-occurrence Analysis...", log_content)
         self.assertIn("Lemma Word Co-occurrence Analysis Completed.", log_content)
-
+        
+        # Additional assertions for new Character Frequency Analyses at Surah and Ayah levels
+        self.assertIn("Starting Surah-level Character Frequency Analysis.", log_content)
+        self.assertIn("Surah-level Character Frequency Analysis completed.", log_content)
+        self.assertIn("Starting Ayah-level Character Frequency Analysis.", log_content)
+        self.assertIn("Ayah-level Character Frequency Analysis completed.", log_content)
+        self.assertRegex(log_content, r"Surah-level Character Frequency Analysis - Surah: (1|Unknown)")
+        self.assertRegex(log_content, r"Ayah-level Character Frequency Analysis - Surah: (1|Unknown), Ayah: (1|Unknown)")
+        
         # Additional assertions for character frequency analysis
         self.assertIn("Starting Character Frequency Analysis...", log_content)
         self.assertIn("Top 20 most frequent characters:", log_content)

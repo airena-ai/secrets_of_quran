@@ -53,5 +53,10 @@
         "iteration": 10,
         "date": "2025-04-07",
         "iteration_goal": "This increment focuses on implementing character frequency analysis for the entire Quran. A new function `analyze_character_frequency` will be created to count and log the frequency of each character in the preprocessed text. The `main()` function will be updated to include this analysis, and integration tests will be enhanced to validate the new functionality. This step adds a new layer of analysis at the character level, potentially revealing hidden patterns not visible at the word or root level."
+    },
+    {
+        "iteration": 11,
+        "date": "2025-04-07",
+        "iteration_goal": "This increment implements character frequency analysis at the Surah and Ayah levels. New functions `analyze_surah_character_frequency` and `analyze_ayah_character_frequency` will be created to calculate and log character frequencies for each Surah and Ayah, respectively. The main function and integration tests will be updated to include and validate these new functionalities, providing a more detailed character distribution analysis within the Quran."
     }
 ]

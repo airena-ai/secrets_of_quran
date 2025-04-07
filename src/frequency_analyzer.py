@@ -230,3 +230,73 @@ def analyze_character_frequency(tokenized_text):
     logger.info("Total unique characters: %d", len(char_freq))
     logger.info("Finished Character Frequency Analysis.")
     return char_freq
+
+def analyze_surah_character_frequency(data):
+    """
+    Analyze character frequency at the Surah level.
+    
+    For each Surah, concatenates the preprocessed text of all ayahs within that Surah,
+    calculates and logs the frequency of each character.
+    
+    Logs:
+    - Surah number.
+    - Total character count.
+    - Frequency of each character.
+    
+    :param data: List of dictionaries representing Quran data.
+    :return: A dictionary mapping each Surah to a dictionary of character frequencies.
+    """
+    import logging
+    from collections import Counter, defaultdict
+    logger = logging.getLogger("quran_analysis")
+    logger.info("Starting Surah-level Character Frequency Analysis.")
+    surah_texts = defaultdict(str)
+    for item in data:
+        surah = item.get("surah_number", item.get("surah", "Unknown"))
+        text = item.get("processed_text", item.get("text", item.get("verse_text", "")))
+        surah_texts[surah] += text
+    result = {}
+    for surah, text in surah_texts.items():
+        char_counter = Counter(text)
+        total_chars = sum(char_counter.values())
+        sorted_chars = sorted(char_counter.items(), key=lambda x: x[1], reverse=True)
+        logger.info("Surah-level Character Frequency Analysis - Surah: %s", surah)
+        logger.info("Total characters: %d", total_chars)
+        logger.info("Character Frequencies: %s", sorted_chars)
+        result[surah] = dict(char_counter)
+    logger.info("Surah-level Character Frequency Analysis completed.")
+    return result
+
+def analyze_ayah_character_frequency(data):
+    """
+    Analyze character frequency at the Ayah level.
+    
+    For each Ayah, calculates and logs the frequency of each character in the preprocessed text.
+    
+    Logs:
+    - Surah number and Ayah number.
+    - Total character count.
+    - Frequency of each character.
+    
+    :param data: List of dictionaries representing Quran data.
+    :return: A dictionary mapping each Ayah identifier (Surah|Ayah) to its character frequency dictionary.
+    """
+    import logging
+    from collections import Counter
+    logger = logging.getLogger("quran_analysis")
+    logger.info("Starting Ayah-level Character Frequency Analysis.")
+    result = {}
+    for item in data:
+        surah = item.get("surah_number", item.get("surah", "Unknown"))
+        ayah = item.get("ayah_number", item.get("ayah", "Unknown"))
+        text = item.get("processed_text", item.get("text", item.get("verse_text", "")))
+        char_counter = Counter(text)
+        total_chars = sum(char_counter.values())
+        sorted_chars = sorted(char_counter.items(), key=lambda x: x[1], reverse=True)
+        key = f"{surah}|{ayah}"
+        logger.info("Ayah-level Character Frequency Analysis - Surah: %s, Ayah: %s", surah, ayah)
+        logger.info("Total characters: %d", total_chars)
+        logger.info("Character Frequencies: %s", sorted_chars)
+        result[key] = dict(char_counter)
+    logger.info("Ayah-level Character Frequency Analysis completed.")
+    return result

@@ -53,5 +53,10 @@
         "iteration": 10,
         "date": "2025-04-07",
         "iteration_goal": "Introduce `analyze_character_frequency` function within the `frequency_analyzer` module to perform character frequency analysis on the Quran text. Update `main()` to include this new analysis and enhance integration tests to validate its functionality and logging. This addition extends the `frequency_analyzer` module, maintaining modular design and ensuring testability."
+    },
+    {
+        "iteration": 11,
+        "date": "2025-04-07",
+        "iteration_goal": "Extend the `frequency_analyzer` module to include `analyze_surah_character_frequency` and `analyze_ayah_character_frequency` functions for character frequency analysis at Surah and Ayah levels. Update `main()` to incorporate these functions and add integration tests for validation. Enhance logging for clear output separation."
     }
 ]

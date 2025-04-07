@@ -48,6 +48,16 @@ def main():
             tokens = processed_text.split()
             tokenized_text.append(tokens)
         
+        # Integrate Surah-level and Ayah-level Character Frequency Analysis
+        from src.frequency_analyzer import analyze_surah_character_frequency, analyze_ayah_character_frequency
+        logger.info("Starting Surah-level Character Frequency Analysis.")
+        surah_char_freq = analyze_surah_character_frequency(data)
+        logger.info("Surah-level Character Frequency Analysis completed.")
+        
+        logger.info("Starting Ayah-level Character Frequency Analysis.")
+        ayah_char_freq = analyze_ayah_character_frequency(data)
+        logger.info("Ayah-level Character Frequency Analysis completed.")
+
         # Integrate character frequency analysis
         from src.frequency_analyzer import analyze_character_frequency, analyze_word_length_distribution
         analyze_character_frequency(tokenized_text)
