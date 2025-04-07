@@ -14,18 +14,19 @@ def main():
     3. Collects the tokenized text (each verse as a list of words).
     4. Computes Gematria value distribution analysis on the entire Quran text.
     5. Computes Surah-level and Ayah-level Gematria distribution analyses.
-    6. Computes character frequency analysis at Surah and Ayah levels.
-    7. Computes word frequency analysis and logs the top frequent words.
-    8. Computes word co-occurrence analysis.
-    9. Computes word collocation analysis.
-    10. Computes Surah-level and Ayah-level word frequency analyses.
-    11. Computes ayah-level and surah-level root word frequency analyses.
-    12. Computes first and last root word frequency analyses at Ayah level.
-    13. Computes semantic group frequency and co-occurrence analyses.
-    14. Computes root word frequency and co-occurrence analyses.
-    15. Computes lemma word frequency and co-occurrence analyses.
-    16. Computes word n-gram and character n-gram analyses.
-    17. Performs anomaly detection analysis.
+    6. Computes positional Gematria analyses for the first and last words of each Ayah.
+    7. Computes character frequency analysis at Surah and Ayah levels.
+    8. Computes word frequency analysis and logs the top frequent words.
+    9. Computes word co-occurrence analysis.
+    10. Computes word collocation analysis.
+    11. Computes Surah-level and Ayah-level word frequency analyses.
+    12. Computes ayah-level and surah-level root word frequency analyses.
+    13. Computes first and last root word frequency analyses at Ayah level.
+    14. Computes semantic group frequency and co-occurrence analyses.
+    15. Computes root word frequency and co-occurrence analyses.
+    16. Computes lemma word frequency and co-occurrence analyses.
+    17. Computes word n-gram and character n-gram analyses.
+    18. Performs anomaly detection analysis.
     '''
     logger = configure_logger()
     logger.info("Application started.")
@@ -67,6 +68,15 @@ def main():
         logger.info("Starting Ayah-level Gematria Distribution Analysis.")
         ayah_gematria_distribution = analyze_ayah_gematria_distribution(data, gematria_mapping)
         logger.info("Ayah-level Gematria Distribution Analysis completed.")
+        
+        # New: Integrate positional Gematria analyses for first and last words in each Ayah
+        from src.gematria_analyzer import analyze_first_word_gematria_ayah, analyze_last_word_gematria_ayah
+        logger.info("Starting First Word Gematria Analysis at Ayah Level.")
+        first_word_gematria = analyze_first_word_gematria_ayah(data, gematria_mapping)
+        logger.info("First Word Gematria Analysis completed.")
+        logger.info("Starting Last Word Gematria Analysis at Ayah Level.")
+        last_word_gematria = analyze_last_word_gematria_ayah(data, gematria_mapping)
+        logger.info("Last Word Gematria Analysis completed.")
 
         # Integrate Surah-level and Ayah-level Character Frequency Analysis
         from src.frequency_analyzer import analyze_surah_character_frequency, analyze_ayah_character_frequency

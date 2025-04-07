@@ -167,3 +167,63 @@ def analyze_ayah_gematria_distribution(quran_data, gematria_mapping):
         logger.info("Ayah %s: Gematria Distribution: %s", identifier, frequency)
         logger.info("Ayah %s: Summary Stats: Mean=%.2f, Median=%.2f, Mode=%s, Stdev=%.2f", identifier, mean_val, median_val, mode_val, stdev_val)
     return ayah_results
+
+def analyze_first_word_gematria_ayah(quran_data, gematria_mapping):
+    '''
+    Analyze the frequency distribution of Gematria values for the first word in each Ayah.
+    
+    Iterates through each Ayah in the quran_data list, extracts the first word from the processed text 
+    (or verse_text if processed_text is not available), calculates its Gematria value using the provided gematria_mapping, 
+    and accumulates the frequency counts of each Gematria value. Logs the complete frequency distribution and the top 10 results.
+    
+    :param quran_data: List of dictionaries representing Quran data. Each dictionary should contain keys like "surah", "ayah", and a text field.
+    :param gematria_mapping: Dictionary mapping Arabic letters to Gematria values.
+    :return: Dictionary mapping Gematria values to their frequency count for first words.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    frequency = {}
+    for item in quran_data:
+        text = item.get("processed_text") or item.get("verse_text", "")
+        words = text.split()
+        if words:
+            first_word = words[0]
+            value = calculate_gematria_value_with_mapping(first_word, gematria_mapping)
+            frequency[value] = frequency.get(value, 0) + 1
+    logger.info("First Word Gematria Frequency Analysis:")
+    logger.info("Complete Frequency: %s", frequency)
+    sorted_freq = sorted(frequency.items(), key=lambda kv: kv[1], reverse=True)
+    top_10 = sorted_freq[:10]
+    logger.info("Top 10 most frequent Gematria values for first words:")
+    for val, count in top_10:
+        logger.info("Gematria Value: %d, Count: %d", val, count)
+    return frequency
+
+def analyze_last_word_gematria_ayah(quran_data, gematria_mapping):
+    '''
+    Analyze the frequency distribution of Gematria values for the last word in each Ayah.
+    
+    Iterates through each Ayah in the quran_data list, extracts the last word from the processed text 
+    (or verse_text if processed_text is not available), calculates its Gematria value using the provided gematria_mapping, 
+    and accumulates the frequency counts of each Gematria value. Logs the complete frequency distribution and the top 10 results.
+    
+    :param quran_data: List of dictionaries representing Quran data.
+    :param gematria_mapping: Dictionary mapping Arabic letters to Gematria values.
+    :return: Dictionary mapping Gematria values to their frequency count for last words.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    frequency = {}
+    for item in quran_data:
+        text = item.get("processed_text") or item.get("verse_text", "")
+        words = text.split()
+        if words:
+            last_word = words[-1]
+            value = calculate_gematria_value_with_mapping(last_word, gematria_mapping)
+            frequency[value] = frequency.get(value, 0) + 1
+    logger.info("Last Word Gematria Frequency Analysis:")
+    logger.info("Complete Frequency: %s", frequency)
+    sorted_freq = sorted(frequency.items(), key=lambda kv: kv[1], reverse=True)
+    top_10 = sorted_freq[:10]
+    logger.info("Top 10 most frequent Gematria values for last words:")
+    for val, count in top_10:
+        logger.info("Gematria Value: %d, Count: %d", val, count)
+    return frequency

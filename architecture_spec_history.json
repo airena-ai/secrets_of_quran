@@ -123,5 +123,10 @@
         "iteration": 24,
         "date": "2025-04-07",
         "iteration_goal": "The `gematria_analyzer` module is extended with `analyze_surah_gematria_distribution` and `analyze_ayah_gematria_distribution` functions. These new functions enable Gematria value distribution analysis at Surah and Ayah levels, providing granular insights. The `main()` function will integrate these analyses, and new tests will ensure their correct implementation and logging, enhancing the modularity and testability of the Gematria analysis capabilities."
+    },
+    {
+        "iteration": 25,
+        "date": "2025-04-07",
+        "iteration_goal": "Extend the `gematria_analyzer` module with `analyze_first_word_gematria_ayah()` and `analyze_last_word_gematria_ayah()` functions to analyze Gematria values of first and last words in Ayahs. Update `main()` to use these functions and enhance integration tests to validate the new positional Gematria analysis."
     }
 ]
