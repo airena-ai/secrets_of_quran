@@ -115,13 +115,13 @@
     },
     {
       "path": "src/main.py",
-      "language": "python",
-      "description": "This is the main entry point for the QuranAnalysis application. It orchestrates data loading, text preprocessing, and various frequency and statistical analyses on Quran data. It also manages logging, error handling, and sequential invocation of analysis modules.",
+      "language": "Python",
+      "description": "Main module responsible for orchestrating data loading, text preprocessing, and multiple analyses on Quran data including gematria, frequency, co-occurrence, n-gram, and anomaly detection analyses. It handles logging configuration, environment variable management, and integrates various analytical modules.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main function to orchestrate data loading, text preprocessing, frequency analysis, and various analytical computations on Quran data. It handles configuration, error logging, and coordinates multiple analysis tasks.",
+          "description": "Orchestrates the overall application flow by setting up logging, loading Quran data, preprocessing text, and executing various analyses such as gematria value computation, frequency analysis, and anomaly detection. It manages environment configurations and logs detailed progress.",
           "parameters": [],
           "return_type": "None"
         }
@@ -130,14 +130,13 @@
         "src/logger_config.py",
         "src/data_loader.py",
         "src/text_preprocessor.py",
+        "src/gematria_analyzer.py",
         "src/frequency_analyzer.py",
         "src/cooccurrence_analyzer.py",
         "src/collocation_analyzer.py",
         "src/ngram_analyzer.py",
         "src/anomaly_detector.py",
-        "src/semantic_analyzer.py",
-        "src/tokenizer.py",
-        "src/root_extractor.py"
+        "src/semantic_analyzer.py"
       ]
     },
     {
@@ -318,19 +317,19 @@
     },
     {
       "path": "tests/test_integration.py",
-      "language": "python",
-      "description": "Integration tests for the QuranAnalysis application, verifying core functionalities like data processing, log generation, and semantic analysis outputs using the unittest framework.",
+      "language": "Python",
+      "description": "Contains integration tests for the application's core user flows. It verifies the functionality of the main execution path and various aspects of data processing and analysis by asserting log outputs and file operations.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration test suite for validating the main application flow and semantic analysis components, extends unittest.TestCase.",
+          "description": "Integration test class that verifies end-to-end functionality of the application, ensuring that data loading, processing, and logging behaviors occur as expected.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the overall integration flow including data setup, application execution, and log file content verification.",
+              "description": "Tests the complete integration flow from setting up the environment to executing the main function and verifying log outputs for various analyses.",
               "parameters": [
                 {
                   "name": "self",
@@ -342,7 +341,7 @@
             },
             {
               "name": "test_semantic_group_cooccurrence_analysis",
-              "description": "Tests the semantic group co-occurrence analysis function with sample data and verifies expected output and logging.",
+              "description": "Tests the semantic group co-occurrence analysis by providing sample input data and asserting that the output and log messages match expected values.",
               "parameters": [
                 {
                   "name": "self",
@@ -999,6 +998,39 @@
             }
           ],
           "return_type": "None"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "src/gematria_analyzer.py",
+      "language": "Python",
+      "description": "This module contains functions for calculating the Gematria value of Arabic words and analyzing the frequency distribution of these values. The function 'calculate_gematria_value' computes the gematria sum using a predefined mapping of Arabic letters, while 'analyze_gematria_value_distribution' aggregates these values over tokenized text.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "calculate_gematria_value",
+          "description": "Calculates the Gematria value of an Arabic word by summing values from a predefined mapping of Arabic letters. Logs a warning for any character not found in the mapping.",
+          "parameters": [
+            {
+              "name": "word",
+              "type": "string",
+              "description": "Arabic word string."
+            }
+          ],
+          "return_type": "int"
+        },
+        {
+          "name": "analyze_gematria_value_distribution",
+          "description": "Analyzes the frequency distribution of Gematria values across tokenized text. Iterates through lists of Arabic words, computes gematria values, and aggregates their frequency into a dictionary.",
+          "parameters": [
+            {
+              "name": "tokenized_text",
+              "type": "list",
+              "description": "List of lists of Arabic words."
+            }
+          ],
+          "return_type": "dict"
         }
       ],
       "dependencies": []

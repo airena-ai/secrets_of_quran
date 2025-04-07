@@ -143,6 +143,11 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Anomaly Detection Analysis Results:", log_content)
         self.assertIn("Anomaly Detection Analysis completed.", log_content)
         
+        # New assertions for Gematria Value Distribution Analysis
+        self.assertIn("Starting Gematria Value Distribution Analysis.", log_content)
+        self.assertIn("Gematria Value Distribution Analysis completed.", log_content)
+        self.assertIn("Gematria Value Distribution Analysis:", log_content)
+        
         # Cleanup created files
         os.remove(data_file)
         os.remove(log_file)

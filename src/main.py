@@ -53,6 +53,12 @@ def main():
             tokens = processed_text.split()
             tokenized_text.append(tokens)
         
+        # New: Integrate Gematria Value Distribution Analysis
+        from src.gematria_analyzer import analyze_gematria_value_distribution
+        logger.info("Starting Gematria Value Distribution Analysis.")
+        gematria_distribution = analyze_gematria_value_distribution(tokenized_text)
+        logger.info("Gematria Value Distribution Analysis completed.")
+
         # Integrate Surah-level and Ayah-level Character Frequency Analysis
         from src.frequency_analyzer import analyze_surah_character_frequency, analyze_ayah_character_frequency
         logger.info("Starting Surah-level Character Frequency Analysis.")
