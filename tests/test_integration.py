@@ -149,6 +149,10 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Top 10 semantic group co-occurrence pairs:", log_content)
         self.assertIn("Total unique semantic group co-occurrence pairs found:", log_content)
 
+        # NEW assertions for Semantic Group Gematria Distribution Analysis
+        self.assertIn("Starting Semantic Group Gematria Distribution Analysis.", log_content)
+        self.assertIn("Semantic Group Gematria Distribution Analysis completed.", log_content)
+        
         # New assertions for Anomaly Detection Analysis
         self.assertIn("Starting Anomaly Detection Analysis.", log_content)
         self.assertIn("Anomaly Detection Analysis Results:", log_content)
@@ -197,6 +201,26 @@ class TestIntegration(unittest.TestCase):
         self.assertEqual(result, expected_result)
         self.assertIn("Top 10 semantic group co-occurrence pairs:", log_contents)
         self.assertIn("Total unique semantic group co-occurrence pairs found: 5", log_contents)
+
+    def test_semantic_group_gematria_distribution(self):
+        self.maxDiff = None
+        from src.gematria_analyzer import analyze_semantic_group_gematria_distribution, get_default_gematria_mapping
+        sample_data = [
+            {"surah": 1, "ayah": 1, "processed_text": "سلام", "semantic_groups": ["greet"]},
+            {"surah": 1, "ayah": 2, "processed_text": "سلام عليكم", "semantic_groups": ["greet"]},
+            {"surah": 1, "ayah": 3, "processed_text": "الله", "semantic_groups": ["divine"]}
+        ]
+        gematria_mapping = get_default_gematria_mapping()
+        result = analyze_semantic_group_gematria_distribution(sample_data, gematria_mapping)
+        # Calculation:
+        # "سلام" = س(60)+ل(30)+ا(1)+م(40) = 131, "عليكم" = ع(70)+ل(30)+ي(10)+ك(20)+م(40) = 170, "الله" = ا(1)+ل(30)+ل(30)+ه(5) = 66
+        # For group "greet": first ayah gives 131, second ayah gives 131 and 170 => {131: 2, 170: 1}
+        # For group "divine": third ayah gives {66: 1}
+        expected = {
+            "greet": {131: 2, 170: 1},
+            "divine": {66: 1}
+        }
+        self.assertEqual(result, expected)
 
 if __name__ == "__main__":
     unittest.main()

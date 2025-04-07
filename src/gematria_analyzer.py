@@ -267,3 +267,38 @@ def analyze_gematria_cooccurrence_ayah(quran_data):
     logger.info("Total unique Gematria pairs: %d", len(cooccurrence_counter))
     
     return cooccurrence_counter
+
+def analyze_semantic_group_gematria_distribution(quran_data, gematria_mapping):
+    '''
+    Analyze the distribution of Gematria values for words belonging to each semantic group.
+    
+    For each data entry in quran_data that contains a 'semantic_groups' key, this function iterates over each
+    semantic group and for each word in the entry's processed text (or verse_text if processed_text is not available),
+    calculates its Gematria value using the provided gematria_mapping. It accumulates counts of Gematria values per semantic group,
+    logs the distribution including the top 10 most frequent Gematria values for each group, and returns a dictionary mapping
+    semantic group identifiers to their Gematria value distribution.
+    
+    :param quran_data: List of dictionaries representing Quran data.
+    :param gematria_mapping: Dictionary mapping Arabic letters to Gematria values.
+    :return: Dictionary mapping semantic groups to a dictionary of Gematria values and their frequency.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    semantic_group_distribution = {}
+    for item in quran_data:
+        text = item.get("processed_text") or item.get("verse_text", "")
+        words = text.split() if text else []
+        groups = item.get("semantic_groups", [])
+        for group in groups:
+            if group not in semantic_group_distribution:
+                semantic_group_distribution[group] = {}
+            for word in words:
+                value = calculate_gematria_value_with_mapping(word, gematria_mapping)
+                semantic_group_distribution[group][value] = semantic_group_distribution[group].get(value, 0) + 1
+    
+    for group, distribution in semantic_group_distribution.items():
+        sorted_distribution = sorted(distribution.items(), key=lambda x: x[1], reverse=True)
+        top_10 = sorted_distribution[:10]
+        logger.info("Semantic Group '%s': Gematria Distribution: %s", group, distribution)
+        logger.info("Semantic Group '%s': Top 10 Gematria Values: %s", group, top_10)
+    
+    return semantic_group_distribution

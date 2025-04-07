@@ -16,18 +16,19 @@ def main():
     5. Computes Surah-level and Ayah-level Gematria distribution analyses.
     6. Computes positional Gematria analyses for the first and last words of each Ayah.
     7. Computes Gematria value co-occurrence analysis at the Ayah level.
-    8. Computes character frequency analysis at Surah and Ayah levels.
-    9. Computes word frequency analysis and logs the top frequent words.
-    10. Computes word co-occurrence analysis.
-    11. Computes word collocation analysis.
-    12. Computes Surah-level and Ayah-level word frequency analyses.
-    13. Computes ayah-level and surah-level root word frequency analyses.
-    14. Computes first and last root word frequency analyses at Ayah level.
-    15. Computes semantic group frequency and co-occurrence analyses.
-    16. Computes root word frequency and co-occurrence analyses.
-    17. Computes lemma word frequency and co-occurrence analyses.
-    18. Computes word n-gram and character n-gram analyses.
-    19. Performs anomaly detection analysis.
+    8. Computes Semantic Group-based Gematria distribution analysis.
+    9. Computes Surah-level and Ayah-level Character Frequency Analysis.
+    10. Computes word frequency analysis and logs the top frequent words.
+    11. Computes word co-occurrence analysis.
+    12. Computes word collocation analysis.
+    13. Computes Surah-level and Ayah-level word frequency analyses.
+    14. Computes ayah-level and surah-level root word frequency analyses.
+    15. Computes first and last root word frequency analyses at Ayah level.
+    16. Computes semantic group frequency and co-occurrence analyses.
+    17. Computes root word frequency and co-occurrence analyses.
+    18. Computes lemma word frequency and co-occurrence analyses.
+    19. Computes word n-gram and character n-gram analyses.
+    20. Performs anomaly detection analysis.
     '''
     logger = configure_logger()
     logger.info("Application started.")
@@ -84,7 +85,13 @@ def main():
         logger.info("Starting Gematria Co-occurrence Analysis at Ayah level.")
         gematria_cooccurrence = analyze_gematria_cooccurrence_ayah(data)
         logger.info("Gematria Co-occurrence Analysis completed.")
-
+        
+        # New: Integrate Semantic Group Gematria Distribution Analysis
+        from src.gematria_analyzer import analyze_semantic_group_gematria_distribution
+        logger.info("Starting Semantic Group Gematria Distribution Analysis.")
+        semantic_group_gematria_distribution = analyze_semantic_group_gematria_distribution(data, gematria_mapping)
+        logger.info("Semantic Group Gematria Distribution Analysis completed.")
+        
         # Integrate Surah-level and Ayah-level Character Frequency Analysis
         from src.frequency_analyzer import analyze_surah_character_frequency, analyze_ayah_character_frequency
         logger.info("Starting Surah-level Character Frequency Analysis.")
