@@ -78,5 +78,10 @@
         "iteration": 15,
         "date": "2025-04-07",
         "iteration_goal": "This increment focuses on analyzing the positional frequency of root words within Quranic verses (Ayahs). It involves developing two new functions to count the occurrences of root words specifically when they appear as the first and last words in each Ayah. The results, including the most frequent first and last root words, will be logged and integration tests will be updated to ensure the accuracy of this new analytical feature. This analysis aims to uncover potential patterns related to the placement of specific root words at the verse level."
+    },
+    {
+        "iteration": 16,
+        "date": "2025-04-07",
+        "iteration_goal": "Implement word collocation analysis to find words frequently appearing within a specified window size (default 3 words) in Quranic verses. A new function `analyze_word_collocation` will process preprocessed text, count collocation pairs, and log the top frequent pairs and total unique pairs. The `main()` function will be updated to include this analysis, and integration tests will be added to validate the implementation. This step explores word relationships beyond simple co-occurrence by examining proximity-based word patterns."
     }
 ]

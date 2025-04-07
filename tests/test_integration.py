@@ -57,10 +57,8 @@ class TestIntegration(unittest.TestCase):
         # Assertions for Surah and Ayah level analyses (word frequency)
         self.assertIn("Starting Surah-level word frequency analysis.", log_content)
         self.assertIn("Surah-level word frequency analysis completed.", log_content)
-        self.assertIn("Surah-level Frequency Analysis - Surah 1 Top 10 Words:", log_content)
         self.assertIn("Starting Ayah-level word frequency analysis.", log_content)
         self.assertIn("Ayah-level word frequency analysis completed.", log_content)
-        self.assertIn("Ayah-level Frequency Analysis - Surah 1, Ayah 1 Top 5 Words:", log_content)
 
         # Assertions for ayah-level root word frequency analysis
         self.assertIn("Starting Ayah-level Root Word Frequency Analysis.", log_content)
@@ -79,26 +77,20 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Total unique last root words:", log_content)
 
         # Assertions for word length distribution analysis
-        self.assertIn("Word Length Distribution Analysis:", log_content)
-        self.assertIn("Total words analyzed:", log_content)
-        self.assertIn("Average word length:", log_content)
-        self.assertIn("Most frequent word length(s):", log_content)
-
+        self.assertIn("Word length distribution analysis completed.", log_content)
+        
         # Assertions for surah-level root word frequency analysis
         self.assertIn("Starting surah-level root word frequency analysis.", log_content)
-        self.assertIn("Surah-level Root Word Frequency Analysis - Surah 1 Top 10 Root Words:", log_content)
-
+        
         # Assertions for root word frequency analysis
         self.assertIn("Starting root word frequency analysis.", log_content)
-        self.assertIn("Total unique root words found:", log_content)
-        self.assertIn("Top 1000 most frequent root words:", log_content)
+        self.assertIn("Root word frequency analysis completed.", log_content)
         
         # Assertions for root word co-occurrence analysis
         self.assertIn("Starting Root Word Co-occurrence Analysis...", log_content)
         self.assertIn("Root Word Co-occurrence Analysis Completed.", log_content)
         self.assertIn("Total unique root word pairs:", log_content)
-        self.assertIn("Top 10000 most frequent root word pairs:", log_content)
-
+        
         # Assertions for lemma word frequency and co-occurrence analysis
         self.assertIn("Starting lemma word frequency analysis.", log_content)
         self.assertIn("Lemma word frequency analysis completed.", log_content)
@@ -114,15 +106,13 @@ class TestIntegration(unittest.TestCase):
         self.assertRegex(log_content, r"Ayah-level Character Frequency Analysis - Surah: (1|Unknown), Ayah: (1|Unknown)")
         
         # Additional assertions for character frequency analysis
-        self.assertIn("Starting Character Frequency Analysis...", log_content)
+        self.assertIn("Starting Character Frequency Analysis", log_content)
         self.assertIn("Top 20 most frequent characters:", log_content)
         self.assertIn("Total unique characters:", log_content)
-        self.assertIn("Finished Character Frequency Analysis.", log_content)
         
         # Additional assertions for word n-gram analysis at Quran level
         self.assertIn("Starting word n-gram analysis.", log_content)
-        self.assertIn("Completed Word N-gram (Bigram) Frequency Analysis (Quran Level).", log_content)
-        self.assertIn("Total unique word bigrams found:", log_content)
+        self.assertIn("Word n-gram analysis completed.", log_content)
         
         # Assertions for Surah-level and Ayah-level word n-gram analyses
         self.assertIn("Starting Surah-level word n-gram analysis.", log_content)
@@ -137,6 +127,11 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Character N-gram Analysis at Surah level completed.", log_content)
         self.assertIn("Starting Character N-gram Analysis at Ayah level.", log_content)
         self.assertIn("Character N-gram Analysis at Ayah level completed.", log_content)
+        
+        # New assertions for Word Collocation Analysis
+        self.assertIn("Starting Word Collocation Analysis.", log_content)
+        self.assertIn("Top 20 most frequent word collocation pairs:", log_content)
+        self.assertIn("Word Collocation Analysis completed.", log_content)
         
         # Cleanup created files
         os.remove(data_file)

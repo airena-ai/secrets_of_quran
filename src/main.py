@@ -5,7 +5,7 @@ from src.data_loader import QuranDataLoader
 from src.text_preprocessor import TextPreprocessor
 
 def main():
-    """
+    '''
     Main function to orchestrate data loading, text preprocessing, and word frequency analysis.
     
     This function performs the following steps:
@@ -26,7 +26,8 @@ def main():
     14. Analyzes lemma word co-occurrence across the Quran data.
     15. Analyzes word n-gram frequency at Quran, Surah, and Ayah levels.
     16. Analyzes character n-gram frequency at Quran, Surah, and Ayah levels.
-    """
+    17. Analyzes word collocation, logging the top 20 collocation pairs and total unique collocation pairs.
+    '''
     logger = configure_logger()
     logger.info("Application started.")
 
@@ -88,6 +89,12 @@ def main():
         cooccurrence_freq = analyze_word_cooccurrence(data)
         logger.info("Co-occurrence analysis returned %d unique word pairs.", len(cooccurrence_freq))
         
+        # Integrate word collocation analysis
+        from src.collocation_analyzer import analyze_word_collocation
+        logger.info("Starting Word Collocation Analysis.")
+        collocation_freq = analyze_word_collocation(data, window_size=3)
+        logger.info("Word Collocation Analysis completed. Total unique collocation pairs: %d", len(collocation_freq))
+
         # Surah-level word frequency analysis
         from src.frequency_analyzer import analyze_surah_word_frequency, analyze_ayah_word_frequency
         logger.info("Starting Surah-level word frequency analysis.")

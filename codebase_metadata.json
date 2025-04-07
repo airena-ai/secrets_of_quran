@@ -116,25 +116,24 @@
     {
       "path": "src/main.py",
       "language": "Python",
-      "description": "Main entry point for the Quran text analysis application. This file orchestrates the entire workflow including data loading, text preprocessing, and various frequency analyses. It coordinates multiple analytical operations on Quran text data, including word frequency, character frequency, n-gram analysis, co-occurrence analysis, and specialized analyses at both Surah and Ayah levels. The script integrates with multiple analyzer modules to perform comprehensive linguistic analysis of the Quran text.",
+      "description": "Main application file orchestrating data loading, text preprocessing, and various analyses including word frequency, collocation, co-occurrence, n-gram, and character frequency analyses. Configures logging, manages environment variables, and integrates multiple modules for comprehensive Quran text analysis.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main function that orchestrates the entire Quran text analysis workflow. It loads Quran data, preprocesses text (normalization, tokenization, lemmatization, root extraction), and performs multiple analyses including: word frequency analysis, character frequency analysis, word length distribution, word co-occurrence analysis, root word frequency analysis, lemma word analysis, and n-gram analysis at various levels (Quran, Surah, Ayah). The function handles errors gracefully and ensures proper logging throughout the execution process.",
+          "description": "Orchestrates data loading, text preprocessing, and multiple analysis workflows such as word frequency, collocation, root word, lemma, and n-gram analyses. Handles logging and error management.",
           "parameters": [],
           "return_type": "None"
         }
       ],
       "dependencies": [
-        "logging",
-        "os",
-        "src.logger_config",
-        "src.data_loader",
-        "src.text_preprocessor",
-        "src.frequency_analyzer",
-        "src.cooccurrence_analyzer",
-        "src.ngram_analyzer"
+        "src/logger_config.py",
+        "src/data_loader.py",
+        "src/text_preprocessor.py",
+        "src/frequency_analyzer.py",
+        "src/cooccurrence_analyzer.py",
+        "src/collocation_analyzer.py",
+        "src/ngram_analyzer.py"
       ]
     },
     {
@@ -313,26 +312,20 @@
     },
     {
       "path": "tests/test_integration.py",
-      "language": "python",
-      "description": "Integration tests for the Quran analysis application. Validates the core workflow by checking log output and ensuring that all integrated functionalities perform as expected.",
+      "language": "Python",
+      "description": "Integration tests for the core user flow of the Quran analysis application. Verifies that the main application executes successfully, generates expected log messages, and that all analysis components operate as intended.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration tests for the core user flow of the Quran analysis application.",
+          "description": "Integration tests for the main application flow using unittest. Validates logging output and end-to-end functionality of the application.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the end-to-end integration flow by executing the main function and verifying log outputs and expected log messages.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestIntegration",
-                  "description": "Instance of the TestIntegration class."
-                }
-              ],
+              "description": "Tests the complete integration flow by setting up environment variables, creating sample data, running the main function, and asserting expected log outputs and results.",
+              "parameters": [],
               "return_type": "None"
             }
           ]
@@ -896,6 +889,36 @@
       "functions": [],
       "dependencies": [
         "src/ngram_analyzer.py"
+      ]
+    },
+    {
+      "path": "src/collocation_analyzer.py",
+      "language": "python",
+      "description": "Module for analyzing word collocations in Quran text. Contains a function `analyze_word_collocation` to find and count word pairs within a specified window size in Quranic verses. It preprocesses text, tokenizes it, and uses a sliding window to identify and count collocations, logging the analysis details.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_word_collocation",
+          "description": "Analyze word collocations in the given Quran data using a sliding window.\n    \n    For each ayah in quran_data, the function preprocesses the verse text \n    (using the existing TextPreprocessor if the processed text is not already present)\n    and tokenizes the text into words. For each word, it considers a window of adjacent \n    words (window_size to the left and window_size to the right, excluding the target word)\n    and counts each collocation pair. The collocation pairs are stored in alphabetical order \n    to ensure consistency.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "A list of dictionaries representing ayahs. Each dictionary should contain at least a 'verse_text' key, and may contain a 'processed_text' key."
+            },
+            {
+              "name": "window_size",
+              "type": "int",
+              "description": "The number of words to consider to the left and right of a target word. Default is 3."
+            }
+          ],
+          "return_type": "Counter"
+        }
+      ],
+      "dependencies": [
+        "logging",
+        "collections",
+        "src.text_preprocessor"
       ]
     }
   ]
