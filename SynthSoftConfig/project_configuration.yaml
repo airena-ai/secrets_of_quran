@@ -1,13 +1,13 @@
 product_spec_northstar: >
   ### Objective:
-  Find secret messages in Quran using novel strategies that haven't been explored before. Review existing feature set and expand with novel techniques to mine secret code and messages.
-  You can modify the existing features in any way you want and add new novel ideas to mine and extract secret messages and codes of Quran.
+  You are given full Quran text in {project_root}\data\quran-uthmani-min.txt file. Find secret messages and codes in Quran using novel strategies that haven't been explored before. 
+  You have to come up with novel strategies to do full Quran analysis on arabic text. Surpass the limits of what humans can do in analyzing Quran text to look for clues for hidden messages and codes.
 
   ### Text Processing Requirements:
   
   * Data Source:
-  Use only the following file (do NOT modify it):
-  {project_root}/data/quran-uthmani-min.txt
+  Use only the following file as source of truth and do NOT modify it:
+  {project_root}\data\quran-uthmani-min.txt file
   Each line contains: Surah|Ayah|Verse Text
   Example:
   1|1|بِسمِ اللَّهِ الرَّحمٰنِ الرَّحيمِ
@@ -21,36 +21,29 @@ product_spec_northstar: >
   Handle invisible Unicode artifacts
   Arabic has no concept of case sensitivity
 
-  * Linguistic Tools:
-  Integrate advanced Arabic language processing tools:
-  CAMeL Tools
-  Arabic lemmatizers and root analyzers  
+  * Tools:
+  You can use any python library that will help you. Examples: CAMeL Tools and Arabic lemmatizers and root analyzers  
 
   ### Program Structure & Expectations:
 
   * Main Function:
-  Acts as the central driver of all analyses.
+  Fully complete function that executes all the analysis and creates a log file that contains analysis and results.
   Should not be a demo or placeholder.
-  Must perform a complete and verbose Quran-wide analysis.
-  Must produce meaningful output for every analytical stage.
-
-  * Logging and Output:
-  Log all results to a structured file (e.g., results.log)
-  Any interesting findings should be explicitly tagged with:
-  POTENTIAL SECRET FOUND: [short description]
+  Must perform a complete and verbose Quran analysis.
+  Must produce verbose output in the log file for every analytical stage. The log file can be used seperately for independent analysis by AI systems.
 
   * Testing:
   Create an integration test to run the full main() function
-  No mocks or partial runs — test the full analyzer as a real-world application
 
   * Final Goal:
-  Find secret messages in Quran using novel strategies that haven't been explored before. Review existing feature set and add novel techniques to mine secret code and messages.
+  Find secret messages and codes in Quran using novel strategies that haven't been explored before. 
+  You have to come up with novel strategies to do full Quran analysis on arabic text. Surpass the limits of what humans can do in analyzing Quran text to look for clues for hidden messages and codes.
 
 project_root_folder: C:\Github\secrets_of_quran
 product_spec_history_filename: product_spec_history.json
 architecture_spec_history_filename: architecture_spec_history.json
 codebase_metadata_filename: codebase_metadata.json
-total_runs_to_build_northstar: 8
+total_runs_to_build_northstar: 10
 max_test_attempts_per_iteration: 5
 programming_languages:
   - python
