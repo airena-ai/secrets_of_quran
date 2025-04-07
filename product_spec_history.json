@@ -23,5 +23,10 @@
         "iteration": 4,
         "date": "2025-04-06",
         "iteration_goal": "This increment focuses on implementing word co-occurrence analysis. A new function `analyze_word_cooccurrence` will be developed to identify and count pairs of words that appear together within the same ayah of the Quran. The function will process the Quran data, tokenize each ayah, and calculate the co-occurrence frequency of word pairs. The top frequent pairs and total unique pairs will be logged. The `main()` function and integration tests will be updated to include and validate this new analysis, providing insights into word relationships within Quranic verses."
+    },
+    {
+        "iteration": 5,
+        "date": "2025-04-06",
+        "iteration_goal": "This increment focuses on performing word frequency analysis at two granular levels: Surah and Ayah. Two new functions, `analyze_surah_word_frequency` and `analyze_ayah_word_frequency`, will be created to calculate and log word frequencies for each Surah and Ayah respectively. The `main()` function will be updated to include these new analyses, and integration tests will be enhanced to validate their correct implementation and output. This step provides a more detailed view of word distribution across the Quran, building upon previous word frequency analysis."
     }
 ]

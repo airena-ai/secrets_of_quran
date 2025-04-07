@@ -16,6 +16,7 @@ def main():
     5. Logs the total unique word count and the top 50 most frequent words.
     6. Computes word co-occurrence analysis, logs the top 20 most frequent co-occurring word pairs 
        and the total number of unique word pairs.
+    7. Analyzes word frequencies at Surah and Ayah levels, logging top frequent words per analysis.
     """
     logger = configure_logger()
     logger.info("Application started.")
@@ -55,6 +56,17 @@ def main():
         cooccurrence_freq = analyze_word_cooccurrence(data)
         logger.info("Co-occurrence analysis returned %d unique word pairs.", len(cooccurrence_freq))
         logger.info("Word co-occurrence analysis output: %s", cooccurrence_freq)
+        
+        # Surah-level word frequency analysis
+        from src.frequency_analyzer import analyze_surah_word_frequency, analyze_ayah_word_frequency
+        logger.info("Starting Surah-level word frequency analysis.")
+        surah_frequencies = analyze_surah_word_frequency(data)
+        logger.info("Surah-level word frequency analysis completed.")
+
+        # Ayah-level word frequency analysis
+        logger.info("Starting Ayah-level word frequency analysis.")
+        ayah_frequencies = analyze_ayah_word_frequency(data)
+        logger.info("Ayah-level word frequency analysis completed.")
 
         logger.info("Application finished.")
     except Exception as e:
