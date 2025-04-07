@@ -153,5 +153,10 @@
         "iteration": 30,
         "date": "2025-04-07",
         "iteration_goal": "This increment introduces text complexity analysis to the Quran analysis tool. It implements functions to calculate and log basic text complexity metrics (average word length and average sentence length) at the Quran, Surah, and Ayah levels. This analysis will provide initial insights into the variation in text complexity across different parts of the Quran and contribute to novel strategies for finding hidden messages. New functions `analyze_text_complexity`, `analyze_quran_text_complexity`, `analyze_surah_text_complexity`, and `analyze_ayah_text_complexity` are created and integrated into the `main()` function with corresponding integration tests."
+    },
+    {
+        "iteration": 31,
+        "date": "2025-04-07",
+        "iteration_goal": "This increment focuses on analyzing the correlation between sentence length and the average Gematria value of words within each Ayah. A new function `analyze_sentence_length_gematria_correlation()` will be implemented to group Ayahs by sentence length, calculate the average Gematria value for each sentence length group, and log the findings. The `main()` function and integration tests will be updated to include and validate this new analysis, exploring potential relationships between sentence structure and numerical properties in the Quranic text."
     }
 ]

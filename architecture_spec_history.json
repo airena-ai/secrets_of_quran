@@ -153,5 +153,10 @@
         "iteration": 30,
         "date": "2025-04-07",
         "iteration_goal": "A new `text_complexity_analyzer` module is added, containing the `analyze_text_complexity` function for calculating text complexity metrics. In `main.py`, new functions are introduced to perform text complexity analysis at Quran, Surah, and Ayah levels, leveraging the new module and existing preprocessing and logging. Integration tests are included to validate the implementation, ensuring accurate text complexity analysis and result logging."
+    },
+    {
+        "iteration": 31,
+        "date": "2025-04-07",
+        "iteration_goal": "A new `correlation_analyzer` module is added, featuring the `analyze_sentence_length_gematria_correlation()` function to analyze the correlation between sentence length and average Gematria value. The `main()` function is updated to include this new analysis, and integration tests are enhanced to validate its implementation and logging. This modular approach enhances system capabilities for correlation analysis while maintaining clear separation of concerns."
     }
 ]

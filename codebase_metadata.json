@@ -116,30 +116,30 @@
     {
       "path": "src/main.py",
       "language": "Python",
-      "description": "This is the main application module that orchestrates data loading, text preprocessing, and a variety of analyses on Quran text. It integrates functions for text complexity, gematria calculations, frequency analysis, n-gram analysis, anomaly detection, and more, providing a comprehensive analysis suite.",
+      "description": "The main module orchestrates the end-to-end processing of Quran text analysis. It integrates data loading, text preprocessing, Gematria analysis, frequency evaluation, n-gram analysis, anomaly detection, and text complexity assessments. It also serves as the entry point for the application via the main function.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_quran_text_complexity",
-          "description": "Analyzes the text complexity for the entire Quran by loading data, preprocessing it, and computing metrics using the analyze_text_complexity function. Logs the results and returns the complexity metrics.",
+          "description": "Loads Quran data, concatenates preprocessed text from all verses, and performs overall text complexity analysis. Logs the metrics and returns a dictionary containing the complexity metrics for the entire Quran.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "analyze_surah_text_complexity",
-          "description": "Analyzes text complexity for each Surah by grouping verses, preprocessing them, and computing complexity metrics for each Surah. Returns a dictionary mapping each Surah to its metrics.",
+          "description": "Analyzes text complexity for each Surah by grouping verses and processing their preprocessed text. Returns a dictionary mapping each Surah to its corresponding complexity metrics.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "analyze_ayah_text_complexity",
-          "description": "Analyzes text complexity for each Ayah by preprocessing individual verses and computing associated complexity metrics. Returns a dictionary mapping each Ayah identifier to its metrics.",
+          "description": "Processes and analyzes the complexity of text for each Ayah by preprocessing the verse text and computing complexity metrics. Returns a dictionary mapping each Ayah identifier to its complexity metrics.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "main",
-          "description": "The main entry point for the application. It coordinates data loading, text preprocessing, integration of various analyses (including gematria, frequency, n-gram, semantic, and anomaly detection), and logs all operational details. Returns a summary result of the analyses.",
+          "description": "Main entry point that integrates data loading, text preprocessing, various analyses (including Gematria, frequency, n-gram, and anomaly detection), and orchestrates the flow of the application with robust error handling and detailed logging.",
           "parameters": [],
           "return_type": "dict"
         }
@@ -148,14 +148,16 @@
         "src/logger_config.py",
         "src/data_loader.py",
         "src/text_preprocessor.py",
+        "src/text_complexity_analyzer.py",
         "src/gematria_analyzer.py",
         "src/frequency_analyzer.py",
         "src/distribution_analyzer.py",
         "src/cooccurrence_analyzer.py",
-        "src/collocation_analyzer.py",
+        "src/correlation_analyzer.py",
         "src/semantic_analyzer.py",
+        "src/ngram_analyzer.py",
         "src/anomaly_detector.py",
-        "src/ngram_analyzer.py"
+        "src/collocation_analyzer.py"
       ]
     },
     {
@@ -171,7 +173,7 @@
     {
       "path": "requirements.txt",
       "language": "None",
-      "description": "Requirements file listing the external dependencies required by the QuranAnalysis application.",
+      "description": "Project dependency requirements including setuptools and numpy.",
       "classes": [],
       "functions": [],
       "dependencies": []
@@ -1504,6 +1506,55 @@
       ],
       "dependencies": [
         "src/logger_config.py"
+      ]
+    },
+    {
+      "path": "src/correlation_analyzer.py",
+      "language": "Python",
+      "description": "This module performs correlation analysis between sentence length and average Gematria value in Quranic text data. It defines the function analyze_sentence_length_gematria_correlation which processes a list of verse dictionaries, tokenizes text, computes Gematria values, groups results by sentence length, calculates average Gematria per group, and computes the Pearson correlation coefficient between sentence lengths and Gematria values.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_sentence_length_gematria_correlation",
+          "description": "Analyzes the correlation between the number of words in an ayah and the average Gematria value of its words. It processes each verse by tokenizing text, computing individual Gematria values using an external gematria function, grouping results by sentence length, and finally calculating both group averages and the Pearson correlation coefficient.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries representing preprocessed Quran data."
+            }
+          ],
+          "return_type": "dict"
+        }
+      ],
+      "dependencies": [
+        "src/gematria_analyzer.py"
+      ]
+    },
+    {
+      "path": "tests/test_correlation_analyzer.py",
+      "language": "Python",
+      "description": "This module contains unit tests for the Sentence Length vs Gematria Correlation Analysis. It uses the unittest framework to test the functionality of analyze_sentence_length_gematria_correlation, ensuring correct computation of group averages and Pearson correlation coefficients with sample data.",
+      "classes": [
+        {
+          "name": "TestCorrelationAnalyzer",
+          "description": "Unit test class for testing the analyze_sentence_length_gematria_correlation function.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_analyze_sentence_length_gematria_correlation",
+              "description": "Tests the analyze_sentence_length_gematria_correlation function with sample data, verifying that the computed group averages and correlation coefficient match expected values.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/correlation_analyzer.py"
       ]
     }
   ]

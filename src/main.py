@@ -179,6 +179,12 @@ def main():
         semantic_group_gematria_distribution = analyze_semantic_group_gematria_distribution(data, gematria_mapping)
         logger.info("Semantic Group Gematria Distribution Analysis completed.")
         
+        # NEW: Integrate Sentence Length vs Gematria Correlation Analysis.
+        from src.correlation_analyzer import analyze_sentence_length_gematria_correlation
+        logger.info("Starting Sentence Length vs Gematria Correlation Analysis.")
+        correlation_results = analyze_sentence_length_gematria_correlation(data)
+        logger.info("Sentence Length vs Gematria Correlation Analysis completed. Results: %s", correlation_results)
+        
         # Integrate Surah-level and Ayah-level Character Frequency Analysis
         from src.frequency_analyzer import analyze_surah_character_frequency, analyze_ayah_character_frequency
         logger.info("Starting Surah-level Character Frequency Analysis.")
