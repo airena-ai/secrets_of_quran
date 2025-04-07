@@ -116,22 +116,21 @@
     {
       "path": "src/main.py",
       "language": "Python",
-      "description": "Main application entry file that orchestrates data loading, text preprocessing, logging configuration, and error handling. It configures the logger, loads data, processes text data, and ensures proper shutdown of logging.",
+      "description": "Main application entry point for orchestrating data loading, text preprocessing, tokenization, and word frequency analysis. It initializes logging, handles environment parameters, integrates external modules (logger configuration, data loader, text preprocessor, frequency analyzer), and manages error handling and shutdown.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main function to orchestrate data loading and text preprocessing. It sets up the logger, retrieves the data file path, loads data using QuranDataLoader, preprocesses each verse text with TextPreprocessor, and handles exceptions.",
+          "description": "Orchestrates the full workflow of loading Quran data, preprocessing text, splitting tokens, performing word frequency analysis, logging progress, and gracefully handling errors and shutdown.",
           "parameters": [],
           "return_type": "None"
         }
       ],
       "dependencies": [
-        "src/logger_config",
-        "src/data_loader",
-        "src/text_preprocessor",
-        "os",
-        "logging"
+        "src/logger_config.py",
+        "src/data_loader.py",
+        "src/text_preprocessor.py",
+        "src/frequency_analyzer.py"
       ]
     },
     {
@@ -310,20 +309,26 @@
     },
     {
       "path": "tests/test_integration.py",
-      "language": "python",
-      "description": "Integration tests for the core user flow of the QuranAnalysis application. Verifies data loading, logging, and token processing end-to-end.",
+      "language": "Python",
+      "description": "This file contains integration tests using the unittest framework. It tests the main application flow by setting up sample data, invoking the main function from the primary module, and verifying that log outputs and cleanup operations are correctly executed. The test ensures the creation and verification of log files and proper data cleanup.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration tests for the core user flow.",
+          "description": "A unit test class for integration testing of the core user flow. It validates the complete execution of the main application flow including environment setup, file creation, log verification, and cleanup procedures.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the complete integration flow including data loading, logging, and token processing verification.",
-              "parameters": [],
+              "description": "Tests the integration flow by creating sample data, setting environment variables, invoking the main application, and verifying that expected log messages and file operations are performed.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestIntegration",
+                  "description": "Reference to the current instance of the TestIntegration test case."
+                }
+              ],
               "return_type": "None"
             }
           ]
@@ -493,6 +498,27 @@
       "dependencies": [
         "src/root_extractor"
       ]
+    },
+    {
+      "path": "src/frequency_analyzer.py",
+      "language": "Python",
+      "description": "Module that defines the function 'count_word_frequencies' to compute the frequency of each word from tokenized text. It leverages the collections.Counter to aggregate counts for words extracted from verses.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "count_word_frequencies",
+          "description": "Calculates the frequency of each unique word from a list of tokenized verses and returns a dictionary with words as keys and their frequency counts as values.",
+          "parameters": [
+            {
+              "name": "tokenized_text",
+              "type": "list",
+              "description": "A list of lists of word tokens, where each inner list represents a verse."
+            }
+          ],
+          "return_type": "dict"
+        }
+      ],
+      "dependencies": []
     }
   ]
 }

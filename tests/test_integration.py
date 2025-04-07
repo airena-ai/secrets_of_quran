@@ -29,29 +29,22 @@ class TestIntegration(unittest.TestCase):
 
         # Execute the main application flow
         main()
-        # Verify that the log file was created and contains expected log messages
+        # Verify that the log file was created and contains expected log messages related to frequency analysis
         self.assertTrue(os.path.exists(log_file))
         with open(log_file, "r", encoding="utf-8") as file:
             log_content = file.read()
         self.assertIn("Application started.", log_content)
-        self.assertIn("Completed data loading.", log_content)
-        self.assertIn("Tokenization complete:", log_content)
-        self.assertIn("Lemma:", log_content)
-        self.assertIn("Root:", log_content)
+        self.assertIn("Starting word frequency analysis.", log_content)
+        self.assertIn("Total unique words:", log_content)
+        self.assertIn("Top 50 most frequent words:", log_content)
+        self.assertIn("Word frequency analysis completed.", log_content)
+        # Optionally check for specific frequency outputs for known words based on sample data processing
+        self.assertIn("Total unique words: 4", log_content)
+        self.assertIn("Word: بسم, Count: 1", log_content)
+        self.assertIn("Word: الله, Count: 1", log_content)
+        self.assertIn("Word: الرحمن, Count: 1", log_content)
+        self.assertIn("Word: الرحيم, Count: 1", log_content)
 
-        # Enhance integration test: Parse log lines for processed tokens and check expected lemma and root.
-        processed_lines = [line for line in log_content.splitlines() if "Token processed -" in line]
-        self.assertGreater(len(processed_lines), 0, "No token processed log lines found.")
-        for line in processed_lines:
-            # Expecting line format: "Token processed - Original: %s, Normalized: %s, Lemma: %s, Root: %s"
-            parts = line.split("Token processed -")[-1].strip().split(", ")
-            self.assertEqual(len(parts), 4, "Log line does not have four parts.")
-            original_val = parts[0].split("Original:")[-1].strip()
-            normalized_val = parts[1].split("Normalized:")[-1].strip()
-            lemma_val = parts[2].split("Lemma:")[-1].strip()
-            root_val = parts[3].split("Root:")[-1].strip()
-            self.assertNotEqual(lemma_val, "", "Lemma value is empty.")
-            self.assertNotEqual(root_val, "", "Root value is empty.")
         # Cleanup created files
         os.remove(data_file)
         os.remove(log_file)

@@ -6,7 +6,14 @@ from src.text_preprocessor import TextPreprocessor
 
 def main():
     """
-    Main function to orchestrate data loading and text preprocessing.
+    Main function to orchestrate data loading, text preprocessing, and word frequency analysis.
+    
+    This function performs the following steps:
+    1. Loads Quran data.
+    2. Preprocesses each verse (normalization, tokenization, lemmatization, root extraction).
+    3. Collects the tokenized text (each verse as a list of words).
+    4. Computes word frequency analysis on the tokenized text.
+    5. Logs the total unique word count and the top 50 most frequent words.
     """
     logger = configure_logger()
     logger.info("Application started.")
@@ -17,12 +24,28 @@ def main():
         loader = QuranDataLoader(file_path=file_path)
         data = loader.load_data()
 
-        # Preprocess each verse text
+        # Preprocess each verse text and collect tokenized output for frequency analysis
         processor = TextPreprocessor()
+        tokenized_text = []
         for item in data:
             original_text = item.get("verse_text", "")
             processed_text = processor.preprocess_text(original_text)
             item["processed_text"] = processed_text
+            # Create token list from the processed text (tokens are separated by space)
+            tokens = processed_text.split()
+            tokenized_text.append(tokens)
+        
+        # Integrate word frequency analysis
+        from src.frequency_analyzer import count_word_frequencies
+        logger.info("Starting word frequency analysis.")
+        word_frequencies = count_word_frequencies(tokenized_text)
+        unique_words_count = len(word_frequencies)
+        logger.info("Total unique words: %d", unique_words_count)
+        top_words = sorted(word_frequencies.items(), key=lambda x: x[1], reverse=True)[:50]
+        logger.info("Top 50 most frequent words:")
+        for word, count in top_words:
+            logger.info("Word: %s, Count: %d", word, count)
+        logger.info("Word frequency analysis completed.")
 
         logger.info("Application finished.")
     except Exception as e:

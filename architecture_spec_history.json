@@ -13,5 +13,10 @@
         "iteration": 2,
         "date": "2025-04-06",
         "iteration_goal": "The architecture is updated to include `lemmatizer` and `root_extractor` sub-modules within the `text_preprocessor` module. These additions will enable lemmatization and root word extraction for Arabic text using external libraries. The logging will be enhanced to capture lemmatized and root words. Integration tests will be updated to verify the correct implementation and log output of these new text processing stages, ensuring comprehensive analysis and observability."
+    },
+    {
+        "iteration": 3,
+        "date": "2025-04-06",
+        "iteration_goal": "Introduce a new `frequency_analyzer` module with a `count_word_frequencies` function to calculate word frequencies. Integrate this module into the `main` workflow after text preprocessing. Enhance logging to record frequency analysis results (unique word count and top frequent words). Update integration tests to verify the new functionality and logging. This modular design improves system organization and supports future extensions for advanced text analysis."
     }
 ]
