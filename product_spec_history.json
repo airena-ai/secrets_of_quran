@@ -28,5 +28,10 @@
         "iteration": 5,
         "date": "2025-04-06",
         "iteration_goal": "This increment focuses on performing word frequency analysis at two granular levels: Surah and Ayah. Two new functions, `analyze_surah_word_frequency` and `analyze_ayah_word_frequency`, will be created to calculate and log word frequencies for each Surah and Ayah respectively. The `main()` function will be updated to include these new analyses, and integration tests will be enhanced to validate their correct implementation and output. This step provides a more detailed view of word distribution across the Quran, building upon previous word frequency analysis."
+    },
+    {
+        "iteration": 6,
+        "date": "2025-04-06",
+        "iteration_goal": "This increment focuses on implementing word length distribution analysis. A new function `analyze_word_length_distribution` will be created to calculate and log the frequency of each word length in the Quran text. The `main()` function will be updated to include this analysis, and integration tests will be enhanced to validate its correct implementation. This step provides a new analytical perspective on the Quran text by examining the structural characteristics at the word level, which can be useful for further exploration of patterns and potential hidden messages."
     }
 ]

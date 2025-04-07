@@ -91,3 +91,34 @@ def analyze_ayah_word_frequency(quran_data):
             for word, count in top_5:
                 logger.info("Word: %s, Count: %d", word, count)
     return ayah_frequencies
+
+def analyze_word_length_distribution(tokenized_text):
+    '''
+    Analyze the distribution of word lengths within the tokenized Quran text.
+    
+    For each word in the tokenized text, calculate its length and count the occurrences
+    of each word length. Also, compute summary statistics such as total number of words,
+    average word length, and the most frequent word length(s).
+    
+    :param tokenized_text: List of lists of words, where each inner list represents an ayah.
+    :return: Dictionary mapping word lengths (int) to their frequency counts (int).
+    '''
+    logger = logging.getLogger(__name__)
+    counter = Counter()
+    total_words = 0
+    total_length = 0
+    for ayah in tokenized_text:
+        for word in ayah:
+            word_length = len(word)
+            counter[word_length] += 1
+            total_words += 1
+            total_length += word_length
+    avg_word_length = total_length / total_words if total_words > 0 else 0
+    max_freq = max(counter.values()) if counter else 0
+    most_frequent_word_lengths = [length for length, count in counter.items() if count == max_freq]
+    logger.info("Word Length Distribution Analysis:")
+    logger.info("Total words analyzed: %d", total_words)
+    logger.info("Word Length Distribution: %s", dict(counter))
+    logger.info("Average word length: %.2f", avg_word_length)
+    logger.info("Most frequent word length(s): %s (Count: %d)", most_frequent_word_lengths, max_freq)
+    return dict(counter)

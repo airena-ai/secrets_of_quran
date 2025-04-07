@@ -17,6 +17,7 @@ def main():
     6. Computes word co-occurrence analysis, logs the top 20 most frequent co-occurring word pairs 
        and the total number of unique word pairs.
     7. Analyzes word frequencies at Surah and Ayah levels, logging top frequent words per analysis.
+    8. Analyzes word length distribution within the tokenized text and logs summary statistics.
     """
     logger = configure_logger()
     logger.info("Application started.")
@@ -38,6 +39,12 @@ def main():
             tokens = processed_text.split()
             tokenized_text.append(tokens)
         
+        # Integrate word length distribution analysis
+        from src.frequency_analyzer import analyze_word_length_distribution
+        logger.info("Starting word length distribution analysis.")
+        word_length_distribution = analyze_word_length_distribution(tokenized_text)
+        logger.info("Word length distribution analysis completed.")
+
         # Integrate word frequency analysis
         from src.frequency_analyzer import count_word_frequencies
         logger.info("Starting word frequency analysis.")

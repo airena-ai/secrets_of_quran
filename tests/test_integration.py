@@ -56,7 +56,6 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Word Co-occurrence Analysis Results", log_content)
         self.assertIn("Co-occurrence analysis returned", log_content)
         self.assertIn("Total unique word pairs:", log_content)
-        # Validate that the unique word pairs count exists
         pairs_match = re.search(r"Total unique word pairs:\s*(\d+)", log_content)
         self.assertIsNotNone(pairs_match, "Total unique word pairs count not found in logs.")
         
@@ -67,6 +66,12 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Starting Ayah-level word frequency analysis.", log_content)
         self.assertIn("Ayah-level word frequency analysis completed.", log_content)
         self.assertIn("Ayah-level Frequency Analysis - Surah 1 (Al-Fatiha), Ayah 1 Top 5 Words:", log_content)
+
+        # Assertions for word length distribution analysis
+        self.assertIn("Word Length Distribution Analysis:", log_content)
+        self.assertIn("Total words analyzed:", log_content)
+        self.assertIn("Average word length:", log_content)
+        self.assertIn("Most frequent word length(s):", log_content)
 
         # Cleanup created files
         os.remove(data_file)
