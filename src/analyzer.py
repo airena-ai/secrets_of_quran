@@ -831,7 +831,6 @@ def analyze_muqattaat(quran_text):
     This function identifies Surahs that begin with Muqatta'at based on a predefined list.
     It extracts the sequence of Arabic letters (Muqatta'at) from the beginning of the first verse of each identified Surah,
     computes the frequency of each unique letter, and logs the results to the results log file.
-    
     The logged output includes:
         - A header "#################### Muqatta'at Analysis ####################"
         - List of Surahs with Muqatta'at (by Surah number)
@@ -985,6 +984,7 @@ def analyze_muqattaat_preceding_context(text):
             ayah = default_ayah
             verse_text = line.strip()
             default_ayah += 1
+
         surah_verses[surah].append((ayah, verse_text))
     # Use the global Muqatta'at Surahs set for consistency.
     muqattaat_surahs = MUQATTAAT_SURAH_SET
@@ -1817,7 +1817,7 @@ def generate_muqattaat_report(text):
         text (str): The preprocessed Quran text.
         
     Returns:
-        str: A summary string of the Muqatta'at report generation.
+        str: A summary string of the Muqattaat report generation.
     '''
     return "Muqattaat report generated."
 
@@ -1847,3 +1847,88 @@ def synthesize_muqattaat_analyses(text):
     synthesis_report = f"Synthesized Muqatta'at Analysis: {len(muq_data)} Surahs with Muqatta'at. Numerical Analysis: {numerical_summary}"
     log_result(synthesis_report)
     return synthesis_report
+
+def analyze_conjunction_frequency(text):
+    '''Analyze the frequency of a set of common Arabic conjunctions in Surahs with and without Muqatta'at.
+    
+    This function processes the preprocessed Quran text, categorizes Surahs into those with Muqatta'at and those without,
+    tokenizes each verse in these Surahs, and counts the occurrences of a predefined set of Arabic conjunctions.
+    It then calculates the average conjunction frequency per verse for each category and logs the results to 'results.log'.
+    If a noticeable difference in average frequencies is detected, a message tagged as "POTENTIAL SECRET FOUND" is logged.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+    '''
+    from collections import defaultdict
+    from src.logger import log_result, log_secret_found
+    import re
+
+    # Define the set of common Arabic conjunctions.
+    conjunctions = {
+        "و", "ف", "ثم", "أو", "بل", "لكن", "حتى", "إذ", "إذا", "أن", "إن", "كي", 
+        "لعل", "ليت", "منذ", "مذ", "لما", "هل", "أم", "ألا", "أما", "حيث", "بينما", 
+        "بعد", "قبل", "عند", "لدى", "مع", "على", "في", "إلى", "من", "عن", "ب", "ك", 
+        "ل", "ت", "والله", "بالله", "تالله", "كلا", "بلى", "نعم", "لا", "ما", "لن", 
+        "لم", "ليس", "لات", "إنما", "أينما", "حيثما", "كيفما", "متى", "أيان", "أنى", 
+        "كيف", "كم", "أي", "كلما", "كل", "بعض", "جميع", "عامة", "خاصة", "أكثر", 
+        "أقل", "أول", "آخر", "فوق", "تحت", "يمين", "شمال", "أمام", "خلف", "داخل", 
+        "خارج", "حول", "لدن", "بين", "وسط", "خلال", "وراء", "تجاه", "إزاء", "مقابل", 
+        "حيال", "صدد", "تلقاء", "إثر", "عقب"
+    }
+
+    # Parse verses by Surah.
+    verses_by_surah = defaultdict(list)
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    for line in text.splitlines():
+        if line.strip() == "":
+            continue
+        match = pattern.match(line)
+        if match:
+            surah = match.group(1)
+            verse_text = match.group(3).strip()
+        else:
+            surah = "1"
+            verse_text = line.strip()
+        verses_by_surah[surah].append(verse_text)
+
+    # Categorize Surahs using existing function.
+    from src.analyzer import categorize_surahs_by_muqattaat
+    muq_surahs, non_muq_surahs = categorize_surahs_by_muqattaat(text)
+
+    total_count_with = 0
+    total_verses_with = 0
+    for surah in muq_surahs:
+        verses = verses_by_surah.get(surah, [])
+        for verse in verses:
+            words = verse.split()
+            count = sum(1 for word in words if word in conjunctions)
+            total_count_with += count
+            total_verses_with += 1
+
+    total_count_non = 0
+    total_verses_non = 0
+    for surah in non_muq_surahs:
+        verses = verses_by_surah.get(surah, [])
+        for verse in verses:
+            words = verse.split()
+            count = sum(1 for word in words if word in conjunctions)
+            total_count_non += count
+            total_verses_non += 1
+
+    avg_with = total_count_with / total_verses_with if total_verses_with > 0 else 0
+    avg_non = total_count_non / total_verses_non if total_verses_non > 0 else 0
+
+    log_result("Analysis: Conjunction Frequency in Surahs with and without Muqatta'at")
+    log_result("Average conjunction frequency per verse (Surahs with Muqatta'at): {:.4f}".format(avg_with))
+    log_result("Average conjunction frequency per verse (Surahs without Muqatta'at): {:.4f}".format(avg_non))
+
+    # Check for noticeable difference.
+    diff = avg_with - avg_non
+    if abs(diff) > 0.15:
+        if diff > 0:
+            message = ("POTENTIAL SECRET FOUND: Conjunction frequency difference between Surahs with and without Muqatta'at. "
+                       "Surahs with Muqatta'at show higher average conjunction frequency by {:.4f} per verse compared to those without.".format(diff))
+        else:
+            message = ("POTENTIAL SECRET FOUND: Conjunction frequency difference between Surahs with and without Muqatta'at. "
+                       "Surahs with Muqatta'at show lower average conjunction frequency by {:.4f} per verse compared to those without.".format(-diff))
+        log_secret_found(message)

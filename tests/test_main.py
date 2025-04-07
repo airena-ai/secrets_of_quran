@@ -54,6 +54,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("FINAL CONCLUSION: MUQATTA'AT MYSTERY", log_contents)
                 self.assertIn("Pearson correlation coefficient between Muqatta'at Abjad value and verse count:", log_contents)
                 self.assertIn("Analysis: Muqatta'at Surah Verse Parity", log_contents)
+                self.assertIn("Average conjunction frequency per verse (Surahs with Muqatta'at):", log_contents)
+                self.assertIn("Average conjunction frequency per verse (Surahs without Muqatta'at):", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -113,7 +115,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("FINAL CONCLUSION: MUQATTA'AT MYSTERY", log_contents)
                 self.assertIn("Pearson correlation coefficient between Muqatta'at Abjad value and verse count:", log_contents)
                 self.assertIn("Analysis: Muqatta'at Surah Verse Parity", log_contents)
-
+                self.assertIn("Average conjunction frequency per verse (Surahs with Muqatta'at):", log_contents)
+                self.assertIn("Average conjunction frequency per verse (Surahs without Muqatta'at):", log_contents)
             finally:
                 # Cleanup
                 if os.path.exists(file_path):

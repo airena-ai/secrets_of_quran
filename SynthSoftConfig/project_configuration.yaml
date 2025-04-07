@@ -1,6 +1,7 @@
 product_spec_northstar: >
   ### Objective:
-  Find secret messages in Quran based on secret code and muqatta analysis you will perform using novel strategies that haven't been explored before.
+  Find secret messages in Quran using novel strategies that haven't been explored before. Review existing feature set and expand with novel techniques to mine secret code and messages.
+  You can modify the existing features in any way you want and add new novel ideas to mine and extract secret messages and codes of Quran.
 
   ### Text Processing Requirements:
   
@@ -43,13 +44,13 @@ product_spec_northstar: >
   No mocks or partial runs — test the full analyzer as a real-world application
 
   * Final Goal:
-  Find secret messages in Quran based on secret code and muqatta analysis you will perform using novel strategies that haven't been explored before.
+  Find secret messages in Quran using novel strategies that haven't been explored before. Review existing feature set and add novel techniques to mine secret code and messages.
 
 project_root_folder: C:\Github\secrets_of_quran
 product_spec_history_filename: product_spec_history.json
 architecture_spec_history_filename: architecture_spec_history.json
 codebase_metadata_filename: codebase_metadata.json
-total_runs_to_build_northstar: 5
+total_runs_to_build_northstar: 8
 max_test_attempts_per_iteration: 5
 programming_languages:
   - python

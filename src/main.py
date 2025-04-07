@@ -91,6 +91,10 @@ def main():
     
     analyze_muqattaat_context(text)
     
+    # NEW: Conjunction Frequency Analysis
+    from src.analyzer import analyze_conjunction_frequency
+    analyze_conjunction_frequency(text)
+    
     analyze_muqattaat_preceding_context(text)
     
     from src.analyzer import categorize_surahs_by_muqattaat, analyze_grouped_root_frequencies, analyze_grouped_lemma_frequencies
