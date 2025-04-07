@@ -123,7 +123,7 @@ def main():
             logger.info("Word: %s, Count: %d", word, count)
         logger.info("Word frequency analysis completed.")
 
-        # New: Integrate sentence length distribution analyses at Quran, Surah, and Ayah levels.
+        # Integrate sentence length distribution analyses at Quran, Surah, and Ayah levels.
         from src.frequency_analyzer import analyze_sentence_length_distribution, analyze_surah_sentence_length_distribution, analyze_ayah_sentence_length_distribution
         logger.info("Starting sentence length distribution analysis at Quran level.")
         sentence_length_distribution = analyze_sentence_length_distribution(tokenized_text)
@@ -136,6 +136,15 @@ def main():
         logger.info("Starting Ayah-level sentence length distribution analysis.")
         ayah_sentence_length_distribution = analyze_ayah_sentence_length_distribution(data)
         logger.info("Ayah-level sentence length distribution analysis completed.")
+        
+        from src.distribution_analyzer import analyze_surah_sentence_length_distribution_by_index, analyze_ayah_sentence_length_distribution_by_index
+        logger.info("Starting Surah-level sentence length distribution analysis by index.")
+        surah_sentence_length_by_index = analyze_surah_sentence_length_distribution_by_index(data)
+        logger.info("Surah-level sentence length distribution analysis by index completed.")
+        
+        logger.info("Starting Ayah-level sentence length distribution analysis by index.")
+        ayah_sentence_length_by_index = analyze_ayah_sentence_length_distribution_by_index(data)
+        logger.info("Ayah-level sentence length distribution analysis by index completed.")
 
         # Integrate word co-occurrence analysis
         from src.cooccurrence_analyzer import analyze_word_cooccurrence

@@ -440,13 +440,14 @@ def analyze_ayah_sentence_length_distribution(data):
     '''
     Analyze the sentence length for each ayah.
     Computes the sentence length (number of words) for each ayah and returns a mapping from
-    a unique ayah identifier (formatted as "surah|ayah") to its sentence length.
+    a unique ayah identifier (formatted as "surah|ayah") to its frequency distribution,
+    where the distribution is represented as a dictionary mapping the sentence length to its count.
     
     Logs:
-    - For each ayah, logs the identifier and its sentence length.
+    - For each ayah, logs the identifier and its sentence length frequency distribution.
     
     :param data: List of dictionaries representing Quran data.
-    :return: Dictionary mapping ayah identifier ("surah|ayah") to sentence length.
+    :return: Dictionary mapping ayah identifier ("surah|ayah") to a dictionary of sentence length frequencies.
     '''
     logger = logging.getLogger("quran_analysis")
     ayah_lengths = {}
@@ -457,6 +458,6 @@ def analyze_ayah_sentence_length_distribution(data):
         text = item.get("processed_text") or item.get("verse_text", "")
         tokens = text.split() if text else []
         length = len(tokens)
-        ayah_lengths[identifier] = length
-        logger.info("Ayah Sentence Length - Identifier: %s, Length: %d", identifier, length)
+        ayah_lengths[identifier] = {length: 1}
+        logger.info("Ayah Sentence Length - Identifier: %s, Frequency: {%d: 1}", identifier, length)
     return ayah_lengths

@@ -116,12 +116,12 @@
     {
       "path": "src/main.py",
       "language": "python",
-      "description": "Main entry point of the application. This file orchestrates the overall process including data loading, text preprocessing, and the execution of various analytic functions such as gematria distribution, frequency analyses, n-gram analyses, and anomaly detection. It also configures logging and handles error management.",
+      "description": "This module serves as the main entry point of the application. It orchestrates the complete workflow by setting up logging, loading Quran data, preprocessing text, and running various analyses including Gematria distribution, frequency and character analyses, n-gram computation, word co-occurrence, collocation, semantic analysis, and anomaly detection. It provides detailed logs to trace execution and handle errors.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main function that orchestrates data loading, preprocessing, and integration of multiple analytical functions including gematria, frequency, co-occurrence, and n-gram analyses. It handles logging, error management, and sequence control of core operations.",
+          "description": "Main function to orchestrate data loading, text preprocessing, and multiple analytical operations on Quran text. It configures the environment, executes various analysis routines, logs essential information, and returns a summary result of the analyses.",
           "parameters": [],
           "return_type": "dict"
         }
@@ -132,6 +132,7 @@
         "src/text_preprocessor.py",
         "src/gematria_analyzer.py",
         "src/frequency_analyzer.py",
+        "src/distribution_analyzer.py",
         "src/cooccurrence_analyzer.py",
         "src/collocation_analyzer.py",
         "src/semantic_analyzer.py",
@@ -535,13 +536,13 @@
     },
     {
       "path": "src/frequency_analyzer.py",
-      "language": "python",
-      "description": "This file contains a collection of functions designed to perform various frequency analyses on Quran text data. It includes functions for word frequency, word length distribution, root and lemma word frequency, semantic group analysis, character frequency at different levels, and sentence length distribution analysis. The implementations leverage Python standard libraries and custom logic to process text data.",
+      "language": "Python",
+      "description": "This module provides a range of analysis functions for Quran data including word frequency counts, word length distributions, root and lemma frequency analyses, semantic group frequency, character frequency, and sentence length distributions at both surah and ayah levels. It leverages logging to output detailed statistical information.",
       "classes": [],
       "functions": [
         {
           "name": "count_word_frequencies",
-          "description": "Count the frequency of each word in the tokenized text, returning a dictionary mapping words to their frequency count.",
+          "description": "Counts the frequency of each word in the tokenized text by iterating through lists of tokens.",
           "parameters": [
             {
               "name": "tokenized_text",
@@ -553,19 +554,19 @@
         },
         {
           "name": "analyze_word_length_distribution",
-          "description": "Analyze the distribution of word lengths in the tokenized text, logging details and returning a dictionary mapping word lengths to their frequency.",
+          "description": "Analyzes the distribution of word lengths in the tokenized text, logging total words analyzed, average word length, and the most frequent word lengths.",
           "parameters": [
             {
               "name": "tokenized_text",
               "type": "list",
-              "description": "List of lists where each inner list represents tokenized words of an ayah."
+              "description": "List of lists containing tokenized words."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_surah_word_frequency",
-          "description": "Analyze word frequencies at the Surah level and log the top 10 most frequent words for each Surah.",
+          "description": "Analyzes word frequencies at the Surah level by updating counters for each surah and logging the top 10 most frequent words.",
           "parameters": [
             {
               "name": "data",
@@ -577,7 +578,7 @@
         },
         {
           "name": "analyze_ayah_word_frequency",
-          "description": "Analyze word frequencies at the Ayah level, logging the top 5 most frequent words for each Ayah.",
+          "description": "Analyzes word frequencies at the Ayah level by mapping each (Surah, Ayah) tuple to a frequency counter and logging the top 5 words.",
           "parameters": [
             {
               "name": "data",
@@ -589,31 +590,31 @@
         },
         {
           "name": "analyze_root_word_frequency",
-          "description": "Analyze the frequency of root words across the Quran data, logging total unique root words and top frequency counts.",
+          "description": "Analyzes the frequency of root words across Quran data, logging total unique root words and the top 1000 most frequent root words.",
           "parameters": [
             {
               "name": "data",
               "type": "list",
-              "description": "List of dictionaries containing Quran data with 'roots' key."
+              "description": "List of dictionaries containing Quran data with a 'roots' key."
             }
           ],
-          "return_type": "Counter"
+          "return_type": "dict"
         },
         {
           "name": "analyze_lemma_word_frequency",
-          "description": "Analyze the frequency of lemma words across the Quran data and log total unique lemma words along with top counts.",
+          "description": "Analyzes the frequency of lemma words in Quran data, logging total unique lemma words and the top 1000 most frequent lemma words.",
           "parameters": [
             {
               "name": "data",
               "type": "list",
-              "description": "List of dictionaries containing Quran data with 'lemmas' key."
+              "description": "List of dictionaries containing Quran data with a 'lemmas' key."
             }
           ],
-          "return_type": "Counter"
+          "return_type": "dict"
         },
         {
           "name": "analyze_surah_root_word_frequency",
-          "description": "Analyze the frequency of root words at the Surah level using processed text, returning a dictionary mapping surahs to their root word frequencies.",
+          "description": "Analyzes the frequency of root words at the Surah level using a text preprocessor, updating counters and logging the top 10 root words and the unique count.",
           "parameters": [
             {
               "name": "data",
@@ -625,7 +626,7 @@
         },
         {
           "name": "analyze_ayah_root_word_frequency",
-          "description": "Analyze the frequency of root words at the Ayah level using tokenization and root extraction, returning a mapping of ayah identifiers to frequency counts.",
+          "description": "Analyzes the frequency of root words at the Ayah level by tokenizing text and extracting roots, then logging the frequency distribution per ayah.",
           "parameters": [
             {
               "name": "data",
@@ -637,43 +638,43 @@
         },
         {
           "name": "analyze_ayah_first_root_word_frequency",
-          "description": "Analyze the frequency of the first root word in each Ayah, logging the top 10 most frequent first root words.",
+          "description": "Analyzes the frequency of the first root word in each ayah and logs the top 10 most frequent first root words along with their counts.",
           "parameters": [
             {
               "name": "data",
               "type": "list",
-              "description": "List of dictionaries containing Quran data."
+              "description": "List of dictionaries containing Quran data with a 'roots' key."
             }
           ],
-          "return_type": "Counter"
+          "return_type": "dict"
         },
         {
           "name": "analyze_ayah_last_root_word_frequency",
-          "description": "Analyze the frequency of the last root word in each Ayah, logging the top 10 most frequent last root words.",
+          "description": "Analyzes the frequency of the last root word in each ayah and logs the top 10 most frequent last root words along with their counts.",
           "parameters": [
             {
               "name": "data",
               "type": "list",
-              "description": "List of dictionaries containing Quran data."
+              "description": "List of dictionaries containing Quran data with a 'roots' key."
             }
           ],
-          "return_type": "Counter"
+          "return_type": "dict"
         },
         {
           "name": "analyze_semantic_group_frequency",
-          "description": "Analyze the frequency of semantic groups defined by roots, logging total unique semantic groups and the top 20 most frequent groups.",
+          "description": "Analyzes the frequency of semantic groups defined by root words in Quran data, logging the total unique semantic groups and the top 20 most frequent groups.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data."
+              "description": "List of dictionaries representing Quran data, each containing a 'roots' key."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_character_frequency",
-          "description": "Analyze the frequency of each character in the tokenized Quran text, logging the top 20 most frequent characters and total unique characters.",
+          "description": "Analyzes character frequency in preprocessed Quran text by iterating over ayahs and words, logging the top 20 most frequent characters and the total count of unique characters.",
           "parameters": [
             {
               "name": "tokenized_text",
@@ -685,7 +686,7 @@
         },
         {
           "name": "analyze_surah_character_frequency",
-          "description": "Analyze character frequency at the Surah level by concatenating verse texts and counting character frequencies.",
+          "description": "Analyzes character frequency at the Surah level by concatenating verses and computing character counts, then logging the details.",
           "parameters": [
             {
               "name": "data",
@@ -697,7 +698,7 @@
         },
         {
           "name": "analyze_ayah_character_frequency",
-          "description": "Analyze character frequency for each Ayah, returning a mapping from ayah identifiers to their character count dictionaries.",
+          "description": "Analyzes character frequency at the Ayah level, logging character counts for each ayah identified by a unique Surah and Ayah combination.",
           "parameters": [
             {
               "name": "data",
@@ -709,36 +710,36 @@
         },
         {
           "name": "analyze_sentence_length_distribution",
-          "description": "Analyze the distribution of sentence lengths across the Quran based on tokenized text, returning a frequency mapping of sentence lengths.",
+          "description": "Analyzes the distribution of sentence lengths across the entire Quran by treating each ayah as a sentence and logging the frequency distribution.",
           "parameters": [
             {
               "name": "tokenized_text",
               "type": "list",
-              "description": "List of lists representing tokenized ayahs."
+              "description": "List of lists where each inner list represents tokenized words of an ayah."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_surah_sentence_length_distribution",
-          "description": "Analyze sentence length distribution at the Surah level using processed text, returning a mapping of surah names to sentence length frequencies.",
+          "description": "Analyzes sentence length distribution at the Surah level by tokenizing processed text from ayahs and computing frequency distributions.",
           "parameters": [
             {
               "name": "data",
               "type": "list",
-              "description": "List of dictionaries containing Quran data with processed text."
+              "description": "List of dictionaries representing Quran data with processed text."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_ayah_sentence_length_distribution",
-          "description": "Analyze sentence length for each Ayah, returning a mapping from ayah identifiers to their sentence lengths.",
+          "description": "Analyzes sentence length for each ayah by counting the number of words in the processed text and mapping ayah identifiers to their sentence length frequency.",
           "parameters": [
             {
               "name": "data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data with surah and ayah identifiers."
+              "description": "List of dictionaries representing Quran data with ayah identifiers and processed text."
             }
           ],
           "return_type": "dict"
@@ -1354,48 +1355,72 @@
     },
     {
       "path": "tests/test_sentence_length_distribution.py",
-      "language": "python",
-      "description": "Integration tests for sentence length distribution analysis functions. This file tests the functionality of analyzing sentence lengths at the Quran, Surah, and Ayah levels using sample data to validate the expected outcomes.",
+      "language": "Python",
+      "description": "This module contains integration tests for sentence length distribution analysis functions from both distribution_analyzer and frequency_analyzer modules, using the unittest framework to validate statistical computations and logging outputs.",
       "classes": [
         {
           "name": "TestSentenceLengthDistribution",
-          "description": "Integration tests for sentence length distribution analysis functions.",
+          "description": "Integration tests for sentence length distribution analysis functions in both distribution_analyzer and frequency_analyzer modules.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_analyze_sentence_length_distribution",
-              "description": "Tests analyze_sentence_length_distribution function with sample tokenized text and verifies the frequency distribution of sentence lengths.",
+              "description": "Tests the analyze_sentence_length_distribution function with sample tokenized text.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestSentenceLengthDistribution",
-                  "description": "Instance of TestSentenceLengthDistribution."
+                  "description": "Instance of the test case."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_surah_sentence_length_distribution",
-              "description": "Tests analyze_surah_sentence_length_distribution function with sample Quran data and validates the distribution by surah.",
+              "description": "Tests the analyze_surah_sentence_length_distribution function with sample Quran data.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestSentenceLengthDistribution",
-                  "description": "Instance of TestSentenceLengthDistribution."
+                  "description": "Instance of the test case."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_ayah_sentence_length_distribution",
-              "description": "Tests analyze_ayah_sentence_length_distribution function with sample data to assert the correct mapping of ayah identifiers to sentence lengths.",
+              "description": "Tests the analyze_ayah_sentence_length_distribution function using sample Quran data with surah and ayah identifiers.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestSentenceLengthDistribution",
-                  "description": "Instance of TestSentenceLengthDistribution."
+                  "description": "Instance of the test case."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_surah_sentence_length_distribution_by_index",
+              "description": "Tests the analyze_surah_sentence_length_distribution_by_index function with sample data containing surah numbers.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestSentenceLengthDistribution",
+                  "description": "Instance of the test case."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_ayah_sentence_length_distribution_by_index",
+              "description": "Tests the analyze_ayah_sentence_length_distribution_by_index function with sample data containing ayah indices.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestSentenceLengthDistribution",
+                  "description": "Instance of the test case."
                 }
               ],
               "return_type": "None"
@@ -1405,8 +1430,42 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/frequency_analyzer.py"
+        "src/frequency_analyzer.py",
+        "src/distribution_analyzer.py"
       ]
+    },
+    {
+      "path": "src/distribution_analyzer.py",
+      "language": "Python",
+      "description": "This module contains functions to analyze sentence length distribution by surah and ayah index. It calculates frequency distributions, averages, medians, modes, and standard deviations of sentence lengths from Quran data and logs the summary statistics for further analysis.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_surah_sentence_length_distribution_by_index",
+          "description": "Analyzes sentence length distribution for each Surah index by extracting ayah lengths, computing frequency, average, median, mode, and standard deviation, and logging the results.",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data."
+            }
+          ],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_ayah_sentence_length_distribution_by_index",
+          "description": "Analyzes sentence length distribution for each Ayah index across all surahs by computing frequency distribution, average, median, mode, and standard deviation from Quran data, and logs the output.",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data."
+            }
+          ],
+          "return_type": "dict"
+        }
+      ],
+      "dependencies": []
     }
   ]
 }
