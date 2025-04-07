@@ -1,15 +1,8 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="QuranAnalysis",
+    name="quran_analysis",
     version="0.1",
     packages=find_packages(),
-    install_requires=[
-        "camel-tools"
-    ],
-    entry_points={
-        'console_scripts': [
-            'quran_analysis=src.main:main'
-        ],
-    },
+    install_requires=[],
 )

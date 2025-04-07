@@ -1,14 +1,11 @@
 import re
 
 def tokenize_text(text):
-    """
-    Tokenize the Arabic text into individual words using whitespace and punctuation as delimiters.
+    # Split on punctuation (Arabic and English) or whitespace:
+    #  - [.,،!\s] covers periods, commas, Arabic comma, exclamation marks, and whitespace.
+    #  - The + quantifier makes sure we group consecutive punctuation/whitespace as one split.
+    tokens = re.split(r'[.,،!\s]+', text)
     
-    :param text: The input normalized Arabic text.
-    :return: A list of word tokens.
-    """
-    # Split on whitespace and common punctuation (including Arabic punctuation)
-    tokens = re.split(r"[ \t\n\r\.,;:!?،؟()\"'\-]+", text)
-    # Filter out any empty tokens
+    # Filter out any empty tokens (which may appear if text starts/ends with punctuation)
     tokens = [token for token in tokens if token]
     return tokens

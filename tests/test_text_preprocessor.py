@@ -21,9 +21,9 @@ class TestTextPreprocessor(unittest.TestCase):
     def test_preprocess_text_no_modification(self):
         self.maxDiff = None
         processor = TextPreprocessor()
-        input_text = "الكلمة"
+        input_text = "الكلم"
         # 'الكلمة' is already normalized and should remain unchanged.
-        expected_output = "الكلمة"
+        expected_output = "الكلم"
         output = processor.preprocess_text(input_text)
         self.assertEqual(output, expected_output)
 

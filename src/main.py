@@ -18,7 +18,8 @@ def main():
        and the total number of unique word pairs.
     7. Analyzes word frequencies at Surah and Ayah levels, logging top frequent words per analysis.
     8. Analyzes word length distribution within the tokenized text and logs summary statistics.
-    9. Analyzes root word frequency across the tokenized text and logs the top 20 root words and unique count.
+    9. Analyzes root word frequency across the Quran data and logs the top 20 root words and unique count.
+    10. Analyzes root word co-occurrence within each Ayah of the Quran data, logging the top 20 most frequent pairs.
     """
     logger = configure_logger()
     logger.info("Application started.")
@@ -79,8 +80,14 @@ def main():
         # Integrate root word frequency analysis
         from src.frequency_analyzer import analyze_root_word_frequency
         logger.info("Starting root word frequency analysis.")
-        root_frequencies = analyze_root_word_frequency(tokenized_text)
+        root_frequencies = analyze_root_word_frequency(data)
         logger.info("Root word frequency analysis completed.")
+
+        # Integrate root word co-occurrence analysis
+        from src.cooccurrence_analyzer import analyze_root_word_cooccurrence
+        logger.info("Starting Root Word Co-occurrence Analysis...")
+        analyze_root_word_cooccurrence(data)
+        logger.info("Root Word Co-occurrence Analysis Completed.\n")
 
         logger.info("Application finished.")
     except Exception as e:

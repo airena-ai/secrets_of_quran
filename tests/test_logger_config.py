@@ -11,7 +11,7 @@ class TestLoggerConfig(unittest.TestCase):
     def test_configure_logger_creates_log_file(self):
         self.maxDiff = None
         # Backup current handlers and clear them for testing
-        root_logger = logging.getLogger()
+        root_logger = logging.getLogger("quran_analysis")
         original_handlers = root_logger.handlers[:]
         root_logger.handlers = []
         logger = configure_logger()

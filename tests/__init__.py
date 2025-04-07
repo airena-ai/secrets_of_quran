@@ -1,3 +1,1 @@
-'''
-Initializes the tests package.
-'''
+# This package contains tests for the Quran analysis application.

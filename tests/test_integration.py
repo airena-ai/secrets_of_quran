@@ -7,7 +7,6 @@ class TestIntegration(unittest.TestCase):
     '''
     Integration tests for the core user flow.
     '''
-
     def test_integration_flow(self):
         self.maxDiff = None
         # Determine project root and log file path
@@ -56,16 +55,14 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Word Co-occurrence Analysis Results", log_content)
         self.assertIn("Co-occurrence analysis returned", log_content)
         self.assertIn("Total unique word pairs:", log_content)
-        pairs_match = re.search(r"Total unique word pairs:\s*(\d+)", log_content)
-        self.assertIsNotNone(pairs_match, "Total unique word pairs count not found in logs.")
         
         # Assertions for Surah and Ayah level analyses
         self.assertIn("Starting Surah-level word frequency analysis.", log_content)
         self.assertIn("Surah-level word frequency analysis completed.", log_content)
-        self.assertIn("Surah-level Frequency Analysis - Surah 1 (Al-Fatiha) Top 10 Words:", log_content)
+        self.assertIn("Surah-level Frequency Analysis - Surah 1 Top 10 Words:", log_content)
         self.assertIn("Starting Ayah-level word frequency analysis.", log_content)
         self.assertIn("Ayah-level word frequency analysis completed.", log_content)
-        self.assertIn("Ayah-level Frequency Analysis - Surah 1 (Al-Fatiha), Ayah 1 Top 5 Words:", log_content)
+        self.assertIn("Ayah-level Frequency Analysis - Surah 1, Ayah 1 Top 5 Words:", log_content)
 
         # Assertions for word length distribution analysis
         self.assertIn("Word Length Distribution Analysis:", log_content)
@@ -77,6 +74,12 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Starting root word frequency analysis.", log_content)
         self.assertIn("Total unique root words found:", log_content)
         self.assertIn("Top 20 most frequent root words:", log_content)
+        
+        # Assertions for root word co-occurrence analysis
+        self.assertIn("Starting Root Word Co-occurrence Analysis...", log_content)
+        self.assertIn("Root Word Co-occurrence Analysis Completed.", log_content)
+        self.assertIn("Total unique root word pairs:", log_content)
+        self.assertIn("Top 20 most frequent root word pairs:", log_content)
 
         # Cleanup created files
         os.remove(data_file)

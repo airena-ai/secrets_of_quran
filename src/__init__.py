@@ -1,3 +1,1 @@
-'''
-Initializes the src package.
-'''
+# This package contains modules for Quran analysis.
