@@ -130,13 +130,18 @@ class TestIntegration(unittest.TestCase):
         
         # New assertions for Word Collocation Analysis
         self.assertIn("Starting Word Collocation Analysis.", log_content)
-        self.assertIn("Top 20 most frequent word collocation pairs:", log_content)
+        self.assertIn("Total unique collocation pairs:", log_content)
         self.assertIn("Word Collocation Analysis completed.", log_content)
         
         # New assertions for Semantic Group Co-occurrence Analysis at Ayah Level
         self.assertIn("Starting Semantic Group Co-occurrence Analysis at Ayah Level.", log_content)
         self.assertIn("Top 10 semantic group co-occurrence pairs:", log_content)
         self.assertIn("Total unique semantic group co-occurrence pairs found:", log_content)
+
+        # New assertions for Anomaly Detection Analysis
+        self.assertIn("Starting Anomaly Detection Analysis.", log_content)
+        self.assertIn("Anomaly Detection Analysis Results:", log_content)
+        self.assertIn("Anomaly Detection Analysis completed.", log_content)
         
         # Cleanup created files
         os.remove(data_file)

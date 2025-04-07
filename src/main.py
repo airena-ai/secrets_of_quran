@@ -27,6 +27,7 @@ def main():
     15. Analyzes word n-gram frequency at Quran, Surah, and Ayah levels.
     16. Analyzes character n-gram frequency at Quran, Surah, and Ayah levels.
     17. Analyzes word collocation, logging the top 20 collocation pairs and total unique collocation pairs.
+    18. Performs anomaly detection analysis across the above features.
     '''
     logger = configure_logger()
     logger.info("Application started.")
@@ -64,7 +65,7 @@ def main():
 
         # Integrate character frequency analysis
         from src.frequency_analyzer import analyze_character_frequency, analyze_word_length_distribution
-        analyze_character_frequency(tokenized_text)
+        character_freq = analyze_character_frequency(tokenized_text)
 
         # Integrate word length distribution analysis
         logger.info("Starting word length distribution analysis.")
@@ -195,6 +196,33 @@ def main():
         logger.info("Starting Character N-gram Analysis at Ayah level.")
         ayah_char_ngram_freq = analyze_ayah_character_ngrams(data, n=2)
         logger.info("Character N-gram Analysis at Ayah level completed.")
+        
+        # Integrate Anomaly Detection Analysis
+        from src.anomaly_detector import analyze_anomaly_detection
+        analysis_results = {
+            "word_frequencies": word_frequencies,
+            "surah_word_frequencies": surah_frequencies,
+            "ayah_word_frequencies": ayah_frequencies,
+            "root_word_frequencies": root_frequencies,
+            "surah_root_word_frequencies": surah_root_frequencies,
+            "ayah_root_word_frequencies": ayah_root_frequencies,
+            "first_root_word_frequency": first_root_freq,
+            "last_root_word_frequency": last_root_freq,
+            "character_frequencies": character_freq,
+            "word_ngrams": ngram_freq,
+            "surah_word_ngrams": surah_ngram_freq,
+            "ayah_word_ngrams": ayah_ngram_freq,
+            "character_ngrams": char_ngram_freq,
+            "surah_character_ngrams": surah_char_ngram_freq,
+            "ayah_character_ngrams": ayah_char_ngram_freq,
+            "word_cooccurrence": cooccurrence_freq,
+            "word_collocation": collocation_freq,
+            "semantic_group_frequency": semantic_group_freq,
+            "semantic_group_cooccurrence": semantic_cooccurrence
+        }
+        logger.info("Starting Anomaly Detection Analysis.")
+        analyze_anomaly_detection(analysis_results)
+        logger.info("Anomaly Detection Analysis completed.")
 
         logger.info("Application finished.")
     except Exception as e:

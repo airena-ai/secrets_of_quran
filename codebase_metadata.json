@@ -116,12 +116,12 @@
     {
       "path": "src/main.py",
       "language": "Python",
-      "description": "Main entry point for the Quran analysis application. This module orchestrates data loading, text preprocessing, and integration of various analyses such as word frequency, co-occurrence, n-gram, root word frequency, semantic group analysis, collocation, and character n-gram analyses. It configures the logger, handles error management, and ensures a clean shutdown of logging.",
+      "description": "This file serves as the main entry point for the Quran analysis application. It orchestrates data loading, text preprocessing, multiple frequency and statistical analyses, anomaly detection, and logging of outputs. It integrates several modules to perform end-to-end processing of Quranic data.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Orchestrates the complete data analysis workflow by loading Quran data, preprocessing text, and executing a series of analytical routines including frequency and co-occurrence analyses. It also integrates logging and error handling to track the analysis process.",
+          "description": "Coordinates the entire application flow including data loading, preprocessing, analysis (frequency, co-occurrence, n-gram, etc.), and anomaly detection, while handling logging and environment configurations.",
           "parameters": [],
           "return_type": "None"
         }
@@ -133,7 +133,9 @@
         "src/frequency_analyzer.py",
         "src/cooccurrence_analyzer.py",
         "src/collocation_analyzer.py",
-        "src/ngram_analyzer.py"
+        "src/ngram_analyzer.py",
+        "src/semantic_analyzer.py",
+        "src/anomaly_detector.py"
       ]
     },
     {
@@ -313,35 +315,35 @@
     {
       "path": "tests/test_integration.py",
       "language": "Python",
-      "description": "Integration test suite for the Quran analysis application. This module contains tests that validate the complete integration flow of the application as well as specific tests for semantic group co-occurrence analysis.",
+      "description": "This file contains integration tests for the Quran analysis application. It verifies core user flows including data processing, logging, frequency analysis, and anomaly detection, as well as tests for semantic group co-occurrence analysis.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration tests for the core user flow of the Quran analysis application, including end-to-end testing of the main function and direct testing of semantic group co-occurrence analysis.",
+          "description": "Integration tests class for validating the end-to-end functionality of the Quran analysis application. It checks log outputs, file processing, and analysis results to ensure consistency and correctness.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the full integration flow by running the main function, checking log outputs for expected messages, and validating that various analysis steps complete successfully.",
+              "description": "Executes the main application flow and verifies that log outputs contain expected messages and analysis results for data processing and frequency analysis.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestIntegration",
-                  "description": "Instance reference for the test case."
+                  "description": "Instance of the test class."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_semantic_group_cooccurrence_analysis",
-              "description": "Tests the analyze_semantic_group_cooccurrence_ayah function using sample data to validate correct co-occurrence counts and proper logging of analysis results.",
+              "description": "Tests the semantic group co-occurrence analysis by capturing log outputs and validating that the frequency counts of theme pairs are computed correctly based on sample data.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestIntegration",
-                  "description": "Instance reference for the test case."
+                  "description": "Instance of the test class."
                 }
               ],
               "return_type": "None"
@@ -969,6 +971,54 @@
             }
           ],
           "return_type": "dict"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "src/anomaly_detector.py",
+      "language": "Python",
+      "description": "This file contains functions for anomaly detection in frequency distributions. It computes z-scores for each entry in a distribution and logs anomalies when they exceed a specified threshold. This module is integral to analyzing Quranic feature data for deviations.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_single_distribution",
+          "description": "Analyzes a single frequency distribution by computing z-scores and logging anomalies when counts deviate significantly from the mean.",
+          "parameters": [
+            {
+              "name": "feature_name",
+              "type": "string",
+              "description": "Name of the feature to analyze."
+            },
+            {
+              "name": "distribution",
+              "type": "dict",
+              "description": "Dictionary mapping feature items to their counts."
+            },
+            {
+              "name": "context",
+              "type": "string",
+              "description": "Context specifying the level of analysis (e.g., 'Quran', 'Surah', 'Ayah')."
+            },
+            {
+              "name": "threshold",
+              "type": "float",
+              "description": "Z-score threshold to consider a value anomalous (default is 2.0)."
+            }
+          ],
+          "return_type": "None"
+        },
+        {
+          "name": "analyze_anomaly_detection",
+          "description": "Performs anomaly detection across multiple Quranic feature analyses by iterating over provided data and applying the z-score method at different hierarchical levels.",
+          "parameters": [
+            {
+              "name": "analysis_results",
+              "type": "dict",
+              "description": "Dictionary containing various frequency analysis results for anomaly detection."
+            }
+          ],
+          "return_type": "None"
         }
       ],
       "dependencies": []
