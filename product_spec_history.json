@@ -108,5 +108,10 @@
         "iteration": 21,
         "date": "2025-04-07",
         "iteration_goal": "This increment focuses on implementing character N-gram frequency analysis at three levels: the entire Quran, each Surah, and each Ayah. New Python functions (`analyze_character_ngrams`, `analyze_surah_character_ngrams`, `analyze_ayah_character_ngrams`) will be created to perform this analysis, calculate character N-gram frequencies, and log the top frequent N-grams and unique N-gram counts. The `main()` function will be updated to call these new functions, and integration tests will be added to validate their implementation and output. This step enhances the text analysis capabilities by exploring character sequence patterns within the Quran at different granularities."
+    },
+    {
+        "iteration": 22,
+        "date": "2025-04-07",
+        "iteration_goal": "This increment focuses on analyzing the positional frequency of root words within Quranic verses. It involves developing two new functions: `analyze_first_word_root_frequency_ayah()` and `analyze_last_word_root_frequency_ayah()` to count the occurrences of root words specifically when they appear as the first and last words in each Ayah. The results, including the most frequent first and last root words, will be logged and integration tests will be updated to ensure the accuracy of this new analytical feature. This analysis aims to uncover potential patterns related to the placement of specific root words at the verse level."
     }
 ]
