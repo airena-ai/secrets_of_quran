@@ -115,13 +115,31 @@
     },
     {
       "path": "src/main.py",
-      "language": "python",
-      "description": "This module serves as the main entry point of the application. It orchestrates the complete workflow by setting up logging, loading Quran data, preprocessing text, and running various analyses including Gematria distribution, frequency and character analyses, n-gram computation, word co-occurrence, collocation, semantic analysis, and anomaly detection. It provides detailed logs to trace execution and handle errors.",
+      "language": "Python",
+      "description": "This is the main application module that orchestrates data loading, text preprocessing, and a variety of analyses on Quran text. It integrates functions for text complexity, gematria calculations, frequency analysis, n-gram analysis, anomaly detection, and more, providing a comprehensive analysis suite.",
       "classes": [],
       "functions": [
         {
+          "name": "analyze_quran_text_complexity",
+          "description": "Analyzes the text complexity for the entire Quran by loading data, preprocessing it, and computing metrics using the analyze_text_complexity function. Logs the results and returns the complexity metrics.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_surah_text_complexity",
+          "description": "Analyzes text complexity for each Surah by grouping verses, preprocessing them, and computing complexity metrics for each Surah. Returns a dictionary mapping each Surah to its metrics.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_ayah_text_complexity",
+          "description": "Analyzes text complexity for each Ayah by preprocessing individual verses and computing associated complexity metrics. Returns a dictionary mapping each Ayah identifier to its metrics.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
           "name": "main",
-          "description": "Main function to orchestrate data loading, text preprocessing, and multiple analytical operations on Quran text. It configures the environment, executes various analysis routines, logs essential information, and returns a summary result of the analyses.",
+          "description": "The main entry point for the application. It coordinates data loading, text preprocessing, integration of various analyses (including gematria, frequency, n-gram, semantic, and anomaly detection), and logs all operational details. Returns a summary result of the analyses.",
           "parameters": [],
           "return_type": "dict"
         }
@@ -136,8 +154,8 @@
         "src/cooccurrence_analyzer.py",
         "src/collocation_analyzer.py",
         "src/semantic_analyzer.py",
-        "src/ngram_analyzer.py",
-        "src/anomaly_detector.py"
+        "src/anomaly_detector.py",
+        "src/ngram_analyzer.py"
       ]
     },
     {
@@ -318,23 +336,23 @@
     },
     {
       "path": "tests/test_integration.py",
-      "language": "python",
-      "description": "This file contains integration tests for the QURAN Analysis project. It validates the complete application flow including file management, log generation, environment setup, and multiple analysis functions such as gematria analysis, semantic group co-occurrence and gematria distribution. The tests simulate real-world usage with comprehensive assertions to ensure reliable system behavior.",
+      "language": "Python",
+      "description": "Integration tests for the Quran text analysis application. This module uses the unittest framework to verify core functionalities including data loading, text complexity, gematria and semantic analyses, as well as proper logging of key events in the system.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "A unittest.TestCase subclass that encapsulates integration tests covering various aspects of the application. It tests file operations, logging, and analysis functions including gematria and semantic group evaluations to ensure expected outcomes.",
+          "description": "A unittest.TestCase subclass containing integration tests to validate the entire application flow and specific analysis functionalities.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the complete integration flow by verifying file creation, log content, environment variable setup, and multiple analysis outputs including gematria co-occurrence and word frequency analyses.",
+              "description": "Tests the overall integration flow of the application, ensuring that data is processed correctly, analyses are executed, and logging outputs meet expectations.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestIntegration",
+                  "type": "object",
                   "description": "Instance of TestIntegration."
                 }
               ],
@@ -342,11 +360,11 @@
             },
             {
               "name": "test_semantic_group_cooccurrence_analysis",
-              "description": "Tests the semantic group co-occurrence analysis by comparing the function's output against expected results and checking for specific log messages.",
+              "description": "Tests the semantic group co-occurrence analysis function to ensure it returns the correct pair counts and logs appropriate messages.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestIntegration",
+                  "type": "object",
                   "description": "Instance of TestIntegration."
                 }
               ],
@@ -354,11 +372,11 @@
             },
             {
               "name": "test_semantic_group_gematria_distribution",
-              "description": "Tests the semantic group gematria distribution analysis by verifying that computed gematria values match the expected distribution based on sample data and a predefined gematria mapping.",
+              "description": "Tests the semantic group gematria distribution analysis to validate the correct calculation and mapping based on sample data.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "TestIntegration",
+                  "type": "object",
                   "description": "Instance of TestIntegration."
                 }
               ],
@@ -369,9 +387,7 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/main.py",
-        "src/semantic_analyzer.py",
-        "src/gematria_analyzer.py"
+        "src/main.py"
       ]
     },
     {
@@ -1466,6 +1482,29 @@
         }
       ],
       "dependencies": []
+    },
+    {
+      "path": "src/text_complexity_analyzer.py",
+      "language": "Python",
+      "description": "This module provides functionality to analyze the complexity of Arabic text. It tokenizes the input text, calculates average word and sentence lengths, logs the metrics, and returns them in a dictionary. This analysis is essential for understanding the structural complexity of the text.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_text_complexity",
+          "description": "Analyzes text complexity by splitting the input text into words, calculating the average word length and sentence length, logging the metrics, and returning the results as a dictionary.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "string",
+              "description": "Preprocessed Arabic text as a string."
+            }
+          ],
+          "return_type": "dict"
+        }
+      ],
+      "dependencies": [
+        "src/logger_config.py"
+      ]
     }
   ]
 }

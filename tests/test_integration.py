@@ -153,6 +153,12 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Starting Semantic Group Gematria Distribution Analysis.", log_content)
         self.assertIn("Semantic Group Gematria Distribution Analysis completed.", log_content)
         
+        # New assertions for Text Complexity Analyses
+        self.assertIn("Starting Text Complexity Analyses.", log_content)
+        self.assertIn("Quran Text Complexity Analysis:", log_content)
+        self.assertRegex(log_content, r"Surah\s+\d+\s+Text Complexity Analysis:")
+        self.assertRegex(log_content, r"Surah\s+\d+,\s*Ayah\s+\d+\s+Text Complexity Analysis:")
+
         # New assertions for Anomaly Detection Analysis
         self.assertIn("Starting Anomaly Detection Analysis.", log_content)
         self.assertIn("Anomaly Detection Analysis Results:", log_content)

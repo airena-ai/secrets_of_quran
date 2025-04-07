@@ -148,5 +148,10 @@
         "iteration": 29,
         "date": "2025-04-07",
         "iteration_goal": "This increment focuses on analyzing sentence length distribution in relation to Surah and Ayah indices. It introduces two new functions: `analyze_surah_sentence_length_distribution_by_index()` to analyze sentence length distribution for each Surah index, and `analyze_ayah_sentence_length_distribution_by_index()` to analyze sentence length distribution for each Ayah index (position within Surah). The results, including frequency distributions and summary statistics, will be logged.  Integration tests will be added to validate these new analyses. This novel approach explores positional patterns of sentence lengths within the Quranic structure."
+    },
+    {
+        "iteration": 30,
+        "date": "2025-04-07",
+        "iteration_goal": "This increment introduces text complexity analysis to the Quran analysis tool. It implements functions to calculate and log basic text complexity metrics (average word length and average sentence length) at the Quran, Surah, and Ayah levels. This analysis will provide initial insights into the variation in text complexity across different parts of the Quran and contribute to novel strategies for finding hidden messages. New functions `analyze_text_complexity`, `analyze_quran_text_complexity`, `analyze_surah_text_complexity`, and `analyze_ayah_text_complexity` are created and integrated into the `main()` function with corresponding integration tests."
     }
 ]

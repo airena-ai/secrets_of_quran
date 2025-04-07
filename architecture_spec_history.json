@@ -148,5 +148,10 @@
         "iteration": 29,
         "date": "2025-04-07",
         "iteration_goal": "Extend the `distribution_analyzer` module by adding functions to analyze sentence length distribution based on Surah and Ayah indices. New functions `analyze_surah_sentence_length_distribution_by_index()` and `analyze_ayah_sentence_length_distribution_by_index()` will be added. Update `main()` to incorporate these analyses and include integration tests to validate the new functionality and logging. This enhancement provides analysis of sentence length patterns based on positional indices within the Quranic structure."
+    },
+    {
+        "iteration": 30,
+        "date": "2025-04-07",
+        "iteration_goal": "A new `text_complexity_analyzer` module is added, containing the `analyze_text_complexity` function for calculating text complexity metrics. In `main.py`, new functions are introduced to perform text complexity analysis at Quran, Surah, and Ayah levels, leveraging the new module and existing preprocessing and logging. Integration tests are included to validate the implementation, ensuring accurate text complexity analysis and result logging."
     }
 ]

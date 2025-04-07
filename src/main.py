@@ -4,6 +4,92 @@ from src.logger_config import configure_logger
 from src.data_loader import QuranDataLoader
 from src.text_preprocessor import TextPreprocessor
 
+def analyze_quran_text_complexity():
+    '''
+    Analyze text complexity for the entire Quran.
+    
+    Loads the Quran data, concatenates the preprocessed text from all verses,
+    calls the analyze_text_complexity() function from the text_complexity_analyzer module,
+    logs the resulting metrics with a clear identifier, and returns the metrics.
+    
+    :return: Dictionary containing the complexity metrics for the entire Quran.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    from src.text_complexity_analyzer import analyze_text_complexity
+    file_path = os.getenv("DATA_FILE")
+    if file_path is None:
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(project_root, "data", "quran-uthmani-min.txt")
+    loader = QuranDataLoader(file_path=file_path)
+    data = loader.load_data()
+    processor = TextPreprocessor()
+    all_text = "\n".join(processor.preprocess_text(item.get("verse_text", "")) for item in data)
+    metrics = analyze_text_complexity(all_text)
+    logger.info("Quran Text Complexity Analysis: %s", metrics)
+    return metrics
+
+def analyze_surah_text_complexity():
+    '''
+    Analyze text complexity for each Surah.
+    
+    Loads the Quran data, groups the verses by Surah, concatenates the preprocessed text
+    for each Surah, calls the analyze_text_complexity() function for each Surah,
+    logs the complexity metrics with clear identifiers, and returns a dictionary mapping
+    each Surah to its metrics.
+    
+    :return: Dictionary mapping Surah numbers to their complexity metrics.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    from src.text_complexity_analyzer import analyze_text_complexity
+    file_path = os.getenv("DATA_FILE")
+    if file_path is None:
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(project_root, "data", "quran-uthmani-min.txt")
+    loader = QuranDataLoader(file_path=file_path)
+    data = loader.load_data()
+    processor = TextPreprocessor()
+    surah_groups = {}
+    for item in data:
+        surah = item.get("surah", "Unknown")
+        processed_text = processor.preprocess_text(item.get("verse_text", ""))
+        surah_groups.setdefault(surah, []).append(processed_text)
+    surah_metrics = {}
+    for surah, texts in surah_groups.items():
+        full_text = "\n".join(texts)
+        metrics = analyze_text_complexity(full_text)
+        logger.info("Surah %s Text Complexity Analysis: %s", surah, metrics)
+        surah_metrics[surah] = metrics
+    return surah_metrics
+
+def analyze_ayah_text_complexity():
+    '''
+    Analyze text complexity for each Ayah.
+    
+    Loads the Quran data, and for each Ayah, preprocesses the verse text,
+    calls the analyze_text_complexity() function, logs the complexity metrics with clear identifiers,
+    and returns a dictionary mapping each Ayah (formatted as "surah|ayah") to its metrics.
+    
+    :return: Dictionary mapping Ayah identifiers to their complexity metrics.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    from src.text_complexity_analyzer import analyze_text_complexity
+    file_path = os.getenv("DATA_FILE")
+    if file_path is None:
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(project_root, "data", "quran-uthmani-min.txt")
+    loader = QuranDataLoader(file_path=file_path)
+    data = loader.load_data()
+    processor = TextPreprocessor()
+    ayah_metrics = {}
+    for item in data:
+        surah = item.get("surah", "Unknown")
+        ayah = item.get("ayah", "Unknown")
+        text = processor.preprocess_text(item.get("verse_text", ""))
+        metrics = analyze_text_complexity(text)
+        logger.info("Surah %s, Ayah %s Text Complexity Analysis: %s", surah, ayah, metrics)
+        ayah_metrics[f"{surah}|{ayah}"] = metrics
+    return ayah_metrics
+
 def main():
     '''
     Main function to orchestrate data loading, text preprocessing, and various analyses on the Quran text.
@@ -29,6 +115,7 @@ def main():
     18. Computes word n-gram and character n-gram analyses.
     19. Performs anomaly detection analysis.
     20. Computes sentence length distribution analyses at Quran, Surah, and Ayah levels.
+    21. Performs text complexity analyses at Quran, Surah, and Ayah levels.
     '''
     logger = configure_logger()
     logger.info("Application started.")
@@ -286,6 +373,12 @@ def main():
         analyze_anomaly_detection(analysis_results)
         logger.info("Anomaly Detection Analysis completed.")
 
+        # NEW: Integrate Text Complexity Analyses at Quran, Surah, and Ayah levels
+        logger.info("Starting Text Complexity Analyses.")
+        analyze_quran_text_complexity()
+        analyze_surah_text_complexity()
+        analyze_ayah_text_complexity()
+        
         logger.info("Application finished.")
         return {"gematria_cooccurrence": gematria_cooccurrence}
     except Exception as e:
