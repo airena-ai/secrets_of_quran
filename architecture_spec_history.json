@@ -63,5 +63,10 @@
         "iteration": 12,
         "date": "2025-04-07",
         "iteration_goal": "A new `ngram_analyzer` module is added to perform word N-gram frequency analysis. The module includes the `analyze_word_ngrams` function, which is called from `main()` to analyze the Quran text and log the frequency of word sequences. Integration tests are updated to validate this new functionality, enhancing the system's analytical capabilities in a modular and testable manner."
+    },
+    {
+        "iteration": 13,
+        "date": "2025-04-07",
+        "iteration_goal": "The `ngram_analyzer` module is extended to include `analyze_surah_word_ngrams` and `analyze_ayah_word_ngrams` functions for N-gram analysis at Surah and Ayah levels. The `main()` function and integration tests are updated to incorporate and validate these new functions, enhancing the granularity of word sequence analysis."
     }
 ]

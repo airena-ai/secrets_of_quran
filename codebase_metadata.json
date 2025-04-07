@@ -116,12 +116,12 @@
     {
       "path": "src/main.py",
       "language": "python",
-      "description": "This module defines the main application entry point that orchestrates data loading, text preprocessing, and various analytical workflows for Quran data, including word frequency analysis, co-occurrence, character frequency, root and lemma word analyses, and n-gram analysis. It also handles logging and error management.",
+      "description": "Main entry point for the Quran Analysis application. It orchestrates data loading, text preprocessing, and multiple analyses including word frequency, n-gram, character frequency, and root/lemma analysis. It also handles environment variables and logging configuration.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Orchestrates the complete workflow by configuring the logger, loading data, preprocessing text, invoking multiple analytical functions, and managing errors during execution.",
+          "description": "Orchestrates application flow by configuring logging, loading data, preprocessing text, performing various frequency and n-gram analyses, and logging detailed results. Also manages dependency injection and error handling.",
           "parameters": [],
           "return_type": "None"
         }
@@ -312,25 +312,19 @@
     {
       "path": "tests/test_integration.py",
       "language": "python",
-      "description": "This module contains integration tests for the main application flow. It verifies that data loading, processing, and various analytical modules work together correctly and that expected log messages are produced.",
+      "description": "Contains integration tests for the Quran Analysis application using unittest. It validates the core user flow by executing the main function and verifying log messages for data loading, processing, and analysis modules.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration tests for the core user flow using the unittest framework.",
+          "description": "Integration tests for the core user flow of the Quran Analysis application.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the end-to-end integration flow by setting up the environment, triggering the main application workflow, and verifying log outputs and file operations.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestIntegration",
-                  "description": "Instance of the test case."
-                }
-              ],
+              "description": "Tests the complete integration flow by setting up environment variables, executing the main function, and verifying the expected log outputs and analysis results.",
+              "parameters": [],
               "return_type": "None"
             }
           ]
@@ -696,25 +690,59 @@
     {
       "path": "src/ngram_analyzer.py",
       "language": "python",
-      "description": "This module provides functionality to analyze word n-grams from Quran data using a sliding window approach. It calculates frequency statistics and logs the top 20 most frequent n-grams along with the total count of unique n-grams.",
+      "description": "This module contains functions for analyzing word n-gram frequency at different levels (Quran, Surah, and Ayah) using logging and collections.Counter. It processes input data to generate n-gram frequency counts and logs key analysis metrics.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_word_ngrams",
-          "description": "Analyzes word n-gram frequency for the Quran data by tokenizing each ayah, generating n-grams, counting their occurrences, and logging the top 20 most frequent n-grams and the overall unique count.",
+          "description": "Analyze word n-gram frequency for the Quran data. Iterates over each ayah, tokenizes it, generates n-grams, counts frequencies, and logs the top 20 n-grams and total unique count.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of ayahs where each ayah is either a string (pre-tokenized) or a list of tokens."
+              "description": "List of ayahs where each ayah is either a tokenized string or a list of tokens."
             },
             {
               "name": "n",
               "type": "int",
-              "description": "The size of the n-gram. Default is 2 for bigrams."
+              "description": "The size of the n-gram. Default value is 2 for bigrams."
             }
           ],
           "return_type": "Counter"
+        },
+        {
+          "name": "analyze_surah_word_ngrams",
+          "description": "Analyze word n-gram frequency at the Surah level by grouping ayahs, generating n-grams, and logging top 20 frequent n-grams along with unique n-gram counts.",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data with keys such as 'surah', 'ayah', 'verse_text', and optionally 'processed_text'."
+            },
+            {
+              "name": "n",
+              "type": "int",
+              "description": "The size of the n-gram. Default value is 2 for bigrams."
+            }
+          ],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_ayah_word_ngrams",
+          "description": "Analyze word n-gram frequency at the Ayah level by tokenizing each ayah and generating n-grams, then logging the top 20 most frequent n-grams and unique count.",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data with keys such as 'surah', 'ayah', 'processed_text', or 'verse_text'."
+            },
+            {
+              "name": "n",
+              "type": "int",
+              "description": "The size of the n-gram. Default value is 2 for bigrams."
+            }
+          ],
+          "return_type": "dict"
         }
       ],
       "dependencies": []

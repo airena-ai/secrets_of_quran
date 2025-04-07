@@ -63,5 +63,10 @@
         "iteration": 12,
         "date": "2025-04-07",
         "iteration_goal": "This increment focuses on implementing word N-gram frequency analysis at the Quran level. A new function `analyze_word_ngrams` will be created to identify and count frequent sequences of words (bigrams by default) in the entire Quran. The `main()` function and integration tests will be updated to incorporate and validate this new analysis, providing insights into common word combinations within the Quranic text. This step builds upon previous tokenization and preprocessing functionalities to explore higher-order word patterns."
+    },
+    {
+        "iteration": 13,
+        "date": "2025-04-07",
+        "iteration_goal": "Implement word N-gram frequency analysis at the Surah and Ayah levels. Create `analyze_surah_word_ngrams` and `analyze_ayah_word_ngrams` functions to analyze word N-grams within each Surah and Ayah. Update `main()` to include these analyses and enhance integration tests to validate the implementation. This provides a more granular view of word sequence patterns in the Quran."
     }
 ]
