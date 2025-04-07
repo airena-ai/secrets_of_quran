@@ -735,30 +735,30 @@
     },
     {
       "path": "src/ngram_analyzer.py",
-      "language": "python",
-      "description": "This file contains a collection of functions that perform n-gram analysis on Quran data. It provides word n-gram and character n-gram analysis at multiple levels including overall Quran, Surah-level, and Ayah-level. Detailed logging is implemented to trace the analysis steps and output the top frequent n-grams along with counts.",
+      "language": "Python",
+      "description": "This Python module provides functions for analyzing both word and character n-grams in Quran data at multiple levels (Quran, Surah, and Ayah). It uses sliding window techniques and logging to output frequency analyses.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_word_ngrams",
-          "description": "Analyze word n-gram frequency for the Quran data. Iterates over each ayah, tokenizes based on its type, generates n-grams using a sliding window, counts occurrences, and logs the top 20 most frequent word bigrams and total unique n-grams.",
+          "description": "Analyzes word n-gram frequency for the Quran data by tokenizing each ayah, generating n-grams using a sliding window approach, logging the top frequent n-grams, and returning a Counter object of n-gram frequencies.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of ayahs where each ayah is either a string (pre-tokenized) or a list of tokens."
+              "description": "List of ayahs where each ayah can be a pre-tokenized list or a string that needs to be split."
             },
             {
               "name": "n",
               "type": "int",
-              "description": "The size of the n-gram; default is 2 for bigrams."
+              "description": "Size of the n-gram (default=2 for bigrams)."
             }
           ],
           "return_type": "Counter"
         },
         {
           "name": "analyze_surah_word_ngrams",
-          "description": "Analyze word n-gram frequency at the Surah level by grouping the Quran data by Surah, consolidating tokens, generating n-grams with a sliding window, and logging the top 10 n-grams along with total unique n-gram count for each Surah.",
+          "description": "Analyzes word n-gram frequency at the Surah level by grouping Quran data by surah, consolidating tokens, generating n-grams, logging the top 10 frequent n-grams, and returning a dictionary mapping each surah to its Counter of n-grams.",
           "parameters": [
             {
               "name": "data",
@@ -768,75 +768,75 @@
             {
               "name": "n",
               "type": "int",
-              "description": "The size of the n-gram; default is 2 for bigrams."
+              "description": "Size of the n-gram (default=2 for bigrams)."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_ayah_word_ngrams",
-          "description": "Analyze word n-gram frequency at the Ayah level. Tokenizes each ayah, generates n-grams using a sliding window, and logs the top 5 n-grams along with total unique n-gram counts for each ayah.",
+          "description": "Analyzes word n-gram frequency at the Ayah level by processing each ayah, generating n-grams, logging the top 5 n-grams, and returning a dictionary mapping each 'Surah|Ayah' identifier to a Counter object of n-grams.",
           "parameters": [
             {
               "name": "data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data."
+              "description": "List of dictionaries representing Quran data with keys like 'surah', 'ayah', 'verse_text', and optionally 'processed_text'."
             },
             {
               "name": "n",
               "type": "int",
-              "description": "The size of the n-gram; default is 2 for bigrams."
+              "description": "Size of the n-gram (default=2 for bigrams)."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_character_ngrams",
-          "description": "Analyze character n-gram frequency for the entire Quran text by concatenating ayah texts, generating character n-grams using a sliding window, and logging the top 10 most frequent character n-grams and total unique n-gram count.",
+          "description": "Analyzes character n-gram frequency for the entire Quran text by concatenating ayahs, generating character n-grams with a sliding window, logging the top 10 n-grams, and returning a Counter object of n-gram frequencies.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data."
+              "description": "List of dictionaries representing Quran data with keys such as 'processed_text', 'verse_text', or 'text'."
             },
             {
               "name": "n",
               "type": "int",
-              "description": "The length of the n-gram; default is 2 for character bigrams."
+              "description": "Length of the n-gram (default=2 for bigrams)."
             }
           ],
           "return_type": "Counter"
         },
         {
           "name": "analyze_surah_character_ngrams",
-          "description": "Analyze character n-gram frequency at the Surah level by grouping Quran data by Surah, concatenating texts, generating character n-grams using a sliding window, and logging the top 5 n-grams and total unique n-gram count per Surah.",
+          "description": "Analyzes character n-grams at the Surah level by grouping Quran data by surah, concatenating texts, generating character n-grams, logging the top 10 n-grams for each surah, and returning a dictionary mapping each surah to its Counter of n-gram frequencies.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data."
+              "description": "List of dictionaries representing Quran data with keys such as 'processed_text', 'verse_text', or 'text'."
             },
             {
               "name": "n",
               "type": "int",
-              "description": "The length of the n-gram; default is 2 for character bigrams."
+              "description": "Length of the n-gram (default=2 for bigrams)."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_ayah_character_ngrams",
-          "description": "Analyze character n-gram frequency at the Ayah level. For each ayah, generates character n-grams from the text using a sliding window, logs the top 3 n-grams and the total count of unique n-grams.",
+          "description": "Analyzes character n-grams at the Ayah level for a sample of ayahs (first 5 per surah) by generating n-grams, logging the top 5 n-grams, and returning a dictionary mapping each 'Surah|Ayah' identifier to a Counter object of n-gram frequencies.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data."
+              "description": "List of dictionaries representing Quran data with keys like 'surah', 'ayah', and various text fields such as 'processed_text', 'text', or 'verse_text'."
             },
             {
               "name": "n",
               "type": "int",
-              "description": "The length of the n-gram; default is 2 for character bigrams."
+              "description": "Length of the n-gram (default=2 for bigrams)."
             }
           ],
           "return_type": "dict"
@@ -846,62 +846,38 @@
     },
     {
       "path": "tests/test_ngram_analyzer.py",
-      "language": "python",
-      "description": "Unit tests for the n-gram analyzer module, verifying the correctness of character n-gram analysis functions at the Quran, Surah, and Ayah levels.",
+      "language": "Python",
+      "description": "This file contains unit tests for the ngram_analyzer module. It uses Python's unittest framework to validate character n-gram analysis functions at various levels (Quran, Surah, Ayah) and for different n-gram sizes.",
       "classes": [
         {
           "name": "TestCharacterNGrams",
-          "description": "Unit tests for n-gram analysis functions in the ngram_analyzer module to ensure accurate frequency counts of character n-grams.",
+          "description": "Unit tests for verifying character n-gram analysis functions from the ngram_analyzer module. It includes tests for n=2, n=3, and surah/ayah level analyses.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_analyze_character_ngrams_n2",
-              "description": "Tests the analyze_character_ngrams function with n=2 to verify correct bigram frequency counting on sample data.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestCharacterNGrams",
-                  "description": "Instance of TestCharacterNGrams."
-                }
-              ],
+              "description": "Tests analyze_character_ngrams with n=2 on sample data to ensure correct frequency counts of character bigrams.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_analyze_character_ngrams_n3",
-              "description": "Tests the analyze_character_ngrams function with n=3 to verify correct trigram frequency counting on sample input.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestCharacterNGrams",
-                  "description": "Instance of TestCharacterNGrams."
-                }
-              ],
+              "description": "Tests analyze_character_ngrams with n=3 on sample data to validate frequency counts of character trigrams.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_analyze_surah_character_ngrams",
-              "description": "Tests the analyze_surah_character_ngrams function to ensure it correctly aggregates and counts character n-grams at the Surah level from multiple entries.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestCharacterNGrams",
-                  "description": "Instance of TestCharacterNGrams."
-                }
-              ],
+              "description": "Tests analyze_surah_character_ngrams by providing sample data and comparing expected Counter outputs for surah-level character n-gram analysis.",
+              "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_analyze_ayah_character_ngrams",
-              "description": "Tests the analyze_ayah_character_ngrams function to verify correct grouping and frequency counting of character n-grams at the Ayah level.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestCharacterNGrams",
-                  "description": "Instance of TestCharacterNGrams."
-                }
-              ],
+              "description": "Tests analyze_ayah_character_ngrams to ensure that ayah-level grouping and character n-gram frequency counts match expected results.",
+              "parameters": [],
               "return_type": "None"
             }
           ]

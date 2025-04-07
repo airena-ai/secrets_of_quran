@@ -171,7 +171,7 @@ def analyze_surah_character_ngrams(quran_data, n=2):
     Analyze character n-grams at the Surah level.
     
     This function groups the Quran data by Surah, concatenates the preprocessed text of all ayahs within each Surah,
-    generates character n-grams using a sliding window, counts their frequencies, and logs the top 5 most frequent n-grams
+    generates character n-grams using a sliding window, counts their frequencies, and logs the top 10 most frequent n-grams
     and the total unique n-gram count for each Surah.
     
     :param quran_data: List of dictionaries representing Quran data.
@@ -193,8 +193,8 @@ def analyze_surah_character_ngrams(quran_data, n=2):
         for i in range(len(text) - n + 1):
             ngram = text[i:i+n]
             counter[ngram] += 1
-        top_5 = counter.most_common(5)
-        logger.info("Surah-level Character N-gram Analysis - Surah: %s, Top 5 n-grams: %s", surah, top_5)
+        top_10 = counter.most_common(10)
+        logger.info("Surah-level Character N-gram Analysis - Surah: %s, Top 10 n-grams: %s", surah, top_10)
         logger.info("Surah %s - Total unique character n-grams: %d", surah, len(counter))
         surah_ngram_counts[surah] = counter
     logger.info("Completed Character N-gram Analysis at Surah level.")
@@ -204,31 +204,35 @@ def analyze_ayah_character_ngrams(quran_data, n=2):
     '''
     Analyze character n-grams at the Ayah level.
     
-    For each Ayah in the Quran data, this function generates character n-grams from the preprocessed text,
-    counts their frequencies, and logs the top 3 most frequent n-grams along with the total unique n-gram count,
-    clearly indicating the Surah and Ayah number.
+    For a sample of Ayahs (first 5 ayahs per Surah) in the Quran data, this function generates character n-grams from 
+    the preprocessed text, counts their frequencies, and logs the top 5 most frequent n-grams along with the total unique 
+    n-gram count, clearly indicating the Surah and Ayah number.
     
     :param quran_data: List of dictionaries representing Quran data.
     :param n: The length of the n-gram (default is 2 for bigrams).
-    :return: A dictionary mapping each Ayah identifier (Surah|Ayah) to a Counter of character n-gram frequencies.
+    :return: A dictionary mapping each Ayah identifier (Surah|Ayah) to a Counter of character n-gram frequencies for the sampled ayahs.
     '''
     import logging
-    from collections import Counter
+    from collections import defaultdict, Counter
     logger = logging.getLogger("quran_analysis")
     logger.info("Starting Character N-gram Analysis at Ayah level.")
     ayah_ngram_counts = {}
+    surah_groups = defaultdict(list)
     for item in quran_data:
         surah = item.get("surah_number") or item.get("surah", "Unknown")
-        ayah = item.get("ayah_number") or item.get("ayah", "Unknown")
-        text = item.get("processed_text") or item.get("text") or item.get("verse_text", "")
-        counter = Counter()
-        for i in range(len(text) - n + 1):
-            ngram = text[i:i+n]
-            counter[ngram] += 1
-        top_3 = counter.most_common(3)
-        ayah_id = f"{surah}|{ayah}"
-        logger.info("Ayah-level Character N-gram Analysis - Surah: %s, Ayah: %s, Top 3 n-grams: %s", surah, ayah, top_3)
-        logger.info("Ayah %s - Total unique character n-grams: %d", ayah_id, len(counter))
-        ayah_ngram_counts[ayah_id] = counter
+        surah_groups[surah].append(item)
+    for surah, ayah_items in surah_groups.items():
+        for item in ayah_items[:5]:
+            ayah = item.get("ayah_number") or item.get("ayah", "Unknown")
+            text = item.get("processed_text") or item.get("text") or item.get("verse_text", "")
+            counter = Counter()
+            for i in range(len(text) - n + 1):
+                ngram = text[i:i+n]
+                counter[ngram] += 1
+            ayah_id = f"{surah}|{ayah}"
+            top_5 = counter.most_common(5)
+            logger.info("Ayah-level Character N-gram Analysis - Surah: %s, Ayah: %s, Top 5 n-grams: %s", surah, ayah, top_5)
+            logger.info("Ayah %s - Total unique character n-grams: %d", ayah_id, len(counter))
+            ayah_ngram_counts[ayah_id] = counter
     logger.info("Completed Character N-gram Analysis at Ayah level.")
     return ayah_ngram_counts

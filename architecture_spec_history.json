@@ -103,5 +103,10 @@
         "iteration": 20,
         "date": "2025-04-07",
         "iteration_goal": "Extend the `ngram_analyzer` module with `analyze_surah_word_ngrams` and `analyze_ayah_word_ngrams` functions to enable word N-gram analysis at Surah and Ayah levels. Update `main()` to incorporate these new functions and enhance logging and integration tests to validate the implementation. This provides a more detailed analysis of word sequence patterns within the Quran at different levels of granularity."
+    },
+    {
+        "iteration": 21,
+        "date": "2025-04-07",
+        "iteration_goal": "Extend the `ngram_analyzer` module to incorporate character N-gram analysis capabilities. New functions will be added for analyzing character N-grams at the Quran, Surah, and Ayah levels. The `main()` function and integration tests will be updated to include and validate these new functionalities, enhancing the text analysis suite with character-level sequence analysis."
     }
 ]
