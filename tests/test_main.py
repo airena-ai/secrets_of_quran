@@ -56,8 +56,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Analysis: Muqatta'at Surah Verse Parity", log_contents)
                 self.assertIn("Average conjunction frequency per verse (Surahs with Muqatta'at):", log_contents)
                 self.assertIn("Average conjunction frequency per verse (Surahs without Muqatta'at):", log_contents)
-                # Since CAMeL Tools is unavailable in fallback, check for skipping message in word type distribution
-                self.assertIn("CAMeL Tools not available. Skipping word type distribution analysis.", log_contents)
+                # New assertion for verse length progression analysis log message
+                self.assertIn("Verse Length Progression Trend:", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -119,8 +119,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Analysis: Muqatta'at Surah Verse Parity", log_contents)
                 self.assertIn("Average conjunction frequency per verse (Surahs with Muqatta'at):", log_contents)
                 self.assertIn("Average conjunction frequency per verse (Surahs without Muqatta'at):", log_contents)
-                # For CAMeL Tools available, the word type distribution analysis should log its header
-                self.assertIn("Word Type Distribution Analysis:", log_contents)
+                # New assertion for verse length progression analysis log message
+                self.assertIn("Verse Length Progression Trend:", log_contents)
             finally:
                 if os.path.exists(file_path):
                     os.remove(file_path)

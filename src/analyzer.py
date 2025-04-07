@@ -484,6 +484,68 @@ def analyze_verse_lengths_distribution(text, threshold=2):
             src.logger.log_secret_found(f"[Surah {surah}] Verse length consistency (StdDev: {stddev:.2f})")
     return results
 
+def analyze_verse_length_progression(text):
+    '''Analyze the progression of verse lengths within each Surah using linear regression.
+
+    This function groups the preprocessed Quran text by Surah from the provided text,
+    tokenizes each verse to count the number of words, and performs a linear regression
+    analysis on the verse lengths against their ordinal position. The slope of the regression line 
+    is used to categorize the verse length progression into three trends:
+        - "Increasing": if the slope is greater than 0.1,
+        - "Decreasing": if the slope is less than -0.1,
+        - "Stable": if the slope is between -0.1 and 0.1.
+    It also calculates the average verse length for each Surah.
+    For each Surah, the analysis result, including the average verse length and progression trend,
+    is logged to the results.log file. If the trend is "Increasing" or "Decreasing", an additional
+    "POTENTIAL SECRET FOUND" message is logged.
+
+    Args:
+        text (str): The preprocessed Quran text, where each line represents a verse in the format "Surah|Ayah|Verse".
+
+    Returns:
+        None
+    '''
+    from collections import defaultdict
+    import re
+    from scipy.stats import linregress
+    from src.logger import log_result, log_secret_found
+
+    surah_verses = defaultdict(list)
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            verse_text = m.group(3).strip()
+        else:
+            surah = "1"
+            verse_text = line.strip()
+        surah_verses[surah].append(verse_text)
+
+    for surah, verses in surah_verses.items():
+        if not verses:
+            continue
+        lengths = [len(verse.split()) for verse in verses]
+        avg_length = sum(lengths) / len(lengths)
+        if len(lengths) >= 2:
+            x = list(range(1, len(lengths)+1))
+            slope = linregress(x, lengths).slope
+        else:
+            slope = 0
+
+        if slope > 0.1:
+            trend = "Increasing"
+        elif slope < -0.1:
+            trend = "Decreasing"
+        else:
+            trend = "Stable"
+
+        log_result(f"Surah {surah}: Average Verse Length: {avg_length:.2f}, Verse Length Progression Trend: {trend}")
+        if trend in ("Increasing", "Decreasing"):
+            log_secret_found(f"Surah {surah} - Verse Length Progression: {trend}")
+
 def analyze_palindromes(quran_text):
     '''Analyze palindromic structures within each verse of the Quran.
     
@@ -2038,5 +2100,3 @@ def analyze_word_type_distribution(text):
         src.logger.log_result("Percentage difference for {0}: {1:.2f}%".format(word_type, diff))
         if diff > 10:
             src.logger.log_secret_found("POTENTIAL SECRET FOUND: {0} distribution significantly different between Muqatta'at and Non-Muqatta'at Surahs.".format(word_type.capitalize()))
-
-# End of new function analyze_word_type_distribution

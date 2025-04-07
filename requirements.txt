@@ -1,2 +1,1 @@
-camel_tools
-scipy
+scipy>=1.0.0
