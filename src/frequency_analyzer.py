@@ -166,3 +166,40 @@ def analyze_surah_root_word_frequency(data):
         unique_count = len(counter)
         logger.info("Surah-level Root Word Frequency Analysis - Surah %s Top 10 Root Words: %s, Unique Root Words Count: %d", surah, top_10, unique_count)
     return surah_root_freq
+
+def analyze_ayah_root_word_frequency(data):
+    '''
+    Analyze the frequency of root words at the Ayah level.
+    
+    For each Ayah:
+      - Tokenize the ayah text using the existing tokenization logic.
+      - For each token, extract the root word using the existing root word extraction logic.
+      - Count the frequency of each root word within that ayah.
+      - Log the results in a structured format including:
+          Ayah identifier (Surah|Ayah), top 5 most frequent root words, and total unique root word count.
+    
+    :param data: List of dictionaries containing Quran data.
+    :return: Dictionary mapping ayah identifier (Surah|Ayah) to a dictionary of root word frequencies.
+    '''
+    import logging
+    from collections import Counter
+    from src.tokenizer import tokenize_text
+    from src.root_extractor import extract_root
+    logger = logging.getLogger("quran_analysis")
+    ayah_root_freqs = {}
+    for item in data:
+        surah = item.get("surah", "Unknown")
+        ayah = item.get("ayah", "Unknown")
+        ayah_id = f"{surah}|{ayah}"
+        text = item.get("processed_text") or item.get("verse_text", "")
+        if not text:
+            continue
+        tokens = tokenize_text(text)
+        roots = [extract_root(token) for token in tokens]
+        counter = Counter(roots)
+        ayah_root_freqs[ayah_id] = dict(counter)
+        top_5 = counter.most_common(5)
+        logger.info("Ayah Root Word Frequency Analysis - Ayah: %s", ayah_id)
+        logger.info("Top 5 Root Words: %s", dict(top_5))
+        logger.info("Total Unique Root Words: %d", len(counter))
+    return ayah_root_freqs

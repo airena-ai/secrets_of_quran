@@ -43,5 +43,10 @@
         "iteration": 8,
         "date": "2025-04-07",
         "iteration_goal": "A new function `analyze_surah_root_word_frequency` is added to the `frequency_analyzer` module to perform root word frequency analysis at the Surah level. The `main` function is updated to include this new analysis, and integration tests are added for validation. This enhancement provides a more detailed view of root word distribution within each Surah of the Quran, building upon existing modules and functionalities."
+    },
+    {
+        "iteration": 9,
+        "date": "2025-04-07",
+        "iteration_goal": "A new function `analyze_ayah_root_word_frequency` is added to the `frequency_analyzer` module to calculate root word frequencies at the Ayah level. The `main()` function and logging are updated to incorporate this new analysis. Integration tests are enhanced to validate the new functionality, providing a more granular view of root word distribution within each Ayah."
     }
 ]

@@ -64,6 +64,15 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Ayah-level word frequency analysis completed.", log_content)
         self.assertIn("Ayah-level Frequency Analysis - Surah 1, Ayah 1 Top 5 Words:", log_content)
 
+        # Assertions for ayah-level root word frequency analysis
+        self.assertIn("Starting Ayah-level Root Word Frequency Analysis.", log_content)
+        self.assertIn("Ayah-level Root Word Frequency Analysis completed.", log_content)
+        self.assertIn("Ayah Root Word Frequency Analysis - Ayah:", log_content)
+        # New assertions to validate detailed ayah-level root word analysis output
+        self.assertRegex(log_content, r"Ayah Root Word Frequency Analysis - Ayah:\s*1\|1")
+        self.assertIn("Top 5 Root Words:", log_content)
+        self.assertRegex(log_content, r"Total Unique Root Words:\s*\d+")
+        
         # Assertions for word length distribution analysis
         self.assertIn("Word Length Distribution Analysis:", log_content)
         self.assertIn("Total words analyzed:", log_content)
@@ -84,6 +93,12 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Root Word Co-occurrence Analysis Completed.", log_content)
         self.assertIn("Total unique root word pairs:", log_content)
         self.assertIn("Top 10000 most frequent root word pairs:", log_content)
+
+        # Assertions for lemma word frequency and co-occurrence analysis
+        self.assertIn("Starting lemma word frequency analysis.", log_content)
+        self.assertIn("Lemma word frequency analysis completed.", log_content)
+        self.assertIn("Starting Lemma Word Co-occurrence Analysis...", log_content)
+        self.assertIn("Lemma Word Co-occurrence Analysis Completed.", log_content)
 
         # Cleanup created files
         os.remove(data_file)

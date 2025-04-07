@@ -115,13 +115,13 @@
     },
     {
       "path": "src/main.py",
-      "language": "python",
-      "description": "Main application entry point that orchestrates data loading, text preprocessing, word frequency and co-occurrence analysis, and various logging operations for Quran data analysis. It handles environment setup, error management, and integrates multiple analysis modules.",
+      "language": "Python",
+      "description": "Entry point for the application. This script sets up logging, data loading and performs various analyses on Quran data including word frequency analysis, word co-occurrence, and root/lemma analysis. It orchestrates the workflow, handles exceptions gracefully, and logs detailed information during execution.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Coordinates the complete workflow of data loading, preprocessing, and analysis of Quran data. Manages logger configuration, error handling, and integrates functions from various modules for comprehensive data analysis.",
+          "description": "Main function to orchestrate data loading, text preprocessing, and word frequency analysis. It loads Quran data, preprocesses text, performs frequency and co-occurrence analysis, and logs statistical results.",
           "parameters": [],
           "return_type": "None"
         }
@@ -311,23 +311,23 @@
     {
       "path": "tests/test_integration.py",
       "language": "python",
-      "description": "Integration tests for the core user flow of the Quran data analysis application. Uses the unittest framework to validate the end-to-end execution, checking log outputs and analysis results for expected content.",
+      "description": "This file contains integration tests for the core application flow using unittest. It sets up filesystem conditions, executes the main function from src/main.py, verifies log outputs, and manages cleanup of temporary files and directories post testing.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration test class for verifying the complete application workflow, including data loading, processing, and logging. It ensures that the analysis modules produce expected outputs.",
+          "description": "Integration tests for the core user flow. Contains tests to validate main application execution, log outputs, and file system operations triggered by the main function.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the full integration of the main application flow, verifying log outputs and analysis outputs to ensure the application functions as expected.",
+              "description": "Executes the integration test by setting up the environment, invoking the main function, verifying detailed log messages for word frequency, co-occurrence, and root word analyses, and finally ensuring proper cleanup of created files.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestIntegration",
-                  "description": "Instance of TestIntegration."
+                  "description": "Instance reference of TestIntegration."
                 }
               ],
               "return_type": "None"
@@ -502,25 +502,25 @@
     },
     {
       "path": "src/frequency_analyzer.py",
-      "language": "python",
-      "description": "This module provides functions for analyzing the frequency and distribution of words, root words, and lemma words in Quran data. It includes functionality for counting word frequencies, analyzing word length distributions, and performing Surah and Ayah level analyses with detailed logging.",
+      "language": "Python",
+      "description": "Contains functions for analyzing various aspects of text data. It includes methods to count word frequencies, analyze word length distribution, perform Surah and Ayah level word frequency analyses, and conduct root and lemma word analysis.",
       "classes": [],
       "functions": [
         {
           "name": "count_word_frequencies",
-          "description": "Counts the frequency of each word in the tokenized text by iterating over each list of tokens and aggregating their counts.",
+          "description": "Count the frequency of each word in the tokenized text by iterating over lists of tokens and aggregating counts.",
           "parameters": [
             {
               "name": "tokenized_text",
               "type": "list",
-              "description": "List of lists where each inner list contains words from a verse."
+              "description": "List of lists, where each inner list contains words from a verse."
             }
           ],
-          "return_type": "dictionary"
+          "return_type": "dict"
         },
         {
           "name": "analyze_word_length_distribution",
-          "description": "Analyzes the distribution of word lengths in the tokenized text and logs statistics like total words, average word length, and most frequent word lengths.",
+          "description": "Analyze the distribution of word lengths in the tokenized text by computing total words, average length, and frequency of each word length.",
           "parameters": [
             {
               "name": "tokenized_text",
@@ -528,11 +528,11 @@
               "description": "List of lists containing tokenized words."
             }
           ],
-          "return_type": "dictionary"
+          "return_type": "dict"
         },
         {
           "name": "analyze_surah_word_frequency",
-          "description": "Analyzes word frequencies at the Surah level by processing Quran data and logging the top 10 words for each Surah.",
+          "description": "Analyze word frequencies at the Surah level by processing each verse's processed text and aggregating word counts per Surah.",
           "parameters": [
             {
               "name": "data",
@@ -540,11 +540,11 @@
               "description": "List of dictionaries containing Quran data."
             }
           ],
-          "return_type": "dictionary"
+          "return_type": "dict"
         },
         {
           "name": "analyze_ayah_word_frequency",
-          "description": "Analyzes word frequencies at the Ayah level by processing Quran data and logging the top 5 words for each Ayah.",
+          "description": "Analyze word frequencies at the Ayah level by processing each verse's text and aggregating the top five frequent words per ayah.",
           "parameters": [
             {
               "name": "data",
@@ -552,35 +552,35 @@
               "description": "List of dictionaries containing Quran data."
             }
           ],
-          "return_type": "dictionary"
+          "return_type": "dict"
         },
         {
           "name": "analyze_root_word_frequency",
-          "description": "Analyzes the frequency of root words across Quran data by updating counts from the 'roots' key, with logging for total unique roots and the top 1000 most frequent root words.",
+          "description": "Analyze the frequency of root words across the Quran data by aggregating counts from the 'roots' key in each data item.",
           "parameters": [
             {
               "name": "data",
               "type": "list",
-              "description": "List of dictionaries containing Quran data with a 'roots' key."
+              "description": "List of dictionaries containing Quran data with an optional 'roots' field."
             }
           ],
-          "return_type": "Counter"
+          "return_type": "dict"
         },
         {
           "name": "analyze_lemma_word_frequency",
-          "description": "Analyzes the frequency of lemma words across Quran data and logs total unique lemma words along with the top 1000 frequent lemma words.",
+          "description": "Analyze the frequency of lemma words across the Quran data by aggregating counts from the 'lemmas' key in each data item.",
           "parameters": [
             {
               "name": "data",
               "type": "list",
-              "description": "List of dictionaries containing Quran data with a 'lemmas' key."
+              "description": "List of dictionaries containing Quran data with an optional 'lemmas' field."
             }
           ],
-          "return_type": "Counter"
+          "return_type": "dict"
         },
         {
           "name": "analyze_surah_root_word_frequency",
-          "description": "Analyzes the frequency of root words at the Surah level by preprocessing verses to extract root words and counting their occurrences, logging the top 10 and unique counts.",
+          "description": "Analyze the frequency of root words at the Surah level by preprocessing each verse's text with a text preprocessor and aggregating token counts.",
           "parameters": [
             {
               "name": "data",
@@ -588,11 +588,25 @@
               "description": "List of dictionaries containing Quran data."
             }
           ],
-          "return_type": "dictionary"
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_ayah_root_word_frequency",
+          "description": "Analyze the frequency of root words at the Ayah level by tokenizing text, extracting root words, and counting their occurrences.",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "list",
+              "description": "List of dictionaries containing Quran data."
+            }
+          ],
+          "return_type": "dict"
         }
       ],
       "dependencies": [
-        "src/text_preprocessor.py"
+        "src/text_preprocessor.py",
+        "src/tokenizer.py",
+        "src/root_extractor.py"
       ]
     },
     {

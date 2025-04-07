@@ -20,6 +20,9 @@ def main():
     8. Analyzes word length distribution within the tokenized text and logs summary statistics.
     9. Analyzes root word frequency across the Quran data and logs the top 20 root words and unique count.
     10. Analyzes root word co-occurrence within each Ayah of the Quran data, logging the top 20 most frequent pairs.
+    11. Analyzes ayah-level root word frequency, logging top 5 root words and unique count per ayah.
+    12. Analyzes lemma word frequency across the Quran data.
+    13. Analyzes lemma word co-occurrence across the Quran data.
     """
     logger = configure_logger()
     logger.info("Application started.")
@@ -68,7 +71,6 @@ def main():
         logger.info("Starting word co-occurrence analysis.")
         cooccurrence_freq = analyze_word_cooccurrence(data)
         logger.info("Co-occurrence analysis returned %d unique word pairs.", len(cooccurrence_freq))
-        #logger.info("Word co-occurrence analysis output: %s", cooccurrence_freq)
         
         # Surah-level word frequency analysis
         from src.frequency_analyzer import analyze_surah_word_frequency, analyze_ayah_word_frequency
@@ -86,6 +88,12 @@ def main():
         logger.info("Starting surah-level root word frequency analysis.")
         surah_root_frequencies = analyze_surah_root_word_frequency(data)
         logger.info("Surah-level root word frequency analysis completed.")
+
+        # Integrate ayah-level root word frequency analysis
+        from src.frequency_analyzer import analyze_ayah_root_word_frequency
+        logger.info("Starting Ayah-level Root Word Frequency Analysis.")
+        ayah_root_frequencies = analyze_ayah_root_word_frequency(data)
+        logger.info("Ayah-level Root Word Frequency Analysis completed.")
 
         # Integrate root word frequency analysis
         from src.frequency_analyzer import analyze_root_word_frequency
