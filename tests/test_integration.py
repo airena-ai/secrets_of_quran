@@ -148,10 +148,14 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Starting Semantic Group Co-occurrence Analysis at Ayah Level.", log_content)
         self.assertIn("Top 10 semantic group co-occurrence pairs:", log_content)
         self.assertIn("Total unique semantic group co-occurrence pairs found:", log_content)
-
+        
         # NEW assertions for Semantic Group Gematria Distribution Analysis
         self.assertIn("Starting Semantic Group Gematria Distribution Analysis.", log_content)
         self.assertIn("Semantic Group Gematria Distribution Analysis completed.", log_content)
+        
+        # New assertions for Gematria Distribution by Sentence Length Analysis
+        self.assertIn("Starting Gematria Distribution by Sentence Length Analysis.", log_content)
+        self.assertIn("Gematria Distribution by Sentence Length Analysis completed.", log_content)
         
         # New assertions for Text Complexity Analyses
         self.assertIn("Starting Text Complexity Analyses.", log_content)

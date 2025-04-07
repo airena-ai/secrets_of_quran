@@ -103,19 +103,21 @@ def main():
     6. Computes positional Gematria analyses for the first and last words of each Ayah.
     7. Computes Gematria value co-occurrence analysis at the Ayah level.
     8. Computes Semantic Group-based Gematria distribution analysis.
-    9. Computes Surah-level and Ayah-level Character Frequency Analysis.
-    10. Computes word frequency analysis and logs the top frequent words.
-    11. Computes word collocation analysis.
-    12. Computes Surah-level and Ayah-level word frequency analyses.
-    13. Computes ayah-level and surah-level root word frequency analyses.
-    14. Computes first and last root word frequency analyses at Ayah level.
-    15. Computes semantic group frequency and co-occurrence analyses.
-    16. Computes root word frequency and co-occurrence analyses.
-    17. Computes lemma word frequency and co-occurrence analyses.
-    18. Computes word n-gram and character n-gram analyses.
-    19. Performs anomaly detection analysis.
-    20. Computes sentence length distribution analyses at Quran, Surah, and Ayah levels.
-    21. Performs text complexity analyses at Quran, Surah, and Ayah levels.
+    9. Computes Gematria distribution analysis by sentence length.
+    10. Computes Sentence Length vs Gematria Correlation Analysis.
+    11. Computes Surah-level and Ayah-level Character Frequency Analysis.
+    12. Computes word frequency analysis and logs the top frequent words.
+    13. Computes word collocation analysis.
+    14. Computes Surah-level and Ayah-level word frequency analyses.
+    15. Computes ayah-level and surah-level root word frequency analyses.
+    16. Computes first and last root word frequency analyses at Ayah level.
+    17. Computes semantic group frequency and co-occurrence analyses.
+    18. Computes root word frequency and co-occurrence analyses.
+    19. Computes lemma word frequency and co-occurrence analyses.
+    20. Computes word n-gram and character n-gram analyses.
+    21. Performs anomaly detection analysis.
+    22. Computes sentence length distribution analyses at Quran, Surah, and Ayah levels.
+    23. Performs text complexity analyses at Quran, Surah, and Ayah levels.
     '''
     logger = configure_logger()
     logger.info("Application started.")
@@ -178,6 +180,12 @@ def main():
         logger.info("Starting Semantic Group Gematria Distribution Analysis.")
         semantic_group_gematria_distribution = analyze_semantic_group_gematria_distribution(data, gematria_mapping)
         logger.info("Semantic Group Gematria Distribution Analysis completed.")
+        
+        # New: Integrate Gematria Distribution Analysis by Sentence Length
+        from src.gematria_analyzer import analyze_gematria_distribution_by_sentence_length
+        logger.info("Starting Gematria Distribution by Sentence Length Analysis.")
+        gematria_sentence_length_distribution = analyze_gematria_distribution_by_sentence_length(data)
+        logger.info("Gematria Distribution by Sentence Length Analysis completed.")
         
         # NEW: Integrate Sentence Length vs Gematria Correlation Analysis.
         from src.correlation_analyzer import analyze_sentence_length_gematria_correlation

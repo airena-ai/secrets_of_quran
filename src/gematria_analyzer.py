@@ -302,3 +302,40 @@ def analyze_semantic_group_gematria_distribution(quran_data, gematria_mapping):
         logger.info("Semantic Group '%s': Top 10 Gematria Values: %s", group, top_10)
     
     return semantic_group_distribution
+
+def analyze_gematria_distribution_by_sentence_length(quran_data):
+    '''
+    Analyze the distribution of Gematria values of words grouped by sentence length.
+    
+    Iterates over each Ayah in quran_data, tokenizes the processed text to determine the sentence length 
+    (number of words), and groups Ayahs accordingly. For each sentence length group, calculates the frequency distribution 
+    of Gematria values of all words in that group using the calculate_gematria_value function. Logs the sentence length, 
+    full distribution, and the most frequent Gematria value with its count.
+    
+    :param quran_data: List of dictionaries representing Quran data, expected to contain 'processed_text' or 'verse_text'.
+    :return: Dictionary mapping sentence lengths (integer) to dictionaries of Gematria value frequencies.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    sentence_length_groups = {}
+    for item in quran_data:
+        text = item.get("processed_text") or item.get("verse_text", "")
+        words = text.split()
+        length = len(words)
+        if length == 0:
+            continue
+        if length not in sentence_length_groups:
+            sentence_length_groups[length] = []
+        sentence_length_groups[length].extend(words)
+    
+    distribution_by_length = {}
+    for length, words in sentence_length_groups.items():
+        freq = {}
+        for word in words:
+            value = calculate_gematria_value(word)
+            freq[value] = freq.get(value, 0) + 1
+        distribution_by_length[length] = freq
+        sorted_freq = sorted(freq.items(), key=lambda kv: kv[1], reverse=True)
+        most_common = sorted_freq[0] if sorted_freq else (None, 0)
+        logger.info("Sentence Length: %d, Gematria Distribution: %s", length, freq)
+        logger.info("Sentence Length: %d, Most frequent Gematria Value: %s with count %d", length, most_common[0], most_common[1])
+    return distribution_by_length
