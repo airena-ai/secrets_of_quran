@@ -178,5 +178,10 @@
         "iteration": 35,
         "date": "2025-04-07",
         "iteration_goal": "A new `readability_analyzer.py` module is added to calculate Dale-Chall and SMOG readability metrics.  `quran_analysis.py` is updated with new analysis functions that use the `readability_analyzer` and handle logging.  The `main()` function is updated to call these new analyses, and integration tests are added to validate the implementation. This modular approach ensures clear separation of concerns for readability analysis."
+    },
+    {
+        "iteration": 36,
+        "date": "2025-04-07",
+        "iteration_goal": "Introduce a new `comparative_analyzer` module with functions to compare Makki and Madani Surahs based on text complexity, word frequency, and Gematria. Add Makki/Madani Surah categorization data to `data_loader`. Update `main()` to include comparative analysis and add integration tests for the new module. This increment enhances analytical capabilities for stylistic and thematic comparison between Makki and Madani Surahs."
     }
 ]

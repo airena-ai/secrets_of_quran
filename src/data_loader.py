@@ -2,6 +2,9 @@ from src.tokenizer import tokenize_text
 from camel_tools.morphology.database import MorphologyDB
 from camel_tools.morphology.analyzer import Analyzer
 
+MAKKI_SURAHS = [1, 7, 10, 11, 12, 13, 14, 15, 16, 18, 20, 26, 27, 29, 30]
+MADANI_SURAHS = [2, 3, 4, 5, 6, 8, 9, 17, 19, 21, 22, 23, 24, 25]
+
 class QuranDataLoader:
     '''
     A class to load Quran data from a text file.

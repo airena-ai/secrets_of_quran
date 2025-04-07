@@ -10,41 +10,30 @@
     },
     {
       "path": "src/data_loader.py",
-      "language": "Python",
-      "description": "This file contains the QuranDataLoader class responsible for loading Quran verse data from a text file. It handles parsing lines in the format 'surah|ayah|verse_text' and converts them into a structured list of dictionaries. The class includes error handling for file not found scenarios and proper logging.",
+      "language": "python",
+      "description": "This file defines a class `QuranDataLoader` to load Quran data from a text file. It includes functionalities to parse each line of the file, tokenize the verse text, and extract root words and lemmas using camel_tools. It also defines constants for MAKKI and MADANI surahs lists.",
       "classes": [
         {
           "name": "QuranDataLoader",
-          "description": "A class that loads and parses Quran data from a text file. Each line in the file is expected to be in the format 'surah|ayah|verse_text'. The class provides functionality to read this data and convert it into a structured format for further processing.",
+          "description": "A class to load Quran data from a text file.\n\nThe text file is expected to have each line in the format:\nsurah|ayah|verse_text",
           "parents": [],
           "methods": [
             {
               "name": "__init__",
-              "description": "Initializes the QuranDataLoader with an optional file path and sets up logging.",
+              "description": "Initialize the data loader.\n\n:param file_path: Path to the Quran data file. If None, defaults to a predefined path.",
               "parameters": [
-                {
-                  "name": "self",
-                  "type": "QuranDataLoader",
-                  "description": "Instance of the class"
-                },
                 {
                   "name": "file_path",
                   "type": "str",
-                  "description": "Path to the data file. If None, returns empty data."
+                  "description": "Path to the Quran data file."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "load_data",
-              "description": "Loads data from the specified file, parsing each line into a dictionary with 'surah', 'ayah', and 'verse_text' keys. Raises FileNotFoundError if the file path is not provided or the file does not exist.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "QuranDataLoader",
-                  "description": "Instance of the class"
-                }
-              ],
+              "description": "Load and parse the Quran data file.\n\n:return: List of dictionaries representing each verse with keys 'surah', 'ayah', 'verse_text', and 'roots'.",
+              "parameters": [],
               "return_type": "list"
             }
           ]
@@ -52,8 +41,9 @@
       ],
       "functions": [],
       "dependencies": [
-        "os",
-        "logging"
+        "src.tokenizer",
+        "camel_tools.morphology.database",
+        "camel_tools.morphology.analyzer"
       ]
     },
     {
@@ -115,33 +105,33 @@
     },
     {
       "path": "src/main.py",
-      "language": "Python",
-      "description": "Main module orchestrating the Quran text analysis pipeline. Integrates multiple analyses including text complexity, gematria, frequency, n-gram, readability, and anomaly detection. Configures logging and error handling for the application.",
+      "language": "python",
+      "description": "Main application file that orchestrates data loading, preprocessing and multiple analyses on Quran text. It integrates modules for text complexity analysis, gematria value distribution, frequency analysis, readability metrics, anomaly detection, and comparative analysis. Contains functions: analyze_quran_text_complexity, analyze_surah_text_complexity, analyze_ayah_text_complexity, and main.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_quran_text_complexity",
-          "description": "Analyze text complexity for the entire Quran by concatenating preprocessed verses and invoking text complexity analysis.",
+          "description": "Analyze text complexity for the entire Quran. Loads Quran data, preprocesses verses, calls text complexity analysis, logs and returns metrics.",
           "parameters": [],
-          "return_type": "dict"
+          "return_type": "Dictionary"
         },
         {
           "name": "analyze_surah_text_complexity",
-          "description": "Analyze text complexity for each Surah by grouping and processing verses, then computing complexity metrics.",
+          "description": "Analyze text complexity for each Surah. Loads Quran data, groups verses by Surah, calls text complexity analysis for each group, logs and returns a mapping of Surah metrics.",
           "parameters": [],
-          "return_type": "dict"
+          "return_type": "Dictionary"
         },
         {
           "name": "analyze_ayah_text_complexity",
-          "description": "Analyze text complexity for each Ayah by processing each verse individually to compute complexity metrics.",
+          "description": "Analyze text complexity for each Ayah. Processes each verse individually to compute and log complexity metrics, returning a mapping of Ayah identifiers to metrics.",
           "parameters": [],
-          "return_type": "dict"
+          "return_type": "Dictionary"
         },
         {
           "name": "main",
-          "description": "Main entry point for the application. Orchestrates data loading, preprocessing, and multiple analyses including gematria, frequency, n-grams, anomaly detection, and readability metrics, while logging each step.",
+          "description": "Orchestrates the overall application flow: configures logging, loads data, preprocesses text, integrates various analyses (gematria, frequency, readability, anomaly detection, comparative analysis), and manages error handling.",
           "parameters": [],
-          "return_type": "None"
+          "return_type": "Dictionary"
         }
       ],
       "dependencies": [
@@ -152,15 +142,14 @@
         "src/gematria_analyzer.py",
         "src/correlation_analyzer.py",
         "src/frequency_analyzer.py",
-        "src/distribution_analyzer.py",
         "src/cooccurrence_analyzer.py",
         "src/collocation_analyzer.py",
+        "src/distribution_analyzer.py",
+        "src/semantic_analyzer.py",
         "src/ngram_analyzer.py",
         "src/anomaly_detector.py",
         "src/readability_analyzer.py",
-        "src/semantic_analyzer.py",
-        "os",
-        "logging"
+        "src/comparative_analyzer.py"
       ]
     },
     {
@@ -1990,6 +1979,163 @@
         "logging",
         "src.data_loader",
         "src.text_preprocessor"
+      ]
+    },
+    {
+      "path": "src/comparative_analyzer.py",
+      "language": "python",
+      "description": "Module for comparative analysis between Makki and Madani Surahs. Provides functions to compare text complexity, word frequency, and gematria distributions, along with computing approximate Dale-Chall and SMOG readability metrics.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "compute_dale_chall",
+          "description": "Compute an approximate Dale-Chall Readability Score for the given text using percentage of difficult words and average sentence length.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "string",
+              "description": "Preprocessed text as a string."
+            }
+          ],
+          "return_type": "float"
+        },
+        {
+          "name": "compute_smog",
+          "description": "Compute an approximate SMOG Index for the given text using an approximation based on polysyllabic words.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "string",
+              "description": "Preprocessed text as a string."
+            }
+          ],
+          "return_type": "float"
+        },
+        {
+          "name": "compare_makki_madani_text_complexity",
+          "description": "Compare text complexity metrics between Makki and Madani Surahs by filtering Quran data and computing metrics such as Flesch Reading Ease, Flesch-Kincaid Grade Level, Dale-Chall, and SMOG Index.",
+          "parameters": [
+            {
+              "name": "makki_surahs",
+              "type": "list",
+              "description": "List of surah numbers classified as Makki."
+            },
+            {
+              "name": "madani_surahs",
+              "type": "list",
+              "description": "List of surah numbers classified as Madani."
+            }
+          ],
+          "return_type": "Dictionary"
+        },
+        {
+          "name": "compare_makki_madani_word_frequency_distribution",
+          "description": "Compare word frequency distributions between Makki and Madani Surahs and return the top frequent words for each group.",
+          "parameters": [
+            {
+              "name": "makki_surahs",
+              "type": "list",
+              "description": "List of surah numbers classified as Makki."
+            },
+            {
+              "name": "madani_surahs",
+              "type": "list",
+              "description": "List of surah numbers classified as Madani."
+            },
+            {
+              "name": "top_n",
+              "type": "int",
+              "description": "Number of top frequent words to return."
+            }
+          ],
+          "return_type": "Dictionary"
+        },
+        {
+          "name": "compare_makki_madani_gematria_distribution",
+          "description": "Compare Gematria value distributions between Makki and Madani Surahs by computing frequency distributions and returning the top frequent gematria values.",
+          "parameters": [
+            {
+              "name": "makki_surahs",
+              "type": "list",
+              "description": "List of surah numbers classified as Makki."
+            },
+            {
+              "name": "madani_surahs",
+              "type": "list",
+              "description": "List of surah numbers classified as Madani."
+            },
+            {
+              "name": "top_n",
+              "type": "int",
+              "description": "Number of top gematria values to return."
+            }
+          ],
+          "return_type": "Dictionary"
+        }
+      ],
+      "dependencies": [
+        "src/data_loader.py",
+        "src/text_preprocessor.py",
+        "src/text_complexity_analyzer.py",
+        "src/frequency_analyzer.py",
+        "src/gematria_analyzer.py"
+      ]
+    },
+    {
+      "path": "tests/integration_tests.py",
+      "language": "Python",
+      "description": "Integration tests for the comparative analysis functions. Sets up sample Quran data and validates outputs for text complexity, word frequency distribution, and Gematria distribution analyses.",
+      "classes": [
+        {
+          "name": "TestComparativeAnalyzer",
+          "description": "Integration tests for the comparative analysis functions, verifying text complexity, word frequency, and gematria distribution analyses using sample Quran data.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_compare_text_complexity",
+              "description": "Tests the compare_makki_madani_text_complexity function by creating sample Quran data and verifying that metrics for both Makki and Madani groups are floats.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of the test class."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_compare_word_frequency_distribution",
+              "description": "Tests the compare_makki_madani_word_frequency_distribution function by verifying that the returned frequency lists for both Makki and Madani groups are non-empty.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of the test class."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_compare_gematria_distribution",
+              "description": "Tests the compare_makki_madani_gematria_distribution function by creating sample Quran data and checking that the output contains tuples of gematria values and frequencies.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "object",
+                  "description": "Instance of the test class."
+                }
+              ],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/comparative_analyzer.py",
+        "src/data_loader.py"
       ]
     }
   ]

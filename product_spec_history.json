@@ -178,5 +178,10 @@
         "iteration": 35,
         "date": "2025-04-07",
         "iteration_goal": "This increment focuses on enhancing the Quran analysis tool by implementing two advanced readability metrics: the Dale-Chall Readability Score and the SMOG Index.  This involves creating new functions to calculate these scores for Arabic text at the Quran, Surah, and Ayah levels. For Dale-Chall, a common Arabic word list will be used (or approximated using frequent Quranic words). For SMOG Index, polysyllabic words will be approximated by word length. The new functions will be integrated into the main analysis pipeline and validated with integration tests. This step provides more sophisticated text complexity measures for novel Quran analysis."
+    },
+    {
+        "iteration": 36,
+        "date": "2025-04-07",
+        "iteration_goal": "This increment focuses on comparative analysis of Quran text by categorizing Surahs into Makki and Madani groups. It introduces new functions to compare text complexity metrics, word frequency distributions, and Gematria value distributions between these two categories. The goal is to identify potential stylistic or thematic differences. The implementation includes creating categorization data, developing comparison functions, integrating them into the main analysis pipeline, and adding integration tests to validate the comparative analysis results. The output will be logged for review."
     }
 ]
