@@ -416,11 +416,33 @@ def main():
         logger.info("Starting Ayah-level Flesch-Kincaid Grade Level Analysis.")
         ayah_fk = analyze_ayah_flesch_kincaid_grade_level()
 
-        # NEW: Integrate Semantic Complexity Distribution Analysis by Semantic Group Frequency at Ayah Level
-        from src.semantic_distribution_analyzer import analyze_semantic_complexity_distribution_ayah
-        logger.info("Starting Semantic Complexity Distribution Analysis by Semantic Group Frequency at Ayah Level.")
-        semantic_complexity_distribution = analyze_semantic_complexity_distribution_ayah(data)
-        logger.info("Semantic Complexity Distribution Analysis by Semantic Group Frequency at Ayah Level completed. Results: %s", semantic_complexity_distribution)
+        # NEW: Integrate Advanced Readability Metrics: Dale-Chall and SMOG Index Analyses
+        from src.readability_analyzer import (
+            analyze_quran_dale_chall_readability,
+            analyze_surah_dale_chall_readability,
+            analyze_ayah_dale_chall_readability,
+            analyze_quran_smog_index,
+            analyze_surah_smog_index,
+            analyze_ayah_smog_index
+        )
+        logger.info("Starting Dale-Chall Readability Analysis for Quran.")
+        quran_dc = analyze_quran_dale_chall_readability()
+        logger.info("Dale-Chall Readability (Quran) Score: %f", quran_dc)
+        logger.info("Starting Dale-Chall Readability Analysis for each Surah.")
+        surah_dc = analyze_surah_dale_chall_readability()
+        logger.info("Dale-Chall Readability Scores (Surah): %s", surah_dc)
+        logger.info("Starting Dale-Chall Readability Analysis for each Ayah.")
+        ayah_dc = analyze_ayah_dale_chall_readability()
+        logger.info("Dale-Chall Readability Scores (Ayah): %s", ayah_dc)
+        logger.info("Starting SMOG Index Analysis for Quran.")
+        quran_smog = analyze_quran_smog_index()
+        logger.info("SMOG Index (Quran) Score: %f", quran_smog)
+        logger.info("Starting SMOG Index Analysis for each Surah.")
+        surah_smog = analyze_surah_smog_index()
+        logger.info("SMOG Index Scores (Surah): %s", surah_smog)
+        logger.info("Starting SMOG Index Analysis for each Ayah.")
+        ayah_smog = analyze_ayah_smog_index()
+        logger.info("SMOG Index Scores (Ayah): %s", ayah_smog)
 
         logger.info("Application finished.")
         return {"gematria_cooccurrence": gematria_cooccurrence}

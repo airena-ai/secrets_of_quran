@@ -115,49 +115,52 @@
     },
     {
       "path": "src/main.py",
-      "language": "python",
-      "description": "This is the main entry point of the application which orchestrates data loading, text preprocessing, and various analyses including text complexity, gematria, frequency, co-occurrence, and anomaly detection on Quran text. It integrates multiple modules to perform end-to-end processing and analysis.",
+      "language": "Python",
+      "description": "Main module orchestrating the Quran text analysis pipeline. Integrates multiple analyses including text complexity, gematria, frequency, n-gram, readability, and anomaly detection. Configures logging and error handling for the application.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_quran_text_complexity",
-          "description": "Analyzes text complexity for the entire Quran by loading Quran data, preprocessing text, and invoking the analyze_text_complexity function.",
+          "description": "Analyze text complexity for the entire Quran by concatenating preprocessed verses and invoking text complexity analysis.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "analyze_surah_text_complexity",
-          "description": "Analyzes text complexity for each Surah by grouping verses and computing their complexity metrics.",
+          "description": "Analyze text complexity for each Surah by grouping and processing verses, then computing complexity metrics.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "analyze_ayah_text_complexity",
-          "description": "Analyzes text complexity for each Ayah by processing individual verses and mapping complexity metrics to a 'surah|ayah' key.",
+          "description": "Analyze text complexity for each Ayah by processing each verse individually to compute complexity metrics.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "main",
-          "description": "Main function that drives the application by integrating various analyses including gematria, frequency, co-occurrence, and text complexity. It loads data, processes text, logs analytics, and coordinates the overall workflow.",
+          "description": "Main entry point for the application. Orchestrates data loading, preprocessing, and multiple analyses including gematria, frequency, n-grams, anomaly detection, and readability metrics, while logging each step.",
           "parameters": [],
-          "return_type": "dict"
+          "return_type": "None"
         }
       ],
       "dependencies": [
         "src/logger_config.py",
         "src/data_loader.py",
         "src/text_preprocessor.py",
+        "src/text_complexity_analyzer.py",
         "src/gematria_analyzer.py",
         "src/correlation_analyzer.py",
         "src/frequency_analyzer.py",
         "src/distribution_analyzer.py",
         "src/cooccurrence_analyzer.py",
         "src/collocation_analyzer.py",
-        "src/anomaly_detector.py",
         "src/ngram_analyzer.py",
+        "src/anomaly_detector.py",
+        "src/readability_analyzer.py",
         "src/semantic_analyzer.py",
-        "src/semantic_distribution_analyzer.py"
+        "os",
+        "logging"
       ]
     },
     {
@@ -1249,60 +1252,132 @@
     },
     {
       "path": "tests/test_quran_analysis.py",
-      "language": "python",
-      "description": "Unit tests for the Gematria analyzer functions. Verifies correctness of Surah-level, Ayah-level, first and last word Gematria distribution analyses using the unittest framework.",
+      "language": "Python",
+      "description": "Unit tests for Gematria analyzer and readability analysis functions. Contains tests validating gematria distributions and readability score calculations across multiple scenarios.",
       "classes": [
         {
           "name": "TestGematriaAnalyzer",
-          "description": "Test suite for verifying Gematria analyzer module functions.",
+          "description": "Unit tests for the Gematria analyzer functions at various levels.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_analyze_surah_gematria_distribution",
-              "description": "Tests analyze_surah_gematria_distribution with sample Quran data to verify correct frequency distribution and summary statistics.",
+              "description": "Tests the analysis of Surah gematria distribution using sample data.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "object",
-                  "description": "Instance of TestGematriaAnalyzer."
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_ayah_gematria_distribution",
-              "description": "Tests analyze_ayah_gematria_distribution with sample Quran data to verify correct frequency distribution and summary statistics.",
+              "description": "Tests the analysis of Ayah gematria distribution using sample data.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "object",
-                  "description": "Instance of TestGematriaAnalyzer."
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_first_word_gematria_ayah",
-              "description": "Tests analyze_first_word_gematria_ayah with sample data to verify the frequency of Gematria values for the first word in each Ayah.",
+              "description": "Tests gematria analysis on the first word of each Ayah using sample data.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "object",
-                  "description": "Instance of TestGematriaAnalyzer."
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "test_analyze_last_word_gematria_ayah",
-              "description": "Tests analyze_last_word_gematria_ayah with sample data to verify the frequency of Gematria values for the last word in each Ayah.",
+              "description": "Tests gematria analysis on the last word of each Ayah using sample data.",
               "parameters": [
                 {
                   "name": "self",
-                  "type": "object",
-                  "description": "Instance of TestGematriaAnalyzer."
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_dale_chall_readability_empty",
+              "description": "Tests the Dale-Chall Readability Score calculation for empty text input.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_dale_chall_readability_non_empty",
+              "description": "Tests the Dale-Chall Readability Score calculation for non-empty text input with common words.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_smog_index_empty",
+              "description": "Tests the SMOG Index calculation for empty text input.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_smog_index_non_empty",
+              "description": "Tests the SMOG Index calculation for non-empty text input.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_dale_chall_readability_multiple_sentences",
+              "description": "Tests the Dale-Chall Readability Score calculation with multiple sentences.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_calculate_smog_index_multiple_sentences",
+              "description": "Tests the SMOG Index calculation with multiple sentences.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaAnalyzer",
+                  "description": "Instance of the test case."
                 }
               ],
               "return_type": "None"
@@ -1312,7 +1387,8 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/gematria_analyzer.py"
+        "src/gematria_analyzer.py",
+        "src/readability_analyzer.py"
       ]
     },
     {
@@ -1799,6 +1875,121 @@
         "src/text_complexity_analyzer.py",
         "os",
         "unittest"
+      ]
+    },
+    {
+      "path": "src/readability_analyzer.py",
+      "language": "Python",
+      "description": "This module provides advanced readability analysis for Arabic text, implementing two readability metrics: the Dale-Chall Readability Score (adapted for Arabic) and the SMOG Index. It includes functions to analyze these metrics at three levels: entire Quran text, per Surah, and per Ayah. The module also provides utility functions for text processing and readability calculations.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "load_common_arabic_words",
+          "description": "Loads a comprehensive set of common Arabic words from a file if available. Checks the environment variable 'COMMON_WORDS_FILE'. If the file exists, loads words from it. Otherwise, returns a default set of common words.",
+          "parameters": [],
+          "return_type": "set"
+        },
+        {
+          "name": "split_sentences",
+          "description": "Splits the given text into sentences based on the specified delimiter.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "The text to split."
+            },
+            {
+              "name": "delimiter",
+              "type": "str",
+              "description": "The delimiter to use for splitting (default is newline)."
+            }
+          ],
+          "return_type": "list"
+        },
+        {
+          "name": "is_polysyllabic",
+          "description": "Determines if a word is polysyllabic based on its length. For Arabic text, this function uses a character length threshold to approximate syllable count.",
+          "parameters": [
+            {
+              "name": "word",
+              "type": "str",
+              "description": "The word to check."
+            },
+            {
+              "name": "threshold",
+              "type": "int",
+              "description": "The character length threshold above which a word is considered polysyllabic."
+            }
+          ],
+          "return_type": "bool"
+        },
+        {
+          "name": "calculate_dale_chall_readability",
+          "description": "Calculates the Dale-Chall Readability Score for the given preprocessed Arabic text. The function tokenizes the text into words, counts difficult words, computes percentage of difficult words, and calculates average sentence length.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "Preprocessed Arabic text as a string."
+            }
+          ],
+          "return_type": "float"
+        },
+        {
+          "name": "calculate_smog_index",
+          "description": "Calculates the SMOG Index for the given preprocessed Arabic text. For this approximation, words with more than the threshold characters are considered polysyllabic.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "str",
+              "description": "Preprocessed Arabic text as a string."
+            }
+          ],
+          "return_type": "float"
+        },
+        {
+          "name": "analyze_quran_dale_chall_readability",
+          "description": "Analyzes the Dale-Chall Readability Score for the entire Quran text. Loads the Quran data, preprocesses the text, concatenates all verses, and computes the score.",
+          "parameters": [],
+          "return_type": "float"
+        },
+        {
+          "name": "analyze_surah_dale_chall_readability",
+          "description": "Analyzes the Dale-Chall Readability Score for each Surah. Groups verses by Surah, preprocesses text, and computes scores for each Surah.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_ayah_dale_chall_readability",
+          "description": "Analyzes the Dale-Chall Readability Score for each Ayah. Preprocesses each verse text and computes the score for each Ayah.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_quran_smog_index",
+          "description": "Analyzes the SMOG Index for the entire Quran text. Loads the Quran data, preprocesses the text, concatenates all verses, and computes the SMOG Index.",
+          "parameters": [],
+          "return_type": "float"
+        },
+        {
+          "name": "analyze_surah_smog_index",
+          "description": "Analyzes the SMOG Index for each Surah. Groups verses by Surah, preprocesses text, and computes the SMOG Index for each Surah.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_ayah_smog_index",
+          "description": "Analyzes the SMOG Index for each Ayah. Preprocesses each verse text and computes the SMOG Index for each Ayah.",
+          "parameters": [],
+          "return_type": "dict"
+        }
+      ],
+      "dependencies": [
+        "os",
+        "math",
+        "logging",
+        "src.data_loader",
+        "src.text_preprocessor"
       ]
     }
   ]

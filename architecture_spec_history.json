@@ -173,5 +173,10 @@
         "iteration": 34,
         "date": "2025-04-07",
         "iteration_goal": "The architecture is enhanced to include Flesch Reading Ease and Flesch-Kincaid Grade Level analysis. The `text_complexity_analyzer` module is extended with new calculation functions. New analysis functions are added to `main.py` for Quran, Surah, and Ayah levels. `main()`, integration tests, and logging are updated to incorporate these new text complexity analyses, ensuring modularity and testability."
+    },
+    {
+        "iteration": 35,
+        "date": "2025-04-07",
+        "iteration_goal": "A new `readability_analyzer.py` module is added to calculate Dale-Chall and SMOG readability metrics.  `quran_analysis.py` is updated with new analysis functions that use the `readability_analyzer` and handle logging.  The `main()` function is updated to call these new analyses, and integration tests are added to validate the implementation. This modular approach ensures clear separation of concerns for readability analysis."
     }
 ]
