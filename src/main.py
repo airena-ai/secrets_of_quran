@@ -393,6 +393,12 @@ def main():
         analyze_surah_text_complexity()
         analyze_ayah_text_complexity()
         
+        # NEW: Integrate Semantic Complexity Distribution Analysis by Semantic Group Frequency at Ayah Level
+        from src.semantic_distribution_analyzer import analyze_semantic_complexity_distribution_ayah
+        logger.info("Starting Semantic Complexity Distribution Analysis by Semantic Group Frequency at Ayah Level.")
+        semantic_complexity_distribution = analyze_semantic_complexity_distribution_ayah(data)
+        logger.info("Semantic Complexity Distribution Analysis by Semantic Group Frequency at Ayah Level completed. Results: %s", semantic_complexity_distribution)
+
         logger.info("Application finished.")
         return {"gematria_cooccurrence": gematria_cooccurrence}
     except Exception as e:

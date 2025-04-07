@@ -116,37 +116,35 @@
     {
       "path": "src/main.py",
       "language": "python",
-      "description": "This is the main application module that orchestrates the loading of Quran data, preprocessing of text, and execution of various analyses including text complexity, Gematria distribution, frequency analyses, and anomaly detection. It integrates multiple components from the codebase and logs detailed messages throughout the process.",
+      "description": "Main entry point for the Quran text analysis application. This module orchestrates data loading, text preprocessing, and integrates various analyses including text complexity, Gematria distribution, frequency analysis, anomaly detection, and semantic complexity. It defines several analysis functions and a main function to run the complete workflow.",
       "classes": [],
       "functions": [
         {
           "name": "analyze_quran_text_complexity",
-          "description": "Analyzes text complexity for the entire Quran by loading data, preprocessing verses, and computing complexity metrics.",
+          "description": "Analyze text complexity for the entire Quran by loading data, concatenating preprocessed text, and computing complexity metrics using analyze_text_complexity.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "analyze_surah_text_complexity",
-          "description": "Analyzes text complexity for each Surah by grouping verses and computing complexity metrics for each group.",
+          "description": "Analyze text complexity for each Surah by grouping verses, processing text, and computing metrics with analyze_text_complexity, returning a mapping of Surah to their complexity statistics.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "analyze_ayah_text_complexity",
-          "description": "Analyzes text complexity for each Ayah by preprocessing each verse and computing complexity metrics.",
+          "description": "Analyze text complexity for each Ayah by preprocessing verse text and computing complexity metrics using analyze_text_complexity, returning a dictionary mapping Ayah identifiers to their metrics.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "main",
-          "description": "Main entry point of the application. It orchestrates data loading, text preprocessing, various analytical computations including Gematria and frequency analyses, anomaly detection, and logs the overall workflow.",
+          "description": "Main function to orchestrate various analyses including data loading, preprocessing, Gematria analysis, frequency analysis, anomaly detection, and text complexity assessment. It serves as the central entry point for the application.",
           "parameters": [],
-          "return_type": "dict"
+          "return_type": "None"
         }
       ],
       "dependencies": [
-        "os",
-        "logging",
         "src/logger_config.py",
         "src/data_loader.py",
         "src/text_preprocessor.py",
@@ -157,9 +155,10 @@
         "src/distribution_analyzer.py",
         "src/cooccurrence_analyzer.py",
         "src/collocation_analyzer.py",
-        "src/ngram_analyzer.py",
+        "src/semantic_distribution_analyzer.py",
+        "src/semantic_analyzer.py",
         "src/anomaly_detector.py",
-        "src/semantic_analyzer.py"
+        "src/ngram_analyzer.py"
       ]
     },
     {
@@ -1581,6 +1580,61 @@
       "functions": [],
       "dependencies": [
         "src/correlation_analyzer.py"
+      ]
+    },
+    {
+      "path": "src/semantic_distribution_analyzer.py",
+      "language": "Python",
+      "description": "This file contains a function to analyze semantic complexity distribution of Quran Ayahs. It calculates semantic density by counting occurrences of root words, computes text complexity metrics using an external analyzer, groups ayahs based on quantile thresholds, and logs comprehensive statistics. It also employs a fallback strategy for cases with insufficient variability in semantic density.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_semantic_complexity_distribution_ayah",
+          "description": "Analyzes semantic complexity distribution by calculating semantic density for each Ayah in the provided Quran data and computing text complexity metrics. It groups Ayahs into low, medium, and high categories based on quantile thresholds and computes descriptive statistics for each group. A fallback strategy is used if quantile calculation fails or variability is insufficient.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data. Each dictionary should include keys: 'verse_text', 'processed_text', 'roots', 'surah', and 'ayah'."
+            }
+          ],
+          "return_type": "dict"
+        }
+      ],
+      "dependencies": [
+        "src/text_complexity_analyzer.py"
+      ]
+    },
+    {
+      "path": "tests/test_semantic_distribution_analyzer.py",
+      "language": "Python",
+      "description": "This file contains unit tests for the analyze_semantic_complexity_distribution_ayah function. It verifies normal execution with sufficient variability in semantic density as well as fallback scenarios where all ayahs have the same semantic density, ensuring correct quantile boundary calculation and grouping statistics.",
+      "classes": [
+        {
+          "name": "TestSemanticDistributionAnalyzer",
+          "description": "Integration tests for the analyze_semantic_complexity_distribution_ayah function covering both normal and fallback scenarios.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_analyze_semantic_complexity_distribution_ayah",
+              "description": "Tests normal execution of analyze_semantic_complexity_distribution_ayah using sample Quran data with sufficient variability. Verifies that quantile boundaries exist and group statistics for low, medium, and high groups are correctly computed.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_analyze_semantic_complexity_distribution_ayah_with_insufficient_variability",
+              "description": "Tests the fallback scenario of analyze_semantic_complexity_distribution_ayah where all ayahs have the same semantic density. Verifies that quantile boundaries are None and that all ayahs are assigned to the 'medium' group.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/semantic_distribution_analyzer.py"
       ]
     }
   ]
