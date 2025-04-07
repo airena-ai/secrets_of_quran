@@ -1,0 +1,13 @@
+__pycache__/
+venv/
+myenv/
+logs/
+temp/
+.pytest_cache/
+.report.json
+*.log
+output/
+coverage/
+*.pyc
+*.pyo
+.mypy_cache/

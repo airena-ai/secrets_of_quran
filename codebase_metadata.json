@@ -1,0 +1,262 @@
+{
+  "files": [
+    {
+      "path": "src/__init__.py",
+      "language": "python",
+      "description": "This package initialization file contains a module-level docstring explaining that the package provides modules for loading, preprocessing, and analyzing the Quran text.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "src/data_loader.py",
+      "language": "python",
+      "description": "This file defines the QuranDataLoader class for loading and parsing the Quran text data from a file using regex. It includes methods for initialization and data loading with proper logging and error handling.",
+      "classes": [
+        {
+          "name": "QuranDataLoader",
+          "description": "A class to load and parse the Quran text data from a file. It sets the file_path and logs the data loading process.",
+          "parents": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "description": "Initialize the QuranDataLoader. Sets file_path based on input or default value and configures logging.",
+              "parameters": [
+                {
+                  "name": "file_path",
+                  "type": "string",
+                  "description": "Optional; path to the Quran text file. Defaults to None."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "load_data",
+              "description": "Load the Quran data by reading the file, parsing each line to extract surah, ayah, and verse_text, with logging and error handling.",
+              "parameters": [],
+              "return_type": "list"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "src/text_preprocessor.py",
+      "language": "python",
+      "description": "This file implements the TextPreprocessor class responsible for preprocessing Arabic text by removing diacritics and normalizing letters.",
+      "classes": [
+        {
+          "name": "TextPreprocessor",
+          "description": "A class for preprocessing Arabic text. It cleans text by removing diacritics and normalizing letters.",
+          "parents": [],
+          "methods": [
+            {
+              "name": "__init__",
+              "description": "Initialize the TextPreprocessor and set up logging.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "preprocess_text",
+              "description": "Preprocess Arabic text by removing diacritics and normalizing letters (replacing 'ى' with 'ي' and 'ة' with 'ه').",
+              "parameters": [
+                {
+                  "name": "text",
+                  "type": "string",
+                  "description": "The input Arabic text to preprocess."
+                }
+              ],
+              "return_type": "string"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "src/logger_config.py",
+      "language": "Python",
+      "description": "This file provides configuration for the application's logging system. It contains a function to set up the root logger with appropriate handlers and formatters. The logger is configured to write log messages to 'quran_analysis.log' in the project root directory. The implementation ensures that existing handlers are cleared before adding new ones to prevent duplicate logging or issues with deleted log files.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "configure_logger",
+          "description": "Configures the root logger to write log messages to 'quran_analysis.log' in the project root directory. The function clears any existing handlers from the logger to prevent multiple handlers writing to the same or deleted log files. It sets the logging level to INFO, creates a file handler with UTF-8 encoding, and applies a standard formatter that includes timestamp, logger name, level, and message.",
+          "parameters": [],
+          "return_type": "logging.Logger"
+        }
+      ],
+      "dependencies": [
+        "os",
+        "logging"
+      ]
+    },
+    {
+      "path": "src/main.py",
+      "language": "python",
+      "description": "Main application entry point. Orchestrates data loading from QuranDataLoader and text preprocessing using TextPreprocessor. Configures logging, loads Quran data, preprocesses verses, and logs the process. Ensures proper shutdown of logging handlers.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "main",
+          "description": "Main function to orchestrate data loading and text preprocessing. It initializes logging, loads data using QuranDataLoader, preprocesses text using TextPreprocessor, and logs the progress. Finally, it ensures that file handlers are closed properly.",
+          "parameters": [],
+          "return_type": "None"
+        }
+      ],
+      "dependencies": [
+        "logging",
+        "src.logger_config",
+        "src.data_loader",
+        "src.text_preprocessor"
+      ]
+    },
+    {
+      "path": "setup.py",
+      "language": "python",
+      "description": "Setup script for the quran_analysis package using setuptools. It specifies package metadata and installation requirements.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "requirements.txt",
+      "language": "None",
+      "description": "Requirements file listing external dependencies for the project. Currently indicates no external dependencies are required.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "data/quran-uthmani-min.txt",
+      "language": "None",
+      "description": "Data file containing the Quran text in a simple format with surah:ayah followed by verse text.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "tests/__init__.py",
+      "language": "python",
+      "description": "Initialization file for the tests package containing unit and integration tests for the Quran analysis project.",
+      "classes": [],
+      "functions": [],
+      "dependencies": []
+    },
+    {
+      "path": "tests/test_data_loader.py",
+      "language": "python",
+      "description": "Unit tests for the QuranDataLoader class, testing data loading and error handling scenarios.",
+      "classes": [
+        {
+          "name": "TestQuranDataLoader",
+          "description": "Unit tests for the QuranDataLoader class methods.",
+          "parents": [],
+          "methods": [
+            {
+              "name": "test_load_data_success",
+              "description": "Test that loading data from a valid file returns a correctly parsed list of dictionaries.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_load_data_file_not_found",
+              "description": "Test that a non-existent file raises a FileNotFoundError.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/data_loader.py"
+      ]
+    },
+    {
+      "path": "tests/test_text_preprocessor.py",
+      "language": "python",
+      "description": "Unit tests for the TextPreprocessor class to verify correct diacritic removal and letter normalization in Arabic text.",
+      "classes": [
+        {
+          "name": "TestTextPreprocessor",
+          "description": "Unit tests for TextPreprocessor class methods.",
+          "parents": [],
+          "methods": [
+            {
+              "name": "test_preprocess_text_removes_diacritics_and_normalizes",
+              "description": "Test that the preprocess_text method removes diacritics and normalizes letters correctly.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_preprocess_text_no_modification",
+              "description": "Test that text without diacritics is processed to the expected normalized form.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/text_preprocessor.py"
+      ]
+    },
+    {
+      "path": "tests/test_logger_config.py",
+      "language": "python",
+      "description": "Unit tests for the logger configuration ensuring the logger is set up with a FileHandler for the log file.",
+      "classes": [
+        {
+          "name": "TestLoggerConfig",
+          "description": "Unit tests for testing logger configuration via the configure_logger function.",
+          "parents": [],
+          "methods": [
+            {
+              "name": "test_configure_logger_creates_log_file",
+              "description": "Test that the logger is configured with a FileHandler pointing to 'quran_analysis.log'.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/logger_config.py"
+      ]
+    },
+    {
+      "path": "tests/test_integration.py",
+      "language": "python",
+      "description": "Integration tests to verify the core user flow of the application. This test suite includes TestIntegration class which focuses on end-to-end testing of the main application flow, ensuring data loading, preprocessing, and logging functionalities work together as expected. It sets up test data, runs the main application, and verifies the output and side effects such as log file creation and content.",
+      "classes": [
+        {
+          "name": "TestIntegration",
+          "description": "Integration tests for the core user flow. This class inherits from unittest.TestCase and contains integration tests for the main application flow.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_integration_flow",
+              "description": "Tests the complete integration flow of the application. This method sets up a sample data file, executes the main function, and then verifies that the log file is created and contains the expected log messages indicating successful execution stages. It also cleans up the created data and log files after the test.",
+              "parameters": [],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "os",
+        "unittest",
+        "src.main"
+      ]
+    }
+  ]
+}
