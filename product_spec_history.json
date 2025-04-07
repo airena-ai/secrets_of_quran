@@ -138,5 +138,10 @@
         "iteration": 27,
         "date": "2025-04-07",
         "iteration_goal": "Implement semantic group-based Gematria analysis to explore the distribution of Gematria values within different semantic categories in the Quran. A new function `analyze_semantic_group_gematria_distribution()` will be created to analyze and log the frequency of Gematria values for words in each semantic group. Update `main()` and integration tests to include this new analysis, exploring potential numerical-semantic relationships."
+    },
+    {
+        "iteration": 28,
+        "date": "2025-04-07",
+        "iteration_goal": "Analyze sentence length distribution within the Quran at Quran, Surah, and Ayah levels, considering each Ayah as a sentence. Implement functions to calculate and log the frequency of each sentence length (number of words in Ayah) and integrate these into the main analysis pipeline. Add integration tests to validate the implementation."
     }
 ]

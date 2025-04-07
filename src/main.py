@@ -19,16 +19,16 @@ def main():
     8. Computes Semantic Group-based Gematria distribution analysis.
     9. Computes Surah-level and Ayah-level Character Frequency Analysis.
     10. Computes word frequency analysis and logs the top frequent words.
-    11. Computes word co-occurrence analysis.
-    12. Computes word collocation analysis.
-    13. Computes Surah-level and Ayah-level word frequency analyses.
-    14. Computes ayah-level and surah-level root word frequency analyses.
-    15. Computes first and last root word frequency analyses at Ayah level.
-    16. Computes semantic group frequency and co-occurrence analyses.
-    17. Computes root word frequency and co-occurrence analyses.
-    18. Computes lemma word frequency and co-occurrence analyses.
-    19. Computes word n-gram and character n-gram analyses.
-    20. Performs anomaly detection analysis.
+    11. Computes word collocation analysis.
+    12. Computes Surah-level and Ayah-level word frequency analyses.
+    13. Computes ayah-level and surah-level root word frequency analyses.
+    14. Computes first and last root word frequency analyses at Ayah level.
+    15. Computes semantic group frequency and co-occurrence analyses.
+    16. Computes root word frequency and co-occurrence analyses.
+    17. Computes lemma word frequency and co-occurrence analyses.
+    18. Computes word n-gram and character n-gram analyses.
+    19. Performs anomaly detection analysis.
+    20. Computes sentence length distribution analyses at Quran, Surah, and Ayah levels.
     '''
     logger = configure_logger()
     logger.info("Application started.")
@@ -122,6 +122,20 @@ def main():
         for word, count in top_words:
             logger.info("Word: %s, Count: %d", word, count)
         logger.info("Word frequency analysis completed.")
+
+        # New: Integrate sentence length distribution analyses at Quran, Surah, and Ayah levels.
+        from src.frequency_analyzer import analyze_sentence_length_distribution, analyze_surah_sentence_length_distribution, analyze_ayah_sentence_length_distribution
+        logger.info("Starting sentence length distribution analysis at Quran level.")
+        sentence_length_distribution = analyze_sentence_length_distribution(tokenized_text)
+        logger.info("Sentence length distribution analysis at Quran level completed.")
+        
+        logger.info("Starting Surah-level sentence length distribution analysis.")
+        surah_sentence_length_distribution = analyze_surah_sentence_length_distribution(data)
+        logger.info("Surah-level sentence length distribution analysis completed.")
+        
+        logger.info("Starting Ayah-level sentence length distribution analysis.")
+        ayah_sentence_length_distribution = analyze_ayah_sentence_length_distribution(data)
+        logger.info("Ayah-level sentence length distribution analysis completed.")
 
         # Integrate word co-occurrence analysis
         from src.cooccurrence_analyzer import analyze_word_cooccurrence

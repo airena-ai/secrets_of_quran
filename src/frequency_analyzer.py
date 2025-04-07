@@ -380,3 +380,83 @@ def analyze_ayah_character_frequency(data):
         result[key] = dict(char_counter)
     logger.info("Ayah-level Character Frequency Analysis completed.")
     return result
+
+def analyze_sentence_length_distribution(tokenized_text):
+    '''
+    Analyze the distribution of sentence lengths across the entire Quran.
+    Each ayah is considered a sentence. The sentence length is defined as the number
+    of words in the ayah after preprocessing and tokenization.
+    
+    Logs:
+    - Total number of ayahs analyzed.
+    - Frequency distribution of sentence lengths.
+    
+    :param tokenized_text: List of lists where each inner list represents tokenized words of an ayah.
+    :return: Dictionary mapping sentence length (number of words) to its frequency.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    total_ayahs = len(tokenized_text)
+    sentence_length_freq = {}
+    for tokens in tokenized_text:
+        length = len(tokens)
+        sentence_length_freq[length] = sentence_length_freq.get(length, 0) + 1
+    logger.info("Sentence Length Distribution Analysis (Quran level):")
+    logger.info("Total ayahs analyzed: %d", total_ayahs)
+    logger.info("Sentence Length Frequencies: %s", sentence_length_freq)
+    return sentence_length_freq
+
+def analyze_surah_sentence_length_distribution(data):
+    '''
+    Analyze the distribution of sentence lengths at the Surah level.
+    For each surah, tokenize each ayah using its processed text and compute the sentence length
+    (number of words). Then aggregate a frequency distribution for that surah.
+    
+    Logs:
+    - For each surah, logs the number of ayahs and the frequency distribution of sentence lengths.
+    
+    :param data: List of dictionaries representing Quran data.
+    :return: Dictionary mapping each surah to its sentence length frequency distribution.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    from collections import defaultdict
+    surah_length_distribution = defaultdict(dict)
+    surah_lengths = defaultdict(list)
+    for item in data:
+        surah = item.get("surah", "Unknown")
+        text = item.get("processed_text") or item.get("verse_text", "")
+        tokens = text.split() if text else []
+        surah_lengths[surah].append(len(tokens))
+    for surah, lengths in surah_lengths.items():
+        freq = {}
+        for length in lengths:
+            freq[length] = freq.get(length, 0) + 1
+        surah_length_distribution[surah] = freq
+        logger.info("Surah-level Sentence Length Distribution - Surah: %s", surah)
+        logger.info("Number of Ayahs: %d", len(lengths))
+        logger.info("Sentence Length Frequencies: %s", freq)
+    return dict(surah_length_distribution)
+
+def analyze_ayah_sentence_length_distribution(data):
+    '''
+    Analyze the sentence length for each ayah.
+    Computes the sentence length (number of words) for each ayah and returns a mapping from
+    a unique ayah identifier (formatted as "surah|ayah") to its sentence length.
+    
+    Logs:
+    - For each ayah, logs the identifier and its sentence length.
+    
+    :param data: List of dictionaries representing Quran data.
+    :return: Dictionary mapping ayah identifier ("surah|ayah") to sentence length.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    ayah_lengths = {}
+    for item in data:
+        surah = item.get("surah", "Unknown")
+        ayah = item.get("ayah", "Unknown")
+        identifier = f"{surah}|{ayah}"
+        text = item.get("processed_text") or item.get("verse_text", "")
+        tokens = text.split() if text else []
+        length = len(tokens)
+        ayah_lengths[identifier] = length
+        logger.info("Ayah Sentence Length - Identifier: %s, Length: %d", identifier, length)
+    return ayah_lengths
