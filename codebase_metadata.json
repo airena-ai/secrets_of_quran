@@ -115,15 +115,15 @@
     },
     {
       "path": "src/main.py",
-      "language": "python",
-      "description": "Main entry point for the application. Orchestrates data loading, text preprocessing, Gematria and frequency analyses, and integrates multiple modules for comprehensive Quran text analysis. Handles logging configuration and error management.",
+      "language": "Python",
+      "description": "Main module that orchestrates data loading, text preprocessing, and execution of various analyses on Quran text. It integrates multiple components including gematria, frequency, co-occurrence, collocation, n-gram, semantic, and anomaly analysis.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Orchestrates the entire workflow including data loading, preprocessing, various analyses (Gematria, frequency, n-grams, anomaly detection) and logging.",
+          "description": "Orchestrates the application flow: loads data, preprocesses text, executes various analyses, logs processing steps, and handles exceptions.",
           "parameters": [],
-          "return_type": "None"
+          "return_type": "dict"
         }
       ],
       "dependencies": [
@@ -135,8 +135,8 @@
         "src/cooccurrence_analyzer.py",
         "src/collocation_analyzer.py",
         "src/ngram_analyzer.py",
-        "src/anomaly_detector.py",
-        "src/semantic_analyzer.py"
+        "src/semantic_analyzer.py",
+        "src/anomaly_detector.py"
       ]
     },
     {
@@ -318,18 +318,18 @@
     {
       "path": "tests/test_integration.py",
       "language": "Python",
-      "description": "Contains integration tests for the application's core user flows. It verifies the functionality of the main execution path and various aspects of data processing and analysis by asserting log outputs and file operations.",
+      "description": "Integration tests for the core application flow. This file validates end-to-end execution of the main function and verifies log outputs for various analysis steps.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration test class that verifies end-to-end functionality of the application, ensuring that data loading, processing, and logging behaviors occur as expected.",
+          "description": "Integration tests for the application flow, verifying data processing, analysis, and logging.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the complete integration flow from setting up the environment to executing the main function and verifying log outputs for various analyses.",
+              "description": "Tests the complete integration flow including data loading, main execution, and log verification.",
               "parameters": [
                 {
                   "name": "self",
@@ -341,7 +341,7 @@
             },
             {
               "name": "test_semantic_group_cooccurrence_analysis",
-              "description": "Tests the semantic group co-occurrence analysis by providing sample input data and asserting that the output and log messages match expected values.",
+              "description": "Tests the semantic group co-occurrence analysis function with sample data and verifies output counts and log messages.",
               "parameters": [
                 {
                   "name": "self",
@@ -1004,17 +1004,17 @@
     },
     {
       "path": "src/gematria_analyzer.py",
-      "language": "python",
-      "description": "This file contains functions for calculating Gematria values and analyzing their distribution at various levels (word, Surah, Ayah). It provides default Gematria mappings and logs warnings when characters are not found in the mapping.",
+      "language": "Python",
+      "description": "This module contains functions for calculating and analyzing Gematria values for Arabic words and texts. It provides various methods to compute frequency distributions, summary statistics, and co-occurrence analyses.",
       "classes": [],
       "functions": [
         {
           "name": "calculate_gematria_value",
-          "description": "Calculates the Gematria value of the given Arabic word using a predefined mapping. Logs a warning for characters not found in the mapping.",
+          "description": "Calculates the Gematria value of the given Arabic word using a predefined mapping and logs warnings for characters not found.",
           "parameters": [
             {
               "name": "word",
-              "type": "str",
+              "type": "string",
               "description": "Arabic word string."
             }
           ],
@@ -1022,7 +1022,7 @@
         },
         {
           "name": "analyze_gematria_value_distribution",
-          "description": "Analyzes the frequency distribution of Gematria values across all words in the tokenized Quran text. Returns a dictionary mapping Gematria values to frequency counts.",
+          "description": "Analyzes the frequency distribution of Gematria values across tokenized text and returns a dictionary of value counts.",
           "parameters": [
             {
               "name": "tokenized_text",
@@ -1034,17 +1034,17 @@
         },
         {
           "name": "get_default_gematria_mapping",
-          "description": "Returns the default Gematria mapping of Arabic letters to their numerical values.",
+          "description": "Returns the default mapping of Arabic letters to their Gematria values.",
           "parameters": [],
           "return_type": "dict"
         },
         {
           "name": "calculate_gematria_value_with_mapping",
-          "description": "Calculates the Gematria value for a given word using a supplied Gematria mapping. Logs a warning if a character is not found in the mapping.",
+          "description": "Calculates the Gematria value for a word using the provided Gematria mapping and logs warnings for missing characters.",
           "parameters": [
             {
               "name": "word",
-              "type": "str",
+              "type": "string",
               "description": "Arabic word string."
             },
             {
@@ -1057,7 +1057,7 @@
         },
         {
           "name": "analyze_surah_gematria_distribution",
-          "description": "Analyzes the Gematria value distribution at the Surah level by computing frequency and summary statistics (mean, median, mode, stdev) for each Surah.",
+          "description": "Analyzes the Gematria value distribution at the Surah level, providing frequency counts and summary statistics for each surah.",
           "parameters": [
             {
               "name": "quran_data",
@@ -1067,61 +1067,73 @@
             {
               "name": "gematria_mapping",
               "type": "dict",
-              "description": "Mapping of Arabic letters to numerical values."
+              "description": "Mapping of Arabic letters to Gematria values."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_ayah_gematria_distribution",
-          "description": "Analyzes the Gematria value distribution at the Ayah level by computing frequency and summary statistics for each Ayah.",
+          "description": "Analyzes the Gematria value distribution at the Ayah level, returning frequency counts and statistical summaries for each ayah.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data with surah, ayah, and text fields."
+              "description": "List of dictionaries representing Quran data with ayah information."
             },
             {
               "name": "gematria_mapping",
               "type": "dict",
-              "description": "Mapping of Arabic letters to numerical values."
+              "description": "Mapping of Arabic letters to Gematria values."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_first_word_gematria_ayah",
-          "description": "Analyzes the frequency distribution of Gematria values for the first word in each Ayah.",
+          "description": "Analyzes the frequency distribution of Gematria values for the first word in each ayah.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data with surah, ayah, and processed_text or verse_text."
+              "description": "List of dictionaries representing Quran ayah data."
             },
             {
               "name": "gematria_mapping",
               "type": "dict",
-              "description": "Mapping of Arabic letters to numerical values."
+              "description": "Mapping of Arabic letters to Gematria values."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_last_word_gematria_ayah",
-          "description": "Analyzes the frequency distribution of Gematria values for the last word in each Ayah.",
+          "description": "Analyzes the frequency distribution of Gematria values for the last word in each ayah.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries representing Quran data with surah, ayah, and processed_text or verse_text."
+              "description": "List of dictionaries representing Quran ayah data."
             },
             {
               "name": "gematria_mapping",
               "type": "dict",
-              "description": "Mapping of Arabic letters to numerical values."
+              "description": "Mapping of Arabic letters to Gematria values."
             }
           ],
           "return_type": "dict"
+        },
+        {
+          "name": "analyze_gematria_cooccurrence_ayah",
+          "description": "Analyzes the co-occurrence of Gematria values within each ayah, returning a Counter object of value pairs.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data with processed text information."
+            }
+          ],
+          "return_type": "Counter"
         }
       ],
       "dependencies": []
@@ -1182,6 +1194,86 @@
                   "name": "self",
                   "type": "object",
                   "description": "Instance of TestGematriaAnalyzer."
+                }
+              ],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/gematria_analyzer.py"
+      ]
+    },
+    {
+      "path": "tests/test_gematria_analyzer.py",
+      "language": "Python",
+      "description": "Unit tests for the Gematria analyzer module. This file focuses on testing the analyze_gematria_cooccurrence_ayah function across various scenarios.",
+      "classes": [
+        {
+          "name": "TestGematriaCooccurrenceAnalysis",
+          "description": "Unit tests for the analyze_gematria_cooccurrence_ayah function, ensuring it handles different input cases correctly.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_empty_text",
+              "description": "Tests that the function returns an empty Counter when provided with empty processed text.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaCooccurrenceAnalysis",
+                  "description": "Instance of TestGematriaCooccurrenceAnalysis."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_single_word",
+              "description": "Tests that a single word input produces no gematria pairs.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaCooccurrenceAnalysis",
+                  "description": "Instance of TestGematriaCooccurrenceAnalysis."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_unique_values",
+              "description": "Tests that unique input words generate expected unique gematria pairs.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaCooccurrenceAnalysis",
+                  "description": "Instance of TestGematriaCooccurrenceAnalysis."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_repeated_values",
+              "description": "Tests that repeated values in input are counted correctly in gematria pair combinations.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaCooccurrenceAnalysis",
+                  "description": "Instance of TestGematriaCooccurrenceAnalysis."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_multiple_ayahs",
+              "description": "Tests the function with multiple ayahs to ensure correct aggregation of gematria pairs.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestGematriaCooccurrenceAnalysis",
+                  "description": "Instance of TestGematriaCooccurrenceAnalysis."
                 }
               ],
               "return_type": "None"

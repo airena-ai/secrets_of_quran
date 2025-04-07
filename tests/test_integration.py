@@ -1,6 +1,7 @@
 import os
 import re
 import unittest
+from collections import Counter
 from src.main import main
 
 class TestIntegration(unittest.TestCase):
@@ -27,8 +28,12 @@ class TestIntegration(unittest.TestCase):
         # Set the environment variable to use the test file
         os.environ["DATA_FILE"] = data_file
 
-        # Execute the main application flow
-        main()
+        # Execute the main application flow and capture the returned analysis results
+        result = main()
+        # Verify that the returned result contains the gematria co-occurrence analysis
+        self.assertIn("gematria_cooccurrence", result)
+        self.assertIsInstance(result["gematria_cooccurrence"], Counter)
+        
         # Verify that the log file was created and contains expected log messages
         with open(log_file, "r", encoding="utf-8") as file:
             log_content = file.read()
@@ -76,6 +81,12 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Top 10 most frequent last root words:", log_content)
         self.assertIn("Total unique last root words:", log_content)
 
+        # Assertions for Gematria Value Co-occurrence Analysis
+        self.assertIn("Starting Gematria Co-occurrence Analysis", log_content)
+        self.assertIn("Gematria Co-occurrence Analysis completed.", log_content)
+        self.assertIn("Top 10 most frequent Gematria value pairs:", log_content)
+        self.assertIn("Total unique Gematria pairs:", log_content)
+        
         # Assertions for word length distribution analysis
         self.assertIn("Word length distribution analysis completed.", log_content)
         

@@ -1,5 +1,7 @@
 import logging
 import statistics
+from itertools import combinations
+from collections import Counter
 
 def calculate_gematria_value(word):
     '''
@@ -227,3 +229,41 @@ def analyze_last_word_gematria_ayah(quran_data, gematria_mapping):
     for val, count in top_10:
         logger.info("Gematria Value: %d, Count: %d", val, count)
     return frequency
+
+def analyze_gematria_cooccurrence_ayah(quran_data):
+    '''
+    Analyze the co-occurrence of Gematria values within each Ayah in the Quran data.
+    
+    For each Ayah in the quran_data list, tokenizes the processed text into words,
+    calculates the Gematria value for each word using the existing calculate_gematria_value function,
+    identifies all unordered pairs of Gematria values present in the Ayah (counting each occurrence, including repetitions),
+    and counts the occurrences of each pair across all Ayahs. Logs the top 10 most frequent Gematria value pairs and the total number 
+    of unique Gematria value pairs found.
+    
+    :param quran_data: List of dictionaries representing Quran data. Each dictionary should contain at least 
+                       "processed_text" or "verse_text" keys.
+    :return: A Counter object mapping tuple pairs of Gematria values to their frequency count.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    cooccurrence_counter = Counter()
+    
+    for item in quran_data:
+        text = item.get("processed_text") or item.get("verse_text", "")
+        if not text:
+            continue
+        words = text.split()
+        gematria_values = [calculate_gematria_value(word) for word in words]
+        sorted_values = sorted(gematria_values)
+        if len(sorted_values) < 2:
+            continue
+        for pair in combinations(sorted_values, 2):
+            cooccurrence_counter[pair] += 1
+            
+    logger.info("Gematria Co-occurrence Analysis:")
+    sorted_pairs = cooccurrence_counter.most_common(10)
+    logger.info("Top 10 most frequent Gematria value pairs:")
+    for pair, count in sorted_pairs:
+        logger.info("Gematria Pair: %s, Count: %d", str(pair), count)
+    logger.info("Total unique Gematria pairs: %d", len(cooccurrence_counter))
+    
+    return cooccurrence_counter
