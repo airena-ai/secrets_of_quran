@@ -3,5 +3,10 @@
         "iteration": 0,
         "date": "2025-04-06",
         "iteration_goal": "The initial architecture is designed with modularity in mind, comprising `data_loader`, `text_preprocessor`, and `logger_config` modules. `data_loader` handles loading Quran data, `text_preprocessor` performs basic text cleaning (diacritic removal, normalization), and `logger_config` sets up logging. A main script orchestrates these modules. This design supports incremental development and future scalability by clearly separating concerns and providing well-defined modules for each task."
+    },
+    {
+        "iteration": 1,
+        "date": "2025-04-06",
+        "iteration_goal": "The architecture will be updated by enhancing the `text_preprocessor` module with `arabic_normalization` and `tokenizer` sub-modules for improved Arabic text handling.  Normalization will address complete Arabic letter variations and Unicode artifacts. Tokenization will segment text into words. The `logger_config` will be updated to log these new preprocessing steps, improving observability. This modular design maintains separation of concerns and enhances system testability and maintainability."
     }
 ]

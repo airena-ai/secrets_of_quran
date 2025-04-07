@@ -3,7 +3,7 @@
     {
       "path": "src/__init__.py",
       "language": "python",
-      "description": "This package initialization file contains a module-level docstring explaining that the package provides modules for loading, preprocessing, and analyzing the Quran text.",
+      "description": "Initialization script for the src package that enables package-level imports and configurations.",
       "classes": [],
       "functions": [],
       "dependencies": []
@@ -11,28 +11,28 @@
     {
       "path": "src/data_loader.py",
       "language": "python",
-      "description": "This file defines the QuranDataLoader class for loading and parsing the Quran text data from a file using regex. It includes methods for initialization and data loading with proper logging and error handling.",
+      "description": "Module that defines the QuranDataLoader class to load and parse Quran text data from a file based on expected format, and logs each step of the data loading process.",
       "classes": [
         {
           "name": "QuranDataLoader",
-          "description": "A class to load and parse the Quran text data from a file. It sets the file_path and logs the data loading process.",
+          "description": "A class to load and parse Quran text data from a file. Uses a default file path when none is provided.",
           "parents": [],
           "methods": [
             {
               "name": "__init__",
-              "description": "Initialize the QuranDataLoader. Sets file_path based on input or default value and configures logging.",
+              "description": "Initialize the QuranDataLoader with an optional file path. If none is provided, a default data file is used.",
               "parameters": [
                 {
                   "name": "file_path",
                   "type": "string",
-                  "description": "Optional; path to the Quran text file. Defaults to None."
+                  "description": "Optional path to the Quran text file. Defaults to a preset file if None."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "load_data",
-              "description": "Load the Quran data by reading the file, parsing each line to extract surah, ayah, and verse_text, with logging and error handling.",
+              "description": "Load the Quran data from the text file, parsing each non-empty line into surah, ayah, and verse_text, and logging relevant information.",
               "parameters": [],
               "return_type": "list"
             }
@@ -45,27 +45,27 @@
     {
       "path": "src/text_preprocessor.py",
       "language": "python",
-      "description": "This file implements the TextPreprocessor class responsible for preprocessing Arabic text by removing diacritics and normalizing letters.",
+      "description": "Module that defines the TextPreprocessor class to normalize and tokenize Arabic text, including logging of processing steps.",
       "classes": [
         {
           "name": "TextPreprocessor",
-          "description": "A class for preprocessing Arabic text. It cleans text by removing diacritics and normalizing letters.",
+          "description": "A class for preprocessing Arabic text that initializes a logger and provides methods to normalize and tokenize Arabic text.",
           "parents": [],
           "methods": [
             {
               "name": "__init__",
-              "description": "Initialize the TextPreprocessor and set up logging.",
+              "description": "Initialize the TextPreprocessor and set up the logger.",
               "parameters": [],
               "return_type": "None"
             },
             {
               "name": "preprocess_text",
-              "description": "Preprocess Arabic text by removing diacritics and normalizing letters (replacing 'ى' with 'ي' and 'ة' with 'ه').",
+              "description": "Preprocess the given Arabic text by normalizing and tokenizing the text while logging processing details.",
               "parameters": [
                 {
                   "name": "text",
                   "type": "string",
-                  "description": "The input Arabic text to preprocess."
+                  "description": "The input Arabic text to be processed."
                 }
               ],
               "return_type": "string"
@@ -74,58 +74,59 @@
         }
       ],
       "functions": [],
-      "dependencies": []
+      "dependencies": [
+        "src/arabic_normalization.py",
+        "src/tokenizer.py"
+      ]
     },
     {
       "path": "src/logger_config.py",
-      "language": "Python",
-      "description": "This file provides configuration for the application's logging system. It contains a function to set up the root logger with appropriate handlers and formatters. The logger is configured to write log messages to 'quran_analysis.log' in the project root directory. The implementation ensures that existing handlers are cleared before adding new ones to prevent duplicate logging or issues with deleted log files.",
+      "language": "python",
+      "description": "Module that configures and sets up the logging for the application, writing log messages to 'quran_analysis.log' with a predefined format.",
       "classes": [],
       "functions": [
         {
           "name": "configure_logger",
-          "description": "Configures the root logger to write log messages to 'quran_analysis.log' in the project root directory. The function clears any existing handlers from the logger to prevent multiple handlers writing to the same or deleted log files. It sets the logging level to INFO, creates a file handler with UTF-8 encoding, and applies a standard formatter that includes timestamp, logger name, level, and message.",
+          "description": "Configure the root logger to write log messages to 'quran_analysis.log' and set logging level to INFO. It clears existing handlers before attaching a new FileHandler.",
           "parameters": [],
           "return_type": "logging.Logger"
         }
       ],
-      "dependencies": [
-        "os",
-        "logging"
-      ]
+      "dependencies": []
     },
     {
       "path": "src/main.py",
       "language": "python",
-      "description": "Main application entry point. Orchestrates data loading from QuranDataLoader and text preprocessing using TextPreprocessor. Configures logging, loads Quran data, preprocesses verses, and logs the process. Ensures proper shutdown of logging handlers.",
+      "description": "Main module that initiates the application. It sets up logging, data loading, and text preprocessing, and ensures proper resource cleanup.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main function to orchestrate data loading and text preprocessing. It initializes logging, loads data using QuranDataLoader, preprocesses text using TextPreprocessor, and logs the progress. Finally, it ensures that file handlers are closed properly.",
+          "description": "Main function to orchestrate data loading and text preprocessing. It configures the logger, reads the data file path from the environment variable, loads data using QuranDataLoader, processes text using TextPreprocessor, and handles cleanup of log file handlers.",
           "parameters": [],
           "return_type": "None"
         }
       ],
       "dependencies": [
-        "logging",
-        "src.logger_config",
-        "src.data_loader",
-        "src.text_preprocessor"
+        "src/logger_config.py",
+        "src/data_loader.py",
+        "src/text_preprocessor.py"
       ]
     },
     {
       "path": "setup.py",
       "language": "python",
-      "description": "Setup script for the quran_analysis package using setuptools. It specifies package metadata and installation requirements.",
+      "description": "Setup script for packaging and distribution of the quran_text_analysis application. It defines package metadata, dependencies, and console entry points.",
       "classes": [],
       "functions": [],
-      "dependencies": []
+      "dependencies": [
+        "src/main.py"
+      ]
     },
     {
       "path": "requirements.txt",
       "language": "None",
-      "description": "Requirements file listing external dependencies for the project. Currently indicates no external dependencies are required.",
+      "description": "Lists required Python packages for the project. Currently empty indicating no external dependencies.",
       "classes": [],
       "functions": [],
       "dependencies": []
@@ -141,7 +142,7 @@
     {
       "path": "tests/__init__.py",
       "language": "python",
-      "description": "Initialization file for the tests package containing unit and integration tests for the Quran analysis project.",
+      "description": "Initialization script for the tests package that enables discovery and execution of test cases.",
       "classes": [],
       "functions": [],
       "dependencies": []
@@ -179,22 +180,36 @@
     {
       "path": "tests/test_text_preprocessor.py",
       "language": "python",
-      "description": "Unit tests for the TextPreprocessor class to verify correct diacritic removal and letter normalization in Arabic text.",
+      "description": "This file contains unit tests for the text preprocessing components including the TextPreprocessor class, the normalize_text function, and the tokenize_text function. It verifies that diacritics are removed, texts are properly normalized, and tokenization is executed correctly.",
       "classes": [
         {
           "name": "TestTextPreprocessor",
-          "description": "Unit tests for TextPreprocessor class methods.",
-          "parents": [],
+          "description": "Unit tests for text preprocessing functionalities. Tests cover normalization of Arabic text and proper splitting of text tokens.",
+          "parents": [
+            "unittest.TestCase"
+          ],
           "methods": [
             {
               "name": "test_preprocess_text_removes_diacritics_and_normalizes",
-              "description": "Test that the preprocess_text method removes diacritics and normalizes letters correctly.",
+              "description": "Tests that the TextPreprocessor correctly removes diacritics and normalizes Arabic letters in the input text.",
               "parameters": [],
               "return_type": "None"
             },
             {
               "name": "test_preprocess_text_no_modification",
-              "description": "Test that text without diacritics is processed to the expected normalized form.",
+              "description": "Tests that the TextPreprocessor leaves already normalized text unchanged.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_arabic_normalization_removes_invisible_and_normalizes",
+              "description": "Tests that the normalize_text function removes invisible characters and diacritics while normalizing Arabic letters according to the mapping rules.",
+              "parameters": [],
+              "return_type": "None"
+            },
+            {
+              "name": "test_tokenizer_splits_on_punctuation_and_whitespace",
+              "description": "Tests that the tokenize_text function correctly splits input text into tokens based on punctuation and whitespace.",
               "parameters": [],
               "return_type": "None"
             }
@@ -203,7 +218,9 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/text_preprocessor.py"
+        "src/text_preprocessor.py",
+        "src/arabic_normalization.py",
+        "src/tokenizer.py"
       ]
     },
     {
@@ -233,18 +250,18 @@
     {
       "path": "tests/test_integration.py",
       "language": "python",
-      "description": "Integration tests to verify the core user flow of the application. This test suite includes TestIntegration class which focuses on end-to-end testing of the main application flow, ensuring data loading, preprocessing, and logging functionalities work together as expected. It sets up test data, runs the main application, and verifies the output and side effects such as log file creation and content.",
+      "description": "Integration tests that exercise the core user flow of the application, including data loading, logging, and overall execution of the main function.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration tests for the core user flow. This class inherits from unittest.TestCase and contains integration tests for the main application flow.",
+          "description": "Integration tests for verifying the complete application flow including data file handling and log file creation.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the complete integration flow of the application. This method sets up a sample data file, executes the main function, and then verifies that the log file is created and contains the expected log messages indicating successful execution stages. It also cleans up the created data and log files after the test.",
+              "description": "Tests the integration flow by invoking the main function, verifying log file creation and checking expected log messages in the log file.",
               "parameters": [],
               "return_type": "None"
             }
@@ -253,10 +270,50 @@
       ],
       "functions": [],
       "dependencies": [
-        "os",
-        "unittest",
-        "src.main"
+        "src/main.py"
       ]
+    },
+    {
+      "path": "src/arabic_normalization.py",
+      "language": "python",
+      "description": "This file implements a function 'normalize_text' that performs comprehensive Arabic text normalization. It removes invisible Unicode characters, strips Arabic diacritics, and maps various Arabic letter forms to their standard forms. Special handling is provided to convert taa marbuta to ha when it follows a ya.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "normalize_text",
+          "description": "Normalizes Arabic text by removing invisible Unicode characters and diacritics, applying a mapping to standardize Arabic letters, and converting taa marbuta to ha when preceded by ya. The function uses regular expressions for pattern matching and substitution.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "string",
+              "description": "The input Arabic text that needs normalization."
+            }
+          ],
+          "return_type": "string"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "src/tokenizer.py",
+      "language": "python",
+      "description": "Module to tokenize Arabic text into individual word tokens using whitespace and punctuation as delimiters.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "tokenize_text",
+          "description": "Tokenize the normalized Arabic text into a list of word tokens based on whitespace and punctuation.",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "string",
+              "description": "The input normalized Arabic text to be tokenized."
+            }
+          ],
+          "return_type": "list"
+        }
+      ],
+      "dependencies": []
     }
   ]
 }

@@ -3,5 +3,10 @@
         "iteration": 0,
         "date": "2025-04-06",
         "iteration_goal": "This first increment focuses on setting up the Python project environment and implementing the foundational steps for Quran text analysis. It includes creating functions to load the Quran data from the specified text file, perform basic preprocessing such as removing diacritics and normalizing some Arabic letters (\u0649 to \u064a, \u0629 to \u0647), and setting up basic logging to track the process. This stage ensures the data is accessible and minimally cleaned, preparing for more advanced preprocessing and analysis in subsequent steps."
+    },
+    {
+        "iteration": 1,
+        "date": "2025-04-06",
+        "iteration_goal": "This increment focuses on enhancing the text preprocessing stage by implementing more comprehensive normalization of Arabic letters and adding word tokenization.  Normalization will be expanded to cover a wider range of letter variations and handle invisible Unicode artifacts.  Word tokenization will break down the normalized text into individual words, which is essential for subsequent analysis.  Detailed logging will be added to monitor these new preprocessing steps, and integration tests will be updated to ensure correct implementation."
     }
 ]

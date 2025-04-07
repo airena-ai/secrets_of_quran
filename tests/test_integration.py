@@ -35,6 +35,7 @@ class TestIntegration(unittest.TestCase):
             log_content = file.read()
         self.assertIn("Application started.", log_content)
         self.assertIn("Completed data loading.", log_content)
+        self.assertIn("Tokenization complete:", log_content)
         # Cleanup created files
         os.remove(data_file)
         os.remove(log_file)

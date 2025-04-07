@@ -1,9 +1,13 @@
-import setuptools
+from setuptools import setup, find_packages
 
-setuptools.setup(
-    name="quran_analysis",
-    version="0.1",
-    packages=setuptools.find_packages(),
+setup(
+    name='quran_text_analysis',
+    version='0.1.0',
+    packages=find_packages(),
     install_requires=[],
-    python_requires=">=3.6",
+    entry_points={
+        'console_scripts': [
+            'quran_text_analysis = src.main:main'
+        ]
+    }
 )

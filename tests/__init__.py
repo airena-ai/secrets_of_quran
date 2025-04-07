@@ -1,3 +1,3 @@
-"""
-This package contains unit and integration tests for the Quran analysis project.
-"""
+'''
+Initializes the tests package.
+'''
