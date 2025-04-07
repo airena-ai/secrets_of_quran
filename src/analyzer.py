@@ -1932,3 +1932,111 @@ def analyze_conjunction_frequency(text):
             message = ("POTENTIAL SECRET FOUND: Conjunction frequency difference between Surahs with and without Muqatta'at. "
                        "Surahs with Muqatta'at show lower average conjunction frequency by {:.4f} per verse compared to those without.".format(-diff))
         log_secret_found(message)
+
+# New Function: Analyze Word Type Distribution in Surahs
+def analyze_word_type_distribution(text):
+    '''Analyze the distribution of word types (nouns, verbs, particles) between Surahs with and without Muqatta'at.
+    
+    This function categorizes Surahs into two groups using categorize_surahs_by_muqattaat.
+    For each group, it tokenizes each verse and uses CAMeL Tools morphological analysis to identify
+    the part-of-speech (POS) of each word. It counts occurrences of nouns, verbs, and particles,
+    then calculates the average count per verse for each word type within each group. Finally, it compares
+    the averages between the two groups and logs the results, including the percentage difference.
+    If the percentage difference for any word type exceeds 10%, the function logs a potential secret message.
+    
+    Args:
+        text (str): The preprocessed Quran text.
+    
+    Returns:
+        None
+    '''
+    # Check if CAMeL Tools is available
+    if importlib.util.find_spec("camel_tools") is None:
+        src.logger.log_result("CAMeL Tools not available. Skipping word type distribution analysis.")
+        return
+
+    # Initialize CAMeL Tools analyzer
+    try:
+        db = MorphologyDB.builtin_db()
+        analyzer_instance = Analyzer(db)
+    except Exception as e:
+        src.logger.log_result("Error initializing CAMeL Tools Analyzer: " + str(e))
+        return
+
+    # Categorize Surahs into Muqatta'at and Non-Muqatta'at groups
+    muq_surahs, non_muq_surahs = categorize_surahs_by_muqattaat(text)
+
+    # Initialize counters for each group
+    groups = {
+        "muq": {"noun": 0, "verb": 0, "particle": 0, "verse_count": 0},
+        "non_muq": {"noun": 0, "verb": 0, "particle": 0, "verse_count": 0}
+    }
+
+    pattern = re.compile(r'^\s*(\d+)\s*[|\-]\s*(\d+)\s*[|\-]\s*(.+)$')
+    for line in text.splitlines():
+        if not line.strip():
+            continue
+        m = pattern.match(line)
+        if m:
+            surah = m.group(1)
+            verse_text = m.group(3).strip()
+        else:
+            continue
+        group_key = None
+        if surah in muq_surahs:
+            group_key = "muq"
+        elif surah in non_muq_surahs:
+            group_key = "non_muq"
+        else:
+            continue
+        groups[group_key]["verse_count"] += 1
+        tokens = verse_text.split()
+        for token in tokens:
+            try:
+                analyses = analyzer_instance.analyze(token)
+                if analyses and "pos" in analyses[0]:
+                    pos_tag = analyses[0]["pos"].lower()
+                    if pos_tag.startswith("noun"):
+                        groups[group_key]["noun"] += 1
+                    elif pos_tag.startswith("verb"):
+                        groups[group_key]["verb"] += 1
+                    elif pos_tag.startswith("part"):
+                        groups[group_key]["particle"] += 1
+            except Exception:
+                continue
+
+    # Calculate average distribution per verse for each word type in each group
+    def calc_avg(count, total_verses):
+        return count / total_verses if total_verses > 0 else 0
+
+    avg_muq = {
+        "noun": calc_avg(groups["muq"]["noun"], groups["muq"]["verse_count"]),
+        "verb": calc_avg(groups["muq"]["verb"], groups["muq"]["verse_count"]),
+        "particle": calc_avg(groups["muq"]["particle"], groups["muq"]["verse_count"])
+    }
+    avg_non = {
+        "noun": calc_avg(groups["non_muq"]["noun"], groups["non_muq"]["verse_count"]),
+        "verb": calc_avg(groups["non_muq"]["verb"], groups["non_muq"]["verse_count"]),
+        "particle": calc_avg(groups["non_muq"]["particle"], groups["non_muq"]["verse_count"])
+    }
+
+    src.logger.log_result("Word Type Distribution Analysis:")
+    src.logger.log_result("Muqatta'at Surahs (n={0} verses): Avg Noun = {1:.2f}, Avg Verb = {2:.2f}, Avg Particle = {3:.2f}".format(
+        groups["muq"]["verse_count"], avg_muq["noun"], avg_muq["verb"], avg_muq["particle"]))
+    src.logger.log_result("Non-Muqatta'at Surahs (n={0} verses): Avg Noun = {1:.2f}, Avg Verb = {2:.2f}, Avg Particle = {3:.2f}".format(
+        groups["non_muq"]["verse_count"], avg_non["noun"], avg_non["verb"], avg_non["particle"]))
+
+    # Compare average distributions and log percentage differences
+    def percentage_diff(val1, val2):
+        max_val = max(val1, val2)
+        if max_val == 0:
+            return 0
+        return abs(val1 - val2) / max_val * 100
+
+    for word_type in ["noun", "verb", "particle"]:
+        diff = percentage_diff(avg_muq[word_type], avg_non[word_type])
+        src.logger.log_result("Percentage difference for {0}: {1:.2f}%".format(word_type, diff))
+        if diff > 10:
+            src.logger.log_secret_found("POTENTIAL SECRET FOUND: {0} distribution significantly different between Muqatta'at and Non-Muqatta'at Surahs.".format(word_type.capitalize()))
+
+# End of new function analyze_word_type_distribution

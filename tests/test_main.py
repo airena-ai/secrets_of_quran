@@ -17,7 +17,7 @@ class TestMainIntegration(unittest.TestCase):
         data_dir = "data"
         file_path = os.path.join(data_dir, "quran-uthmani-min.txt")
         os.makedirs(data_dir, exist_ok=True)
-        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
+        sample_text = ("1|1| بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ\n"
                        "1|2| آية من سورة الفاتحة\n"
                        "2|1|الم بداية سورة البقرة\n"
                        "2|2|آية من سورة البقرة\n"
@@ -56,6 +56,8 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Analysis: Muqatta'at Surah Verse Parity", log_contents)
                 self.assertIn("Average conjunction frequency per verse (Surahs with Muqatta'at):", log_contents)
                 self.assertIn("Average conjunction frequency per verse (Surahs without Muqatta'at):", log_contents)
+                # Since CAMeL Tools is unavailable in fallback, check for skipping message in word type distribution
+                self.assertIn("CAMeL Tools not available. Skipping word type distribution analysis.", log_contents)
             finally:
                 if os.path.exists(log_file):
                     os.remove(log_file)
@@ -82,7 +84,7 @@ class TestMainIntegration(unittest.TestCase):
         mock_analyzer = MagicMock()
         # Simulate CAMeL Tools behavior
         mock_analyzer.analyze.side_effect = (
-            lambda token: [{'root': 'حمد'}] if token == "الْحَمْدُ" else [{'root': token}, {'lemma': token}]
+            lambda token: [{'pos': 'NOUN'}] if token == "الم" or token == "الْحَمْدُ" else [{'pos': 'verb'}]
         )
 
         with patch('importlib.util.find_spec', return_value=mock_spec), \
@@ -117,8 +119,9 @@ class TestMainIntegration(unittest.TestCase):
                 self.assertIn("Analysis: Muqatta'at Surah Verse Parity", log_contents)
                 self.assertIn("Average conjunction frequency per verse (Surahs with Muqatta'at):", log_contents)
                 self.assertIn("Average conjunction frequency per verse (Surahs without Muqatta'at):", log_contents)
+                # For CAMeL Tools available, the word type distribution analysis should log its header
+                self.assertIn("Word Type Distribution Analysis:", log_contents)
             finally:
-                # Cleanup
                 if os.path.exists(file_path):
                     os.remove(file_path)
                 if os.path.exists(log_file):
