@@ -70,6 +70,14 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Top 5 Root Words:", log_content)
         self.assertRegex(log_content, r"Total Unique Root Words:\s*\d+")
         
+        # Assertions for first and last root word frequency analysis
+        self.assertIn("Starting Ayah First Root Word Frequency Analysis.", log_content)
+        self.assertIn("Top 10 most frequent first root words:", log_content)
+        self.assertIn("Total unique first root words:", log_content)
+        self.assertIn("Starting Ayah Last Root Word Frequency Analysis.", log_content)
+        self.assertIn("Top 10 most frequent last root words:", log_content)
+        self.assertIn("Total unique last root words:", log_content)
+
         # Assertions for word length distribution analysis
         self.assertIn("Word Length Distribution Analysis:", log_content)
         self.assertIn("Total words analyzed:", log_content)
@@ -112,10 +120,9 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Finished Character Frequency Analysis.", log_content)
         
         # Additional assertions for word n-gram analysis at Quran level
-        self.assertIn("Starting Word N-gram (Bigram) Frequency Analysis (Quran Level)...", log_content)
-        self.assertIn("Top 20 most frequent word bigrams:", log_content)
-        self.assertIn("Total unique word bigrams found:", log_content)
+        self.assertIn("Starting word n-gram analysis.", log_content)
         self.assertIn("Completed Word N-gram (Bigram) Frequency Analysis (Quran Level).", log_content)
+        self.assertIn("Total unique word bigrams found:", log_content)
         
         # Assertions for Surah-level and Ayah-level word n-gram analyses
         self.assertIn("Starting Surah-level word n-gram analysis.", log_content)

@@ -204,6 +204,62 @@ def analyze_ayah_root_word_frequency(data):
         logger.info("Total Unique Root Words: %d", len(counter))
     return ayah_root_freqs
 
+def analyze_ayah_first_root_word_frequency(data):
+    '''
+    Analyze the frequency of the first root word in each Ayah.
+    
+    Iterates through each Ayah in the provided Quran data, extracts the first root word (if any),
+    and counts its frequency across all ayahs.
+    
+    Logs:
+    - A header indicating the start of the analysis.
+    - The top 10 most frequent first root words and their counts.
+    - The total count of unique first root words.
+    
+    :param data: List of dictionaries containing Quran data with a 'roots' key.
+    :return: Counter object mapping first root words to their frequency.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    logger.info("Starting Ayah First Root Word Frequency Analysis.")
+    first_root_counter = Counter()
+    for item in data:
+        roots = item.get("roots", [])
+        if roots:
+            first_root_counter[roots[0]] += 1
+    top_10 = first_root_counter.most_common(10)
+    logger.info("Top 10 most frequent first root words: %s", top_10)
+    logger.info("Total unique first root words: %d", len(first_root_counter))
+    logger.info("Ayah First Root Word Frequency Analysis completed.")
+    return first_root_counter
+
+def analyze_ayah_last_root_word_frequency(data):
+    '''
+    Analyze the frequency of the last root word in each Ayah.
+    
+    Iterates through each Ayah in the provided Quran data, extracts the last root word (if any),
+    and counts its frequency across all ayahs.
+    
+    Logs:
+    - A header indicating the start of the analysis.
+    - The top 10 most frequent last root words and their counts.
+    - The total count of unique last root words.
+    
+    :param data: List of dictionaries containing Quran data with a 'roots' key.
+    :return: Counter object mapping last root words to their frequency.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    logger.info("Starting Ayah Last Root Word Frequency Analysis.")
+    last_root_counter = Counter()
+    for item in data:
+        roots = item.get("roots", [])
+        if roots:
+            last_root_counter[roots[-1]] += 1
+    top_10 = last_root_counter.most_common(10)
+    logger.info("Top 10 most frequent last root words: %s", top_10)
+    logger.info("Total unique last root words: %d", len(last_root_counter))
+    logger.info("Ayah Last Root Word Frequency Analysis completed.")
+    return last_root_counter
+
 def analyze_character_frequency(tokenized_text):
     '''
     Analyze the frequency of each character in the preprocessed Quran text.

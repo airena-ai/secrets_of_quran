@@ -73,5 +73,10 @@
         "iteration": 14,
         "date": "2025-04-07",
         "iteration_goal": "Extend the `ngram_analyzer` module to support character N-gram analysis by adding functions for Quran, Surah, and Ayah levels (`analyze_character_ngrams`, `analyze_surah_character_ngrams`, `analyze_ayah_character_ngrams`). Update `main()` to use these new functions and add integration tests for validation. Enhance logging to clearly present the results of each analysis level, including Surah and Ayah identifiers where applicable."
+    },
+    {
+        "iteration": 15,
+        "date": "2025-04-07",
+        "iteration_goal": "The `frequency_analyzer` module is extended with `analyze_ayah_first_root_word_frequency` and `analyze_ayah_last_root_word_frequency` functions to analyze the frequency of first and last root words in Ayahs. The `main()` function and integration tests are updated to include these new analyses, enhancing the system's analytical capabilities while maintaining modular design and testability. Logging is improved for clear output."
     }
 ]

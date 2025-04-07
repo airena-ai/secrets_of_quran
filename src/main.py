@@ -21,10 +21,11 @@ def main():
     9. Analyzes root word frequency across the Quran data and logs the top 20 root words and unique count.
     10. Analyzes root word co-occurrence within each Ayah of the Quran data, logging the top 20 most frequent pairs.
     11. Analyzes ayah-level root word frequency, logging top 5 root words and unique count per ayah.
-    12. Analyzes lemma word frequency across the Quran data.
-    13. Analyzes lemma word co-occurrence across the Quran data.
-    14. Analyzes word n-gram frequency at Quran, Surah, and Ayah levels.
-    15. Analyzes character n-gram frequency at Quran, Surah, and Ayah levels.
+    12. Analyzes surah-level root word frequency, logging top 10 root words and unique count per surah.
+    13. Analyzes lemma word frequency across the Quran data.
+    14. Analyzes lemma word co-occurrence across the Quran data.
+    15. Analyzes word n-gram frequency at Quran, Surah, and Ayah levels.
+    16. Analyzes character n-gram frequency at Quran, Surah, and Ayah levels.
     """
     logger = configure_logger()
     logger.info("Application started.")
@@ -98,17 +99,26 @@ def main():
         ayah_frequencies = analyze_ayah_word_frequency(data)
         logger.info("Ayah-level word frequency analysis completed.")
 
-        # Integrate surah-level root word frequency analysis
-        from src.frequency_analyzer import analyze_surah_root_word_frequency
-        logger.info("Starting surah-level root word frequency analysis.")
-        surah_root_frequencies = analyze_surah_root_word_frequency(data)
-        logger.info("Surah-level root word frequency analysis completed.")
-
         # Integrate ayah-level root word frequency analysis
         from src.frequency_analyzer import analyze_ayah_root_word_frequency
         logger.info("Starting Ayah-level Root Word Frequency Analysis.")
         ayah_root_frequencies = analyze_ayah_root_word_frequency(data)
         logger.info("Ayah-level Root Word Frequency Analysis completed.")
+        
+        # Integrate surah-level root word frequency analysis
+        from src.frequency_analyzer import analyze_surah_root_word_frequency
+        logger.info("Starting surah-level root word frequency analysis.")
+        surah_root_freq = analyze_surah_root_word_frequency(data)
+        logger.info("Surah-level Root Word Frequency Analysis - Surah 1 Top 10 Root Words: %s", surah_root_freq.get(1, {}).most_common(10))
+        
+        # New: Integrate first and last root word frequency analysis at Ayah level
+        from src.frequency_analyzer import analyze_ayah_first_root_word_frequency, analyze_ayah_last_root_word_frequency
+        logger.info("Starting Ayah First Root Word Frequency Analysis.")
+        first_root_freq = analyze_ayah_first_root_word_frequency(data)
+        logger.info("Ayah First Root Word Frequency Analysis completed.")
+        logger.info("Starting Ayah Last Root Word Frequency Analysis.")
+        last_root_freq = analyze_ayah_last_root_word_frequency(data)
+        logger.info("Ayah Last Root Word Frequency Analysis completed.")
 
         # Integrate root word frequency analysis
         from src.frequency_analyzer import analyze_root_word_frequency
