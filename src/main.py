@@ -18,6 +18,7 @@ def main():
        and the total number of unique word pairs.
     7. Analyzes word frequencies at Surah and Ayah levels, logging top frequent words per analysis.
     8. Analyzes word length distribution within the tokenized text and logs summary statistics.
+    9. Analyzes root word frequency across the tokenized text and logs the top 20 root words and unique count.
     """
     logger = configure_logger()
     logger.info("Application started.")
@@ -74,6 +75,12 @@ def main():
         logger.info("Starting Ayah-level word frequency analysis.")
         ayah_frequencies = analyze_ayah_word_frequency(data)
         logger.info("Ayah-level word frequency analysis completed.")
+
+        # Integrate root word frequency analysis
+        from src.frequency_analyzer import analyze_root_word_frequency
+        logger.info("Starting root word frequency analysis.")
+        root_frequencies = analyze_root_word_frequency(tokenized_text)
+        logger.info("Root word frequency analysis completed.")
 
         logger.info("Application finished.")
     except Exception as e:

@@ -116,12 +116,12 @@
     {
       "path": "src/main.py",
       "language": "Python",
-      "description": "This module contains the main function that orchestrates the application flow. It handles data loading, text preprocessing, multiple analyses such as word frequency, co-occurrence, and word length distribution, and logs detailed analysis results.",
+      "description": "Main entry point of the Quran analysis application. This module orchestrates the entire process, including data loading, text preprocessing, execution of word frequency and co-occurrence analyses, and logging of results. It integrates various components from other modules to deliver a comprehensive analysis workflow.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Entry point of the application. Loads Quran data, preprocesses each verse, performs various analyses (word frequency, word co-occurrence, Surah and Ayah level frequency, and word length distribution), logs the results, and handles errors with proper logging shutdown.",
+          "description": "Coordinates the application flow by setting up logging, loading Quran data, preprocessing text, and executing multiple analyses such as word frequency, co-occurrence, surah, ayah levels, word length distribution, and root word frequency. Handles errors gracefully and ensures logging shutdown upon completion.",
           "parameters": [],
           "return_type": "None"
         }
@@ -311,18 +311,18 @@
     {
       "path": "tests/test_integration.py",
       "language": "Python",
-      "description": "This module contains integration tests for the core user flow of the application. It sets up sample data, invokes the main application flow, verifies expected log messages for various analyses, and cleans up test artifacts.",
+      "description": "Integration tests for the Quran analysis application. This test suite validates the end-to-end flow of the application, ensuring that key processes such as data loading, text preprocessing, various analyses, and logging are working as expected.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration tests for verifying the complete application flow. This class runs the main function with test data and checks the log outputs to ensure that each analysis step performs as expected.",
+          "description": "Integration test suite using the unittest framework to verify the core application workflow and logging outputs.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the end-to-end functionality of the application. It creates a test data file, sets the necessary environment variable, runs the main function, and asserts that the log file contains expected messages from word frequency, co-occurrence, Surah-level analysis, Ayah-level analysis, and word length distribution analysis.",
+              "description": "Tests the integration flow by invoking the main application function, verifying the creation and content of log files, and ensuring that all key analytical steps produce expected log messages.",
               "parameters": [
                 {
                   "name": "self",
@@ -503,61 +503,71 @@
     {
       "path": "src/frequency_analyzer.py",
       "language": "Python",
-      "description": "This module provides functions to analyze word frequencies and distributions in the Quran text. It includes functions to count word frequencies, analyze Surah and Ayah level word frequencies, and compute word length distributions with detailed logging for debugging and analysis.",
+      "description": "This file provides functions for analyzing word frequencies in Quran text. It includes functions to: count word frequencies from tokenized text, analyze word frequencies at Surah and Ayah levels, assess word length distribution, and evaluate root word frequency. The module utilizes logging for detailed diagnostics and leverages Python's Counter from collections.",
       "classes": [],
       "functions": [
         {
           "name": "count_word_frequencies",
-          "description": "Calculate the frequency of each unique word in the tokenized Quran text. Accepts either a nested list (list of verses) or a flat list of word tokens and returns a dictionary with word counts.",
+          "description": "Calculates the frequency of each unique word in the provided tokenized text. The input can be a flat list of words or a list of lists representing verses, and returns a dictionary with word counts.",
           "parameters": [
             {
               "name": "tokenized_text",
               "type": "list",
-              "description": "List of lists of word tokens or a flat list of tokens representing the Quran text."
+              "description": "A list of word tokens or a list of lists of tokens representing verses."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_surah_word_frequency",
-          "description": "Aggregate word frequencies at the Surah level from preprocessed Quran data and log the top 10 frequent words for each Surah.",
+          "description": "Analyzes word frequencies aggregated at the Surah level from Quran data. It logs the top 10 most frequent words for each Surah and returns a dictionary mapping surah numbers to their corresponding frequency dictionaries.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries, each containing keys 'surah', 'ayah', and 'processed_text' for Quran data."
+              "description": "A list of dictionaries each containing 'surah', 'ayah', and 'processed_text' keys."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_ayah_word_frequency",
-          "description": "Analyze word frequencies at the Ayah level, storing results in a nested dictionary keyed by surah and ayah numbers and logging the top 5 words for selected surahs.",
+          "description": "Analyzes word frequencies at the Ayah level from Quran data. For each Ayah, it computes the frequency of each word and logs the top 5 words for selected surahs, returning a nested dictionary that maps surah and ayah numbers to frequency counts.",
           "parameters": [
             {
               "name": "quran_data",
               "type": "list",
-              "description": "List of dictionaries with keys 'surah', 'ayah', and 'processed_text' representing individual Ayahs."
+              "description": "A list of dictionaries each containing 'surah', 'ayah', and 'processed_text' keys."
             }
           ],
           "return_type": "dict"
         },
         {
           "name": "analyze_word_length_distribution",
-          "description": "Compute the distribution of word lengths within the tokenized Quran text, including summary statistics such as total word count, average word length, and the most frequent word lengths, with detailed logging.",
+          "description": "Analyzes the distribution of word lengths in the tokenized Quran text. Computes total words, average word length, and identifies the most frequent word lengths, returning a dictionary that maps each word length to its frequency.",
           "parameters": [
             {
               "name": "tokenized_text",
               "type": "list",
-              "description": "List of lists of words where each inner list represents an ayah."
+              "description": "A list of lists of words, where each inner list represents an ayah."
+            }
+          ],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_root_word_frequency",
+          "description": "Evaluates the frequency distribution of root words in the tokenized Quran text. Logs the top 20 most frequent root words and returns a dictionary with root words as keys and their frequency counts as values.",
+          "parameters": [
+            {
+              "name": "tokenized_text",
+              "type": "list",
+              "description": "A list of lists of root word tokens, where each inner list represents an ayah."
             }
           ],
           "return_type": "dict"
         }
       ],
-      "dependencies": [
-        "src/main.py"
-      ]
+      "dependencies": []
     },
     {
       "path": "src/cooccurrence_analyzer.py",

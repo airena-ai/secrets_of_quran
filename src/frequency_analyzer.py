@@ -122,3 +122,31 @@ def analyze_word_length_distribution(tokenized_text):
     logger.info("Average word length: %.2f", avg_word_length)
     logger.info("Most frequent word length(s): %s (Count: %d)", most_frequent_word_lengths, max_freq)
     return dict(counter)
+
+def analyze_root_word_frequency(tokenized_text):
+    '''
+    Analyze the frequency distribution of root words across the tokenized Quran text.
+    
+    This function iterates through each verse and counts the occurrences of each unique root word.
+    It logs the top 20 most frequent root words along with their counts, as well as the total number
+    of unique root words found in the Quran.
+    
+    :param tokenized_text: List of lists of root word tokens, where each inner list represents an ayah.
+    :return: Dictionary with unique root words as keys and their frequency counts as values.
+    '''
+    logger = logging.getLogger(__name__)
+    logger.info("Root Word Frequency Analysis started.")
+    counter = Counter()
+    if tokenized_text and isinstance(tokenized_text[0], list):
+        for verse_tokens in tokenized_text:
+            counter.update(verse_tokens)
+    else:
+        counter.update(tokenized_text)
+    unique_count = len(counter)
+    top_20 = sorted(counter.items(), key=lambda x: x[1], reverse=True)[:20]
+    logger.info("Total unique root words found: %d", unique_count)
+    logger.info("Top 20 most frequent root words:")
+    for root, count in top_20:
+        logger.info("Root: %s, Count: %d", root, count)
+    logger.info("Root Word Frequency Analysis completed.")
+    return dict(counter)

@@ -73,6 +73,11 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Average word length:", log_content)
         self.assertIn("Most frequent word length(s):", log_content)
 
+        # Assertions for root word frequency analysis
+        self.assertIn("Starting root word frequency analysis.", log_content)
+        self.assertIn("Total unique root words found:", log_content)
+        self.assertIn("Top 20 most frequent root words:", log_content)
+
         # Cleanup created files
         os.remove(data_file)
         os.remove(log_file)

@@ -33,5 +33,10 @@
         "iteration": 6,
         "date": "2025-04-06",
         "iteration_goal": "This increment focuses on implementing word length distribution analysis. A new function `analyze_word_length_distribution` will be created to calculate and log the frequency of each word length in the Quran text. The `main()` function will be updated to include this analysis, and integration tests will be enhanced to validate its correct implementation. This step provides a new analytical perspective on the Quran text by examining the structural characteristics at the word level, which can be useful for further exploration of patterns and potential hidden messages."
+    },
+    {
+        "iteration": 7,
+        "date": "2025-04-06",
+        "iteration_goal": "This increment focuses on implementing root word frequency analysis across the entire Quran. A new function `analyze_root_word_frequency` will be created to count and log the frequency of each root word. The `main()` function will be updated to include this new analysis, and integration tests will be enhanced to validate its correct implementation. This step provides insights into the distribution of root words, building upon previous root word extraction capabilities and offering a deeper linguistic perspective on the Quranic text."
     }
 ]

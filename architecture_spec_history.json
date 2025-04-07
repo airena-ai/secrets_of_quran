@@ -33,5 +33,10 @@
         "iteration": 6,
         "date": "2025-04-06",
         "iteration_goal": "Introduce a new `distribution_analyzer` module with `analyze_word_length_distribution` function to calculate and log word length distribution. The `main` function will call this new function after tokenization, and logs will be updated to include the analysis results. Integration tests will be enhanced to verify the new functionality. This modular approach maintains separation of concerns and supports future distribution analysis features."
+    },
+    {
+        "iteration": 7,
+        "date": "2025-04-06",
+        "iteration_goal": "The architecture is updated to extend the `frequency_analyzer` module with a new `analyze_root_word_frequency` function. This function will calculate and log the frequency of root words in the Quran. The `main()` function will be updated to include this analysis, and integration tests and logging will be enhanced to support the new functionality. This addition reuses the existing `frequency_analyzer` module, maintaining modularity and separation of concerns."
     }
 ]
