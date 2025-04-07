@@ -48,8 +48,11 @@ def main():
             tokens = processed_text.split()
             tokenized_text.append(tokens)
         
+        # Integrate character frequency analysis
+        from src.frequency_analyzer import analyze_character_frequency, analyze_word_length_distribution
+        analyze_character_frequency(tokenized_text)
+
         # Integrate word length distribution analysis
-        from src.frequency_analyzer import analyze_word_length_distribution
         logger.info("Starting word length distribution analysis.")
         word_length_distribution = analyze_word_length_distribution(tokenized_text)
         logger.info("Word length distribution analysis completed.")

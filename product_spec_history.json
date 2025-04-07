@@ -48,5 +48,10 @@
         "iteration": 9,
         "date": "2025-04-07",
         "iteration_goal": "This increment focuses on implementing root word frequency analysis at the Ayah level. A new function `analyze_ayah_root_word_frequency` will be created to calculate and log the frequency of each root word within each Ayah. The `main()` function and integration tests will be updated to include and validate this new analysis, providing a more granular view of root word distribution within individual verses of the Quran. This step builds upon previous root word analysis capabilities."
+    },
+    {
+        "iteration": 10,
+        "date": "2025-04-07",
+        "iteration_goal": "This increment focuses on implementing character frequency analysis for the entire Quran. A new function `analyze_character_frequency` will be created to count and log the frequency of each character in the preprocessed text. The `main()` function will be updated to include this analysis, and integration tests will be enhanced to validate the new functionality. This step adds a new layer of analysis at the character level, potentially revealing hidden patterns not visible at the word or root level."
     }
 ]

@@ -203,3 +203,30 @@ def analyze_ayah_root_word_frequency(data):
         logger.info("Top 5 Root Words: %s", dict(top_5))
         logger.info("Total Unique Root Words: %d", len(counter))
     return ayah_root_freqs
+
+def analyze_character_frequency(tokenized_text):
+    '''
+    Analyze the frequency of each character in the preprocessed Quran text.
+    
+    This function iterates over each ayah and each word, counting the occurrences 
+    of each character. It then sorts the characters by frequency in descending order 
+    and logs the top 20 most frequent characters along with the total count of unique 
+    characters.
+    
+    :param tokenized_text: List of ayahs, where each ayah is a list of words.
+    :return: Dictionary mapping each character to its frequency count.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    char_freq = {}
+    logger.info("Starting Character Frequency Analysis...")
+    for ayah in tokenized_text:
+        for word in ayah:
+            for char in word:
+                char_freq[char] = char_freq.get(char, 0) + 1
+    sorted_chars = sorted(char_freq.items(), key=lambda x: x[1], reverse=True)
+    logger.info("Top 20 most frequent characters:")
+    for char, count in sorted_chars[:20]:
+        logger.info("Character: %s, Count: %d", char, count)
+    logger.info("Total unique characters: %d", len(char_freq))
+    logger.info("Finished Character Frequency Analysis.")
+    return char_freq
