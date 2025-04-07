@@ -30,7 +30,7 @@ product_spec_northstar: >
   Fully complete function that executes all the analysis and creates a log file that contains analysis and results.
   Should not be a demo or placeholder.
   Must perform a complete and verbose Quran analysis.
-  Must produce verbose output in the log file for every analytical stage. The log file can be used seperately for independent analysis by AI systems.
+  Must produce analysis steps and result's output in the log file for every analytical stage. The log file should be self sufficient and can be used seperately for independent analysis by AI systems.
 
   * Testing:
   Create an integration test to run the full main() function
