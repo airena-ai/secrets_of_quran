@@ -115,8 +115,8 @@ def main():
         # Integrate surah-level root word frequency analysis
         from src.frequency_analyzer import analyze_surah_root_word_frequency
         logger.info("Starting surah-level root word frequency analysis.")
-        surah_root_freq = analyze_surah_root_word_frequency(data)
-        logger.info("Surah-level Root Word Frequency Analysis - Surah 1 Top 10 Root Words: %s", surah_root_freq.get(1, {}).most_common(10))
+        surah_root_frequencies = analyze_surah_root_word_frequency(data)
+        logger.info("Surah-level Root Word Frequency Analysis completed.")
         
         # New: Integrate first and last root word frequency analysis at Ayah level
         from src.frequency_analyzer import analyze_ayah_first_root_word_frequency, analyze_ayah_last_root_word_frequency
@@ -126,7 +126,13 @@ def main():
         logger.info("Starting Ayah Last Root Word Frequency Analysis.")
         last_root_freq = analyze_ayah_last_root_word_frequency(data)
         logger.info("Ayah Last Root Word Frequency Analysis completed.")
-
+        
+        # Integrate semantic group frequency analysis using root words
+        from src.frequency_analyzer import analyze_semantic_group_frequency
+        logger.info("Starting Semantic Group Frequency Analysis.")
+        semantic_group_freq = analyze_semantic_group_frequency(data)
+        logger.info("Semantic Group Frequency Analysis completed.")
+        
         # Integrate root word frequency analysis
         from src.frequency_analyzer import analyze_root_word_frequency
         logger.info("Starting root word frequency analysis.")

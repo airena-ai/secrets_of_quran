@@ -83,5 +83,10 @@
         "iteration": 16,
         "date": "2025-04-07",
         "iteration_goal": "Implement word collocation analysis to find words frequently appearing within a specified window size (default 3 words) in Quranic verses. A new function `analyze_word_collocation` will process preprocessed text, count collocation pairs, and log the top frequent pairs and total unique pairs. The `main()` function will be updated to include this analysis, and integration tests will be added to validate the implementation. This step explores word relationships beyond simple co-occurrence by examining proximity-based word patterns."
+    },
+    {
+        "iteration": 17,
+        "date": "2025-04-07",
+        "iteration_goal": "This increment focuses on implementing semantic group frequency analysis. It introduces a new function `analyze_semantic_group_frequency` to count the occurrences of semantic groups, defined by root words, within the Quran text. This analysis will provide insights into the frequency distribution of root-based semantic categories, building upon previous root word extraction capabilities. The implementation includes function creation, semantic group counting logic, result logging, integration with the main function, and the addition of integration tests to validate the new functionality."
     }
 ]

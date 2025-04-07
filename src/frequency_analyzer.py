@@ -260,6 +260,30 @@ def analyze_ayah_last_root_word_frequency(data):
     logger.info("Ayah Last Root Word Frequency Analysis completed.")
     return last_root_counter
 
+def analyze_semantic_group_frequency(quran_data):
+    '''
+    Analyze the frequency of semantic groups defined by their root words.
+    
+    For each ayah in quran_data, iterates over the list of root words (under the key 'roots'),
+    counting the occurrences of each root (semantic group). Logs the total unique semantic groups and
+    the top 20 most frequent semantic groups.
+    
+    :param quran_data: List of dictionaries representing Quran data, each containing a 'roots' key.
+    :return: Dictionary mapping each semantic group (root word) to its frequency count.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    semantic_group_counts = {}
+    for ayah in quran_data:
+        for root in ayah.get("roots", []):
+            semantic_group_counts[root] = semantic_group_counts.get(root, 0) + 1
+    logger.info("Semantic Group Frequency Analysis:")
+    logger.info("Total unique semantic groups: %d", len(semantic_group_counts))
+    top_20 = sorted(semantic_group_counts.items(), key=lambda item: item[1], reverse=True)[:20]
+    logger.info("Top 20 most frequent semantic groups:")
+    for root, count in top_20:
+        logger.info("Root: %s, Count: %d", root, count)
+    return semantic_group_counts
+
 def analyze_character_frequency(tokenized_text):
     '''
     Analyze the frequency of each character in the preprocessed Quran text.

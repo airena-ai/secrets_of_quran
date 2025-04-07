@@ -139,5 +139,37 @@ class TestIntegration(unittest.TestCase):
         if not os.listdir(data_dir):
             os.rmdir(data_dir)
 
+    def test_analyze_semantic_group_frequency(self):
+        self.maxDiff = None
+        import io
+        import logging
+        from src.frequency_analyzer import analyze_semantic_group_frequency
+        # Set up a stream to capture log output
+        log_stream = io.StringIO()
+        stream_handler = logging.StreamHandler(log_stream)
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        stream_handler.setFormatter(formatter)
+        logger = logging.getLogger("quran_analysis")
+        logger.addHandler(stream_handler)
+        logger.setLevel(logging.INFO)
+        
+        # Define sample Quran data with roots
+        sample_quran_data = [
+            {"roots": ["root1", "root2", "root1"]},
+            {"roots": ["root2", "root3"]},
+            {"roots": ["root1"]}
+        ]
+        result = analyze_semantic_group_frequency(sample_quran_data)
+        
+        logger.removeHandler(stream_handler)
+        log_contents = log_stream.getvalue()
+        
+        self.assertIn("Semantic Group Frequency Analysis:", log_contents)
+        self.assertIn("Total unique semantic groups: 3", log_contents)
+        self.assertIn("Root: root1, Count: 3", log_contents)
+        self.assertIn("Root: root2, Count: 2", log_contents)
+        self.assertIn("Root: root3, Count: 1", log_contents)
+        self.assertEqual(result, {"root1": 3, "root2": 2, "root3": 1})
+
 if __name__ == "__main__":
     unittest.main()
