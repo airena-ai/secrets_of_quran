@@ -8,5 +8,10 @@
         "iteration": 1,
         "date": "2025-04-06",
         "iteration_goal": "The architecture will be updated by enhancing the `text_preprocessor` module with `arabic_normalization` and `tokenizer` sub-modules for improved Arabic text handling.  Normalization will address complete Arabic letter variations and Unicode artifacts. Tokenization will segment text into words. The `logger_config` will be updated to log these new preprocessing steps, improving observability. This modular design maintains separation of concerns and enhances system testability and maintainability."
+    },
+    {
+        "iteration": 2,
+        "date": "2025-04-06",
+        "iteration_goal": "The architecture is updated to include `lemmatizer` and `root_extractor` sub-modules within the `text_preprocessor` module. These additions will enable lemmatization and root word extraction for Arabic text using external libraries. The logging will be enhanced to capture lemmatized and root words. Integration tests will be updated to verify the correct implementation and log output of these new text processing stages, ensuring comprehensive analysis and observability."
     }
 ]

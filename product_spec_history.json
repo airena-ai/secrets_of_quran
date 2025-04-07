@@ -8,5 +8,10 @@
         "iteration": 1,
         "date": "2025-04-06",
         "iteration_goal": "This increment focuses on enhancing the text preprocessing stage by implementing more comprehensive normalization of Arabic letters and adding word tokenization.  Normalization will be expanded to cover a wider range of letter variations and handle invisible Unicode artifacts.  Word tokenization will break down the normalized text into individual words, which is essential for subsequent analysis.  Detailed logging will be added to monitor these new preprocessing steps, and integration tests will be updated to ensure correct implementation."
+    },
+    {
+        "iteration": 2,
+        "date": "2025-04-06",
+        "iteration_goal": "This increment focuses on enhancing the text preprocessing stage by incorporating lemmatization and root word extraction. Lemmatization will reduce words to their base form, and root word extraction will identify the root of each word. This involves integrating appropriate Python libraries, updating the `preprocess_text` function, enhancing logging to include lemmatized and root words, and updating integration tests to verify the correct implementation of these new features. These steps are crucial for more advanced text analysis in subsequent iterations."
     }
 ]

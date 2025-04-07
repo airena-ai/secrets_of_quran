@@ -36,6 +36,22 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Application started.", log_content)
         self.assertIn("Completed data loading.", log_content)
         self.assertIn("Tokenization complete:", log_content)
+        self.assertIn("Lemma:", log_content)
+        self.assertIn("Root:", log_content)
+
+        # Enhance integration test: Parse log lines for processed tokens and check expected lemma and root.
+        processed_lines = [line for line in log_content.splitlines() if "Token processed -" in line]
+        self.assertGreater(len(processed_lines), 0, "No token processed log lines found.")
+        for line in processed_lines:
+            # Expecting line format: "Token processed - Original: %s, Normalized: %s, Lemma: %s, Root: %s"
+            parts = line.split("Token processed -")[-1].strip().split(", ")
+            self.assertEqual(len(parts), 4, "Log line does not have four parts.")
+            original_val = parts[0].split("Original:")[-1].strip()
+            normalized_val = parts[1].split("Normalized:")[-1].strip()
+            lemma_val = parts[2].split("Lemma:")[-1].strip()
+            root_val = parts[3].split("Root:")[-1].strip()
+            self.assertNotEqual(lemma_val, "", "Lemma value is empty.")
+            self.assertNotEqual(root_val, "", "Root value is empty.")
         # Cleanup created files
         os.remove(data_file)
         os.remove(log_file)

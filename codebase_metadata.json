@@ -10,62 +10,76 @@
     },
     {
       "path": "src/data_loader.py",
-      "language": "python",
-      "description": "Module that defines the QuranDataLoader class to load and parse Quran text data from a file based on expected format, and logs each step of the data loading process.",
+      "language": "Python",
+      "description": "This file contains the QuranDataLoader class responsible for loading Quran verse data from a text file. It handles parsing lines in the format 'surah|ayah|verse_text' and converts them into a structured list of dictionaries. The class includes error handling for file not found scenarios and proper logging.",
       "classes": [
         {
           "name": "QuranDataLoader",
-          "description": "A class to load and parse Quran text data from a file. Uses a default file path when none is provided.",
+          "description": "A class that loads and parses Quran data from a text file. Each line in the file is expected to be in the format 'surah|ayah|verse_text'. The class provides functionality to read this data and convert it into a structured format for further processing.",
           "parents": [],
           "methods": [
             {
               "name": "__init__",
-              "description": "Initialize the QuranDataLoader with an optional file path. If none is provided, a default data file is used.",
+              "description": "Initializes the QuranDataLoader with an optional file path and sets up logging.",
               "parameters": [
                 {
+                  "name": "self",
+                  "type": "QuranDataLoader",
+                  "description": "Instance of the class"
+                },
+                {
                   "name": "file_path",
-                  "type": "string",
-                  "description": "Optional path to the Quran text file. Defaults to a preset file if None."
+                  "type": "str",
+                  "description": "Path to the data file. If None, returns empty data."
                 }
               ],
               "return_type": "None"
             },
             {
               "name": "load_data",
-              "description": "Load the Quran data from the text file, parsing each non-empty line into surah, ayah, and verse_text, and logging relevant information.",
-              "parameters": [],
+              "description": "Loads data from the specified file, parsing each line into a dictionary with 'surah', 'ayah', and 'verse_text' keys. Raises FileNotFoundError if the file path is not provided or the file does not exist.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "QuranDataLoader",
+                  "description": "Instance of the class"
+                }
+              ],
               "return_type": "list"
             }
           ]
         }
       ],
       "functions": [],
-      "dependencies": []
+      "dependencies": [
+        "os",
+        "logging"
+      ]
     },
     {
       "path": "src/text_preprocessor.py",
       "language": "python",
-      "description": "Module that defines the TextPreprocessor class to normalize and tokenize Arabic text, including logging of processing steps.",
+      "description": "Module defining the TextPreprocessor class which processes Arabic text. It performs normalization, tokenization, lemmatization, and root extraction, while logging each step for debugging and verification.",
       "classes": [
         {
           "name": "TextPreprocessor",
-          "description": "A class for preprocessing Arabic text that initializes a logger and provides methods to normalize and tokenize Arabic text.",
+          "description": "A class for preprocessing Arabic text by normalizing, tokenizing, lemmatizing, and extracting root words. It logs various processing steps for debugging.",
           "parents": [],
           "methods": [
             {
               "name": "__init__",
-              "description": "Initialize the TextPreprocessor and set up the logger.",
+              "description": "Initialize the TextPreprocessor and configure the logger.",
               "parameters": [],
               "return_type": "None"
             },
             {
               "name": "preprocess_text",
-              "description": "Preprocess the given Arabic text by normalizing and tokenizing the text while logging processing details.",
+              "description": "Preprocess the Arabic text by performing normalization, tokenization, lemmatization, and root extraction. Returns the processed tokens joined by a space.",
               "parameters": [
                 {
                   "name": "text",
                   "type": "string",
-                  "description": "The input Arabic text to be processed."
+                  "description": "The input Arabic text."
                 }
               ],
               "return_type": "string"
@@ -76,57 +90,62 @@
       "functions": [],
       "dependencies": [
         "src/arabic_normalization.py",
-        "src/tokenizer.py"
+        "src/tokenizer.py",
+        "src/lemmatizer.py",
+        "src/root_extractor.py"
       ]
     },
     {
       "path": "src/logger_config.py",
       "language": "python",
-      "description": "Module that configures and sets up the logging for the application, writing log messages to 'quran_analysis.log' with a predefined format.",
+      "description": "Configures and returns a logger for the application, logging messages to both console and a log file named 'quran_analysis.log'.",
       "classes": [],
       "functions": [
         {
           "name": "configure_logger",
-          "description": "Configure the root logger to write log messages to 'quran_analysis.log' and set logging level to INFO. It clears existing handlers before attaching a new FileHandler.",
+          "description": "Configures and returns a logger that logs messages to both console and a log file.\n\nThe log file is named 'quran_analysis.log' and is located in the project root.\n\n:return: Configured logger instance.",
           "parameters": [],
-          "return_type": "logging.Logger"
+          "return_type": "logger"
         }
       ],
-      "dependencies": []
+      "dependencies": [
+        "logging",
+        "os"
+      ]
     },
     {
       "path": "src/main.py",
-      "language": "python",
-      "description": "Main module that initiates the application. It sets up logging, data loading, and text preprocessing, and ensures proper resource cleanup.",
+      "language": "Python",
+      "description": "Main application entry file that orchestrates data loading, text preprocessing, logging configuration, and error handling. It configures the logger, loads data, processes text data, and ensures proper shutdown of logging.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main function to orchestrate data loading and text preprocessing. It configures the logger, reads the data file path from the environment variable, loads data using QuranDataLoader, processes text using TextPreprocessor, and handles cleanup of log file handlers.",
+          "description": "Main function to orchestrate data loading and text preprocessing. It sets up the logger, retrieves the data file path, loads data using QuranDataLoader, preprocesses each verse text with TextPreprocessor, and handles exceptions.",
           "parameters": [],
           "return_type": "None"
         }
       ],
       "dependencies": [
-        "src/logger_config.py",
-        "src/data_loader.py",
-        "src/text_preprocessor.py"
+        "src/logger_config",
+        "src/data_loader",
+        "src/text_preprocessor",
+        "os",
+        "logging"
       ]
     },
     {
       "path": "setup.py",
       "language": "python",
-      "description": "Setup script for packaging and distribution of the quran_text_analysis application. It defines package metadata, dependencies, and console entry points.",
+      "description": "Setup script for the QuranAnalysis package. Configures package metadata, dependencies, and entry points for console scripts using setuptools.",
       "classes": [],
       "functions": [],
-      "dependencies": [
-        "src/main.py"
-      ]
+      "dependencies": []
     },
     {
       "path": "requirements.txt",
       "language": "None",
-      "description": "Lists required Python packages for the project. Currently empty indicating no external dependencies.",
+      "description": "Requirements file listing the project's dependencies, including the camel-tools package required for Arabic text processing.",
       "classes": [],
       "functions": [],
       "dependencies": []
@@ -149,24 +168,62 @@
     },
     {
       "path": "tests/test_data_loader.py",
-      "language": "python",
-      "description": "Unit tests for the QuranDataLoader class, testing data loading and error handling scenarios.",
+      "language": "Python",
+      "description": "This file contains unit tests for the QuranDataLoader class. It tests the functionality of loading data from a file, including error handling for file not found scenarios. The tests use a temporary file with test data to verify that the loader correctly parses the file and returns the expected data structure.",
       "classes": [
         {
           "name": "TestQuranDataLoader",
-          "description": "Unit tests for the QuranDataLoader class methods.",
-          "parents": [],
+          "description": "A test class for the QuranDataLoader that verifies its functionality for loading and parsing Quran data from a text file. It includes tests for both successful data loading and error handling when a file is not found.",
+          "parents": [
+            "unittest.TestCase"
+          ],
           "methods": [
             {
-              "name": "test_load_data_success",
-              "description": "Test that loading data from a valid file returns a correctly parsed list of dictionaries.",
-              "parameters": [],
+              "name": "setUp",
+              "description": "Sets up the test environment by creating a temporary file with test data.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestQuranDataLoader",
+                  "description": "Instance of the test class"
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "tearDown",
+              "description": "Cleans up the test environment by removing the temporary file.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestQuranDataLoader",
+                  "description": "Instance of the test class"
+                }
+              ],
               "return_type": "None"
             },
             {
               "name": "test_load_data_file_not_found",
-              "description": "Test that a non-existent file raises a FileNotFoundError.",
-              "parameters": [],
+              "description": "Tests that load_data raises FileNotFoundError when the file doesn't exist.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestQuranDataLoader",
+                  "description": "Instance of the test class"
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_load_data_success",
+              "description": "Tests that load_data correctly parses the file and returns the expected data structure.",
+              "parameters": [
+                {
+                  "name": "self",
+                  "type": "TestQuranDataLoader",
+                  "description": "Instance of the test class"
+                }
+              ],
               "return_type": "None"
             }
           ]
@@ -174,7 +231,11 @@
       ],
       "functions": [],
       "dependencies": [
-        "src/data_loader.py"
+        "unittest",
+        "os",
+        "tempfile",
+        "unittest.mock",
+        "src.data_loader"
       ]
     },
     {
@@ -250,18 +311,18 @@
     {
       "path": "tests/test_integration.py",
       "language": "python",
-      "description": "Integration tests that exercise the core user flow of the application, including data loading, logging, and overall execution of the main function.",
+      "description": "Integration tests for the core user flow of the QuranAnalysis application. Verifies data loading, logging, and token processing end-to-end.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration tests for verifying the complete application flow including data file handling and log file creation.",
+          "description": "Integration tests for the core user flow.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the integration flow by invoking the main function, verifying log file creation and checking expected log messages in the log file.",
+              "description": "Tests the complete integration flow including data loading, logging, and token processing verification.",
               "parameters": [],
               "return_type": "None"
             }
@@ -314,6 +375,124 @@
         }
       ],
       "dependencies": []
+    },
+    {
+      "path": "src/lemmatizer.py",
+      "language": "python",
+      "description": "Module for Arabic lemmatization. Provides functionality to lemmatize Arabic tokens using CAMeL Tools.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "lemmatize_token",
+          "description": "Lemmatize the given Arabic token using CAMeL Tools. Returns the lemmatized form if successful; otherwise returns the original token.",
+          "parameters": [
+            {
+              "name": "token",
+              "type": "string",
+              "description": "The Arabic word token."
+            }
+          ],
+          "return_type": "string"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "src/root_extractor.py",
+      "language": "python",
+      "description": "Module for Arabic root word extraction. Provides functionality to extract the root of an Arabic token using CAMeL Tools morphological analysis.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "extract_root",
+          "description": "Extract the root of the given Arabic token using CAMeL Tools morphological analysis. Returns the root if found; otherwise returns the original token.",
+          "parameters": [
+            {
+              "name": "token",
+              "type": "string",
+              "description": "The Arabic word token."
+            }
+          ],
+          "return_type": "string"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "tests/test_lemmatizer.py",
+      "language": "Python",
+      "description": "Unit tests for the Arabic lemmatizer function. Uses unittest and mock patching to validate the behavior of lemmatize_token by simulating the lemmatizer instance.",
+      "classes": [
+        {
+          "name": "TestLemmatizer",
+          "description": "Contains unit tests for the Arabic lemmatizer. Tests the lemmatize_token function to ensure it appends '_lem' to a given token using a mocked lemmatizer instance.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_lemmatize_token",
+              "description": "Tests that lemmatize_token returns the token appended with '_lem' using a mocked lemmatizer instance.",
+              "parameters": [
+                {
+                  "name": "mock_lemmatizer_instance",
+                  "type": "Mock",
+                  "description": "A mocked instance of the internal lemmatizer to simulate the lemmatization behavior."
+                }
+              ],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/lemmatizer"
+      ]
+    },
+    {
+      "path": "tests/test_root_extractor.py",
+      "language": "Python",
+      "description": "Unit tests for the Arabic root extraction functionality. Validates the behavior of extract_root function with both valid analysis and fallback when analysis returns an empty result.",
+      "classes": [
+        {
+          "name": "TestRootExtractor",
+          "description": "Contains unit tests for Arabic root extraction, testing both cases when a valid root is returned and when no analysis result is provided.",
+          "parents": [
+            "unittest.TestCase"
+          ],
+          "methods": [
+            {
+              "name": "test_extract_root",
+              "description": "Tests that extract_root returns the correct root when the analyzer returns a valid result.",
+              "parameters": [
+                {
+                  "name": "mock_analyzer_instance",
+                  "type": "Mock",
+                  "description": "A mocked analyzer instance to simulate analysis returning a valid root."
+                }
+              ],
+              "return_type": "None"
+            },
+            {
+              "name": "test_extract_root_no_analysis",
+              "description": "Tests that extract_root returns the original token when the analyzer returns an empty result.",
+              "parameters": [
+                {
+                  "name": "mock_analyzer_instance",
+                  "type": "Mock",
+                  "description": "A mocked analyzer instance to simulate analysis returning an empty list."
+                }
+              ],
+              "return_type": "None"
+            }
+          ]
+        }
+      ],
+      "functions": [],
+      "dependencies": [
+        "src/root_extractor"
+      ]
     }
   ]
 }

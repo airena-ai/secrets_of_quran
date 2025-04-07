@@ -1,27 +1,20 @@
-import os
 import logging
+import os
 
 def configure_logger():
-    """
-    Configure the root logger to write log messages to 'quran_analysis.log'
-    in the project root directory.
+    '''
+    Configure and return a logger that logs messages to both console and a log file.
 
-    :return: Configured root logger.
-    """
+    The log file is named 'quran_analysis.log' and is located in the project root.
+
+    :return: Configured logger instance.
+    '''
     logger = logging.getLogger()
-    
-    # Clear existing handlers to ensure we don't have multiple handlers
-    # writing to the same or deleted log files
-    for handler in logger.handlers[:]:
-        logger.removeHandler(handler)
-    
     logger.setLevel(logging.INFO)
-    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    log_file = os.path.join(project_root, "quran_analysis.log")
-    file_handler = logging.FileHandler(log_file, encoding="utf-8")
-    file_handler.setLevel(logging.INFO)
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
-    
+    log_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "quran_analysis.log")
+    fh = logging.FileHandler(log_file, encoding="utf-8")
+    fh.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    fh.setFormatter(formatter)
+    logger.addHandler(fh)
     return logger
