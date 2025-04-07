@@ -24,6 +24,7 @@ def main():
     12. Analyzes lemma word frequency across the Quran data.
     13. Analyzes lemma word co-occurrence across the Quran data.
     14. Analyzes word n-gram frequency at Quran, Surah, and Ayah levels.
+    15. Analyzes character n-gram frequency at Quran, Surah, and Ayah levels.
     """
     logger = configure_logger()
     logger.info("Application started.")
@@ -148,6 +149,20 @@ def main():
         logger.info("Starting Ayah-level word n-gram analysis.")
         ayah_ngram_freq = analyze_ayah_word_ngrams(data, n=2)
         logger.info("Ayah-level word n-gram analysis completed.")
+
+        # Integrate Character N-gram Analysis
+        from src.ngram_analyzer import analyze_character_ngrams, analyze_surah_character_ngrams, analyze_ayah_character_ngrams
+        logger.info("Starting Character N-gram Analysis at Quran level.")
+        char_ngram_freq = analyze_character_ngrams(data, n=2)
+        logger.info("Character N-gram Analysis at Quran level completed.")
+        
+        logger.info("Starting Character N-gram Analysis at Surah level.")
+        surah_char_ngram_freq = analyze_surah_character_ngrams(data, n=2)
+        logger.info("Character N-gram Analysis at Surah level completed.")
+        
+        logger.info("Starting Character N-gram Analysis at Ayah level.")
+        ayah_char_ngram_freq = analyze_ayah_character_ngrams(data, n=2)
+        logger.info("Character N-gram Analysis at Ayah level completed.")
 
         logger.info("Application finished.")
     except Exception as e:

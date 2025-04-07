@@ -110,7 +110,7 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Top 20 most frequent characters:", log_content)
         self.assertIn("Total unique characters:", log_content)
         self.assertIn("Finished Character Frequency Analysis.", log_content)
-
+        
         # Additional assertions for word n-gram analysis at Quran level
         self.assertIn("Starting Word N-gram (Bigram) Frequency Analysis (Quran Level)...", log_content)
         self.assertIn("Top 20 most frequent word bigrams:", log_content)
@@ -122,6 +122,14 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Surah-level word n-gram analysis completed.", log_content)
         self.assertIn("Starting Ayah-level word n-gram analysis.", log_content)
         self.assertIn("Ayah-level word n-gram analysis completed.", log_content)
+        
+        # Additional assertions for Character N-gram Analysis (new functions)
+        self.assertIn("Starting Character N-gram Analysis at Quran level.", log_content)
+        self.assertIn("Character N-gram Analysis at Quran level completed.", log_content)
+        self.assertIn("Starting Character N-gram Analysis at Surah level.", log_content)
+        self.assertIn("Character N-gram Analysis at Surah level completed.", log_content)
+        self.assertIn("Starting Character N-gram Analysis at Ayah level.", log_content)
+        self.assertIn("Character N-gram Analysis at Ayah level completed.", log_content)
         
         # Cleanup created files
         os.remove(data_file)
