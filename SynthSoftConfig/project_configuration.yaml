@@ -43,14 +43,14 @@ project_root_folder: C:\Github\secrets_of_quran
 product_spec_history_filename: product_spec_history.json
 architecture_spec_history_filename: architecture_spec_history.json
 codebase_metadata_filename: codebase_metadata.json
-total_runs_to_build_northstar: 10
+total_runs_to_build_northstar: 30
 max_test_attempts_per_iteration: 5
 programming_languages:
   - python
 development_os: "Windows 11"
 run_tests: True
 auto_commit: True
-auto_revert: False
+auto_revert: True
 use_local_llm: False
 
 
