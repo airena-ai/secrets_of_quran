@@ -116,9 +116,9 @@ class TestIntegration(unittest.TestCase):
         
         # Assertions for Surah-level and Ayah-level word n-gram analyses
         self.assertIn("Starting Surah-level word n-gram analysis.", log_content)
-        self.assertIn("Surah-level word n-gram analysis completed.", log_content)
         self.assertIn("Starting Ayah-level word n-gram analysis.", log_content)
-        self.assertIn("Ayah-level word n-gram analysis completed.", log_content)
+        self.assertIn("Surah Word N-gram Analysis:", log_content)
+        self.assertIn("Ayah Word N-gram Analysis:", log_content)
         
         # Additional assertions for Character N-gram Analysis (new functions)
         self.assertIn("Starting Character N-gram Analysis at Quran level.", log_content)

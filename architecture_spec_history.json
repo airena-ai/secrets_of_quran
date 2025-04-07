@@ -98,5 +98,10 @@
         "iteration": 19,
         "date": "2025-04-07",
         "iteration_goal": "Introduce a new `anomaly_detector` module with `analyze_anomaly_detection` function to identify statistical deviations in Quranic text features. Integrate this module into `main()` after other analysis modules. Enhance logging and integration tests to include anomaly detection results, ensuring modularity and testability of the new functionality."
+    },
+    {
+        "iteration": 20,
+        "date": "2025-04-07",
+        "iteration_goal": "Extend the `ngram_analyzer` module with `analyze_surah_word_ngrams` and `analyze_ayah_word_ngrams` functions to enable word N-gram analysis at Surah and Ayah levels. Update `main()` to incorporate these new functions and enhance logging and integration tests to validate the implementation. This provides a more detailed analysis of word sequence patterns within the Quran at different levels of granularity."
     }
 ]

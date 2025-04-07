@@ -49,36 +49,46 @@ def analyze_surah_word_ngrams(data, n=2):
     For each Surah, it:
       1. Consolidates tokens from the preprocessed text of all ayahs.
       2. Generates n-grams using a sliding window approach.
-      3. Logs the top 20 most frequent n-grams and the total unique n-grams count.
-
+      3. Logs the top 10 most frequent n-grams and the total unique n-grams count in a structured format,
+         indicating the Surah number and name.
+         
     :param data: List of dictionaries representing Quran data, where each dictionary contains keys
-                 such as 'surah', 'ayah', 'verse_text', and optionally 'processed_text'.
+                 such as 'surah', 'ayah', 'verse_text', and optionally 'processed_text' and 'surah_name'.
     :param n: The size of the n-gram. Default is 2 for bigrams.
     :return: A dictionary mapping each Surah to a Counter object mapping n-gram tuples to their frequency count.
     '''
     logger = logging.getLogger("quran_analysis")
     logger.info("Starting Surah-level word n-gram analysis.")
-    from collections import defaultdict
+    from collections import defaultdict, Counter
     surah_ngram_counts = {}
-    surah_tokens = defaultdict(list)
+    surah_grouped = {}
     for item in data:
         surah = item.get("surah", "Unknown")
+        surah_name = item.get("surah_name", "Unknown")
+        if surah not in surah_grouped:
+            surah_grouped[surah] = {"name": surah_name, "tokens": []}
         text = item.get("processed_text") or item.get("verse_text", "")
         tokens = text.split() if text else []
-        surah_tokens[surah].extend(tokens)
+        surah_grouped[surah]["tokens"].extend(tokens)
     
-    for surah, tokens in surah_tokens.items():
+    for surah, info in surah_grouped.items():
+        tokens = info["tokens"]
         counter = Counter()
         if len(tokens) < n:
             surah_ngram_counts[surah] = counter
-            logger.info("Surah %s has insufficient tokens for n-gram analysis.", surah)
+            logger.info("Surah %s (%s) has insufficient tokens for n-gram analysis.", surah, info["name"])
             continue
         for i in range(len(tokens) - n + 1):
             ngram = tuple(tokens[i:i+n])
             counter[ngram] += 1
-        top_20 = counter.most_common(20)
-        logger.info("Surah-level Word N-gram Analysis - Surah %s Top 20 n-grams: %s", surah, top_20)
-        logger.info("Surah %s - Total unique n-grams found: %d", surah, len(counter))
+        top_10 = counter.most_common(10)
+        log_message = {
+            "Surah": surah,
+            "Surah Name": info["name"],
+            "Top 10 N-grams": top_10,
+            "Total Unique N-grams": len(counter)
+        }
+        logger.info("Surah Word N-gram Analysis: %s", log_message)
         surah_ngram_counts[surah] = counter
     logger.info("Completed Surah-level word n-gram analysis.")
     return surah_ngram_counts
@@ -90,11 +100,9 @@ def analyze_ayah_word_ngrams(data, n=2):
     For each Ayah in the Quran data, this function:
       1. Tokenizes the verse text using 'processed_text' if available, otherwise 'verse_text'.
       2. Generates word n-grams using a sliding window approach.
-      3. Logs the top 20 most frequent n-grams along with the total unique n-grams count for that Ayah.
-
-    Logs are in the format:
-    "Ayah-level N-gram Analysis - Ayah: [Surah|Ayah] Top 20 n-grams: <list>, Total unique n-grams: <count>"
-
+      3. Logs the top 5 most frequent n-grams and the total unique n-grams count in a structured format,
+         clearly indicating the Surah and Ayah number.
+         
     :param data: List of dictionaries representing Quran data.
     :param n: The size of the n-gram. Default is 2 for bigrams.
     :return: A dictionary mapping each Ayah identifier (formatted as 'Surah|Ayah') to a Counter object of n-grams.
@@ -117,9 +125,13 @@ def analyze_ayah_word_ngrams(data, n=2):
         for i in range(len(tokens) - n + 1):
             ngram = tuple(tokens[i:i+n])
             counter[ngram] += 1
-        top_20 = counter.most_common(20)
-        logger.info("Ayah-level N-gram Analysis - Ayah: %s Top 20 n-grams: %s", ayah_id, top_20)
-        logger.info("Ayah %s - Total unique n-grams found: %d", ayah_id, len(counter))
+        top_5 = counter.most_common(5)
+        log_message = {
+            "Ayah": ayah_id,
+            "Top 5 N-grams": top_5,
+            "Total Unique N-grams": len(counter)
+        }
+        logger.info("Ayah Word N-gram Analysis: %s", log_message)
         ayah_ngram_counts[ayah_id] = counter
     logger.info("Completed Ayah-level word n-gram analysis.")
     return ayah_ngram_counts
