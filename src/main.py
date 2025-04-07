@@ -25,8 +25,12 @@ def main():
     logger.info("Application started.")
 
     try:
-        # Read file path from environment variable; if not set, defaults to None
+        # Read file path from environment variable; if not set, defaults to "quran-uthmani-min.txt"
         file_path = os.getenv("DATA_FILE")
+        if file_path is None:
+            project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+            file_path = os.path.join(project_root, "data", "quran-uthmani-min.txt")            
+
         loader = QuranDataLoader(file_path=file_path)
         data = loader.load_data()
 
@@ -53,8 +57,8 @@ def main():
         word_frequencies = count_word_frequencies(tokenized_text)
         unique_words_count = len(word_frequencies)
         logger.info("Total unique words: %d", unique_words_count)
-        top_words = sorted(word_frequencies.items(), key=lambda x: x[1], reverse=True)[:50]
-        logger.info("Top 50 most frequent words:")
+        top_words = sorted(word_frequencies.items(), key=lambda x: x[1], reverse=True)[:2000]
+        logger.info("Top 2000 most frequent words:")
         for word, count in top_words:
             logger.info("Word: %s, Count: %d", word, count)
         logger.info("Word frequency analysis completed.")
@@ -64,7 +68,7 @@ def main():
         logger.info("Starting word co-occurrence analysis.")
         cooccurrence_freq = analyze_word_cooccurrence(data)
         logger.info("Co-occurrence analysis returned %d unique word pairs.", len(cooccurrence_freq))
-        logger.info("Word co-occurrence analysis output: %s", cooccurrence_freq)
+        #logger.info("Word co-occurrence analysis output: %s", cooccurrence_freq)
         
         # Surah-level word frequency analysis
         from src.frequency_analyzer import analyze_surah_word_frequency, analyze_ayah_word_frequency

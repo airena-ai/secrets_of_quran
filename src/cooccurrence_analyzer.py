@@ -31,9 +31,9 @@ def analyze_word_cooccurrence(quran_data):
                     pair_counts[pair] = 1
                     
     sorted_pairs = sorted(pair_counts.items(), key=lambda item: item[1], reverse=True)
-    top_20 = sorted_pairs[:20]
-    logger.info("Word Co-occurrence Analysis Results")
-    for pair, count in top_20:
+    top_10000 = sorted_pairs[:10000]
+    logger.info("Word Co-occurrence Analysis Results - TOP 10000 Pairs:")
+    for pair, count in top_10000:
         logger.info("Pair: %s, Count: %d", str(pair), count)
     logger.info("Total unique word pairs: %d", len(pair_counts))
     return pair_counts

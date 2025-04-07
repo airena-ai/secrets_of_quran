@@ -13,11 +13,9 @@ def configure_logger():
     logger.setLevel(logging.INFO)
     if not logger.handlers:
         log_file = os.path.join(os.getcwd(), "quran_analysis.log")
-        file_handler = logging.FileHandler(log_file, encoding="utf-8")
+        file_handler = logging.FileHandler(log_file, mode='w', encoding="utf-8")
         formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
-        logger.addHandler(stream_handler)
+
     return logger

@@ -35,7 +35,7 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Application started.", log_content)
         self.assertIn("Starting word frequency analysis.", log_content)
         self.assertIn("Total unique words:", log_content)
-        self.assertIn("Top 50 most frequent words:", log_content)
+        self.assertIn("Top 2000 most frequent words:", log_content)
         self.assertIn("Word frequency analysis completed.", log_content)
         
         # Validate that the total unique words count is present and greater than zero.
