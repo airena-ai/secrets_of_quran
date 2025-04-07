@@ -133,7 +133,7 @@
     {
       "path": "data/quran-uthmani-min.txt",
       "language": "None",
-      "description": "Data file containing the Quran text in a simple format with surah:ayah followed by verse text.",
+      "description": "Data file containing the Quran text in a simple format with surah|ayah|verse text.",
       "classes": [],
       "functions": [],
       "dependencies": []
