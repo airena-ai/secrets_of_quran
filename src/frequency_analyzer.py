@@ -96,7 +96,7 @@ def analyze_root_word_frequency(data):
     Logs:
     - A header indicating the start of root word frequency analysis.
     - Total unique root words found.
-    - The top 20 most frequent root words.
+    - The top 1000 most frequent root words.
     
     :param data: List of dictionaries containing Quran data with 'roots' key.
     :return: Counter object mapping root words to their frequency count.
@@ -108,6 +108,29 @@ def analyze_root_word_frequency(data):
         root_counts.update(roots)
     logger.info("Starting root word frequency analysis.")
     logger.info("Total unique root words found: %d", len(root_counts))
-    top_20 = root_counts.most_common(20)
-    logger.info("Top 20 most frequent root words: %s", top_20)
+    top_1000 = root_counts.most_common(1000)
+    logger.info("Top 1000 most frequent root words: %s", top_1000)
     return root_counts
+
+def analyze_lemma_word_frequency(data):
+    '''
+    Analyze the frequency of lemma words across the Quran data.
+    
+    Logs:
+    - A header indicating the start of lemma word frequency analysis.
+    - Total unique lemma words found.
+    - The top 1000 most frequent lemma words.
+    
+    :param data: List of dictionaries containing Quran data with 'lemmas' key.
+    :return: Counter object mapping lemma words to their frequency count.
+    '''
+    logger = logging.getLogger("quran_analysis")
+    lemma_counts = Counter()
+    for item in data:
+        lemmas = item.get("lemmas", [])
+        lemma_counts.update(lemmas)
+    logger.info("Starting lemma word frequency analysis.")
+    logger.info("Total unique lemma words found: %d", len(lemma_counts))
+    top_1000 = lemma_counts.most_common(1000)
+    logger.info("Top 1000 most frequent lemma words: %s", top_1000)
+    return lemma_counts

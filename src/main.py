@@ -93,6 +93,18 @@ def main():
         analyze_root_word_cooccurrence(data)
         logger.info("Root Word Co-occurrence Analysis Completed.\n")
 
+        # Integrate lemma word frequency analysis
+        from src.frequency_analyzer import analyze_lemma_word_frequency
+        logger.info("Starting lemma word frequency analysis.")
+        root_frequencies = analyze_lemma_word_frequency(data)
+        logger.info("Lemma word frequency analysis completed.")
+
+        # Integrate lemma word co-occurrence analysis
+        from src.cooccurrence_analyzer import analyze_lemma_word_cooccurrence
+        logger.info("Starting Lemma Word Co-occurrence Analysis...")
+        analyze_lemma_word_cooccurrence(data)
+        logger.info("Lemma Word Co-occurrence Analysis Completed.\n")        
+        
         logger.info("Application finished.")
     except Exception as e:
         logger.error(f"Error in application: {str(e)}")

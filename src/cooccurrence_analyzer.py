@@ -38,7 +38,7 @@ def analyze_word_cooccurrence(quran_data):
     logger.info("Total unique word pairs: %d", len(pair_counts))
     return pair_counts
 
-def analyze_root_word_cooccurrence(quran_data, top_n_pairs=20):
+def analyze_root_word_cooccurrence(quran_data, top_n_pairs=10000):
     '''
     Analyze the co-occurrence of root words within each Ayah of the Quran data.
     
@@ -55,7 +55,7 @@ def analyze_root_word_cooccurrence(quran_data, top_n_pairs=20):
     
     :param quran_data: List of dictionaries. Each dictionary represents an Ayah and should contain
                        a 'roots' key with a list of root words.
-    :param top_n_pairs: Integer specifying the number of top frequent pairs to log (default is 20).
+    :param top_n_pairs: Integer specifying the number of top frequent pairs to log (default is 10000).
     '''
     from collections import Counter
     logger = logging.getLogger("quran_analysis")
@@ -72,5 +72,42 @@ def analyze_root_word_cooccurrence(quran_data, top_n_pairs=20):
     logger.info("Total unique root word pairs: %d", len(root_pair_counts))
     logger.info("Top %d most frequent root word pairs:", top_n_pairs)
     for pair, count in root_pair_counts.most_common(top_n_pairs):
-        logger.info("  Pair: %s, Count: %d", str(pair), count)
+        logger.info("  Root Pair: %s, Count: %d", str(pair), count)
     logger.info("--- End Root Word Co-occurrence Analysis ---\n")
+
+def analyze_lemma_word_cooccurrence(quran_data, top_n_pairs=10000):
+    '''
+    Analyze the co-occurrence of lemma words within each Ayah of the Quran data.
+    
+    This function iterates over each Ayah, extracts the list of lemma words from the 'lemmas' key,
+    and generates all unique pairs of lemmas (avoiding pairing a lemma with itself and ensuring
+    that (lemma1, lemma2) is treated the same as (lemma2, lemma1)). It counts the occurrences of 
+    each unique lemma word pair across all Ayahs.
+    
+    The function logs the analysis results including:
+    - A header indicating the start of lemma word co-occurrence analysis.
+    - The total number of unique lemma word pairs.
+    - The top N most frequent lemma word pairs along with their counts.
+    - A footer indicating the end of the analysis.
+    
+    :param quran_data: List of dictionaries. Each dictionary represents an Ayah and should contain
+                       a 'lemmas' key with a list of lemma words.
+    :param top_n_pairs: Integer specifying the number of top frequent pairs to log (default is 10000).
+    '''
+    from collections import Counter
+    logger = logging.getLogger("quran_analysis")
+    lemma_pair_counts = Counter()
+    for ayah_data in quran_data:
+        lemmas = ayah_data.get('lemmas', [])
+        if len(lemmas) > 1:
+            for i in range(len(lemmas)):
+                for j in range(i + 1, len(lemmas)):
+                    pair = tuple(sorted((lemmas[i], lemmas[j])))
+                    lemma_pair_counts[pair] += 1
+
+    logger.info("\n--- Lemma Word Co-occurrence Analysis ---")
+    logger.info("Total unique lemma word pairs: %d", len(lemma_pair_counts))
+    logger.info("Top %d most frequent lemma word pairs:", top_n_pairs)
+    for pair, count in lemma_pair_counts.most_common(top_n_pairs):
+        logger.info("  Lemma Pair: %s, Count: %d", str(pair), count)
+    logger.info("--- End Lemma Word Co-occurrence Analysis ---\n")    

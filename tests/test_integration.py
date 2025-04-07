@@ -73,13 +73,13 @@ class TestIntegration(unittest.TestCase):
         # Assertions for root word frequency analysis
         self.assertIn("Starting root word frequency analysis.", log_content)
         self.assertIn("Total unique root words found:", log_content)
-        self.assertIn("Top 20 most frequent root words:", log_content)
+        self.assertIn("Top 1000 most frequent root words:", log_content)
         
         # Assertions for root word co-occurrence analysis
         self.assertIn("Starting Root Word Co-occurrence Analysis...", log_content)
         self.assertIn("Root Word Co-occurrence Analysis Completed.", log_content)
         self.assertIn("Total unique root word pairs:", log_content)
-        self.assertIn("Top 20 most frequent root word pairs:", log_content)
+        self.assertIn("Top 10000 most frequent root word pairs:", log_content)
 
         # Cleanup created files
         os.remove(data_file)

@@ -556,7 +556,7 @@
         },
         {
           "name": "analyze_root_word_frequency",
-          "description": "Evaluates the frequency distribution of root words in the tokenized Quran text. Logs the top 20 most frequent root words and returns a dictionary with root words as keys and their frequency counts as values.",
+          "description": "Evaluates the frequency distribution of root words in the tokenized Quran text. Logs the top 1000 most frequent root words and returns a dictionary with root words as keys and their frequency counts as values.",
           "parameters": [
             {
               "name": "tokenized_text",
@@ -565,14 +565,26 @@
             }
           ],
           "return_type": "dict"
-        }
+        },
+        {
+          "name": "analyze_lemma_word_frequency",
+          "description": "Evaluates the frequency distribution of lemma words in the tokenized Quran text. Logs the top 1000 most frequent lemma words and returns a dictionary with lemma words as keys and their frequency counts as values.",
+          "parameters": [
+            {
+              "name": "tokenized_text",
+              "type": "list",
+              "description": "A list of lists of lemma word tokens, where each inner list represents an ayah."
+            }
+          ],
+          "return_type": "dict"
+        }        
       ],
       "dependencies": []
     },
     {
       "path": "src/cooccurrence_analyzer.py",
       "language": "python",
-      "description": "This module provides functionality to analyze word co-occurrence within each ayah of the Quran data. It tokenizes the text and counts unique co-occurring word pairs, logging the top 20 pairs and the total number of unique pairs.",
+      "description": "This module provides functionality to analyze word co-occurrence within each ayah of the Quran data. It tokenizes the text and counts unique co-occurring word pairs, logging the top N pairs and the total number of unique pairs.",
       "classes": [],
       "functions": [
         {
@@ -586,7 +598,31 @@
             }
           ],
           "return_type": "dict"
-        }
+        },
+        {
+          "name": "analyze_root_word_cooccurrence",
+          "description": "Analyzes Root word co-occurrence within each ayah of the Quran data. It tokenizes the verse text and counts unique root word pairs, ensuring pairs are stored in alphabetical order for consistency.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries, each containing 'surah', 'ayah', and either 'processed_text' or 'verse_text'."
+            }
+          ],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_lemma_word_cooccurrence",
+          "description": "Analyzes Lemma word co-occurrence within each ayah of the Quran data. It tokenizes the verse text and counts unique lemma word pairs, ensuring pairs are stored in alphabetical order for consistency.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries, each containing 'surah', 'ayah', and either 'processed_text' or 'verse_text'."
+            }
+          ],
+          "return_type": "dict"
+        }        
       ],
       "dependencies": [
         "src/tokenizer.py"
