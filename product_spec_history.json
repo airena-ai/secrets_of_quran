@@ -18,5 +18,10 @@
         "iteration": 3,
         "date": "2025-04-06",
         "iteration_goal": "This increment focuses on implementing word frequency analysis on the Quran text. A new function `count_word_frequencies` will be created to calculate and log the frequency of each word. The `main()` function will be updated to call this function and log the top frequent words and total unique words. Integration tests will be enhanced to verify the correct implementation and output of the word frequency analysis. This step provides a basic analytical tool for exploring patterns in the Quran text."
+    },
+    {
+        "iteration": 4,
+        "date": "2025-04-06",
+        "iteration_goal": "This increment focuses on implementing word co-occurrence analysis. A new function `analyze_word_cooccurrence` will be developed to identify and count pairs of words that appear together within the same ayah of the Quran. The function will process the Quran data, tokenize each ayah, and calculate the co-occurrence frequency of word pairs. The top frequent pairs and total unique pairs will be logged. The `main()` function and integration tests will be updated to include and validate this new analysis, providing insights into word relationships within Quranic verses."
     }
 ]

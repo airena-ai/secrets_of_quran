@@ -115,13 +115,13 @@
     },
     {
       "path": "src/main.py",
-      "language": "Python",
-      "description": "Main application entry point for orchestrating data loading, text preprocessing, tokenization, and word frequency analysis. It initializes logging, handles environment parameters, integrates external modules (logger configuration, data loader, text preprocessor, frequency analyzer), and manages error handling and shutdown.",
+      "language": "python",
+      "description": "This module is the main entry point for the Quran data analysis application. It orchestrates data loading, text preprocessing, word frequency analysis, and word co-occurrence analysis, handling logging and error management throughout the process.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Orchestrates the full workflow of loading Quran data, preprocessing text, splitting tokens, performing word frequency analysis, logging progress, and gracefully handling errors and shutdown.",
+          "description": "Orchestrates the application flow including data loading, preprocessing, word frequency analysis, and word co-occurrence analysis. It logs each step of the process and handles exceptions gracefully.",
           "parameters": [],
           "return_type": "None"
         }
@@ -130,7 +130,8 @@
         "src/logger_config.py",
         "src/data_loader.py",
         "src/text_preprocessor.py",
-        "src/frequency_analyzer.py"
+        "src/frequency_analyzer.py",
+        "src/cooccurrence_analyzer.py"
       ]
     },
     {
@@ -309,26 +310,20 @@
     },
     {
       "path": "tests/test_integration.py",
-      "language": "Python",
-      "description": "This file contains integration tests using the unittest framework. It tests the main application flow by setting up sample data, invoking the main function from the primary module, and verifying that log outputs and cleanup operations are correctly executed. The test ensures the creation and verification of log files and proper data cleanup.",
+      "language": "python",
+      "description": "This module contains integration tests for the core user flow of the Quran data analysis application. It verifies the complete process from data loading to analysis by checking log outputs and ensuring that the application behaves as expected.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "A unit test class for integration testing of the core user flow. It validates the complete execution of the main application flow including environment setup, file creation, log verification, and cleanup procedures.",
+          "description": "Integration tests for the core user flow of the application.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the integration flow by creating sample data, setting environment variables, invoking the main application, and verifying that expected log messages and file operations are performed.",
-              "parameters": [
-                {
-                  "name": "self",
-                  "type": "TestIntegration",
-                  "description": "Reference to the current instance of the TestIntegration test case."
-                }
-              ],
+              "description": "Tests the end-to-end application flow including data preparation, analysis, and log verification, ensuring every component works together as expected.",
+              "parameters": [],
               "return_type": "None"
             }
           ]
@@ -519,6 +514,29 @@
         }
       ],
       "dependencies": []
+    },
+    {
+      "path": "src/cooccurrence_analyzer.py",
+      "language": "python",
+      "description": "This module provides functionality to analyze word co-occurrence within each ayah of the Quran data. It tokenizes the text and counts unique co-occurring word pairs, logging the top 20 pairs and the total number of unique pairs.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_word_cooccurrence",
+          "description": "Analyzes word co-occurrence within each ayah of the Quran data. It tokenizes the verse text and counts unique word pairs, ensuring pairs are stored in alphabetical order for consistency.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries, each containing 'surah', 'ayah', and either 'processed_text' or 'verse_text'."
+            }
+          ],
+          "return_type": "dict"
+        }
+      ],
+      "dependencies": [
+        "src/tokenizer.py"
+      ]
     }
   ]
 }

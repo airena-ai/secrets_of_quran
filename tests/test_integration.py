@@ -29,8 +29,7 @@ class TestIntegration(unittest.TestCase):
 
         # Execute the main application flow
         main()
-        # Verify that the log file was created and contains expected log messages related to frequency analysis
-        self.assertTrue(os.path.exists(log_file))
+        # Verify that the log file was created and contains expected log messages
         with open(log_file, "r", encoding="utf-8") as file:
             log_content = file.read()
         self.assertIn("Application started.", log_content)
@@ -38,12 +37,17 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Total unique words:", log_content)
         self.assertIn("Top 50 most frequent words:", log_content)
         self.assertIn("Word frequency analysis completed.", log_content)
-        # Optionally check for specific frequency outputs for known words based on sample data processing
+        # Frequency analysis expected outputs for sample data
         self.assertIn("Total unique words: 4", log_content)
         self.assertIn("Word: بسم, Count: 1", log_content)
         self.assertIn("Word: الله, Count: 1", log_content)
         self.assertIn("Word: الرحمن, Count: 1", log_content)
         self.assertIn("Word: الرحيم, Count: 1", log_content)
+        # Additional assertions for word co-occurrence analysis
+        self.assertIn("Starting word co-occurrence analysis.", log_content)
+        self.assertIn("Word Co-occurrence Analysis Results", log_content)
+        self.assertIn("Co-occurrence analysis returned", log_content)
+        self.assertIn("Total unique word pairs: 6", log_content)
 
         # Cleanup created files
         os.remove(data_file)

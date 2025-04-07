@@ -14,6 +14,8 @@ def main():
     3. Collects the tokenized text (each verse as a list of words).
     4. Computes word frequency analysis on the tokenized text.
     5. Logs the total unique word count and the top 50 most frequent words.
+    6. Computes word co-occurrence analysis, logs the top 20 most frequent co-occurring word pairs 
+       and the total number of unique word pairs.
     """
     logger = configure_logger()
     logger.info("Application started.")
@@ -46,6 +48,13 @@ def main():
         for word, count in top_words:
             logger.info("Word: %s, Count: %d", word, count)
         logger.info("Word frequency analysis completed.")
+
+        # Integrate word co-occurrence analysis
+        from src.cooccurrence_analyzer import analyze_word_cooccurrence
+        logger.info("Starting word co-occurrence analysis.")
+        cooccurrence_freq = analyze_word_cooccurrence(data)
+        logger.info("Co-occurrence analysis returned %d unique word pairs.", len(cooccurrence_freq))
+        logger.info("Word co-occurrence analysis output: %s", cooccurrence_freq)
 
         logger.info("Application finished.")
     except Exception as e:
