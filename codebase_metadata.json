@@ -116,12 +116,12 @@
     {
       "path": "src/main.py",
       "language": "python",
-      "description": "This file serves as the main entry point for the Quran analysis application. It orchestrates data loading, text preprocessing, frequency analysis, and logging of analytical results. It integrates components such as the data loader, text preprocessor, frequency analyzer, and co-occurrence analyzer.",
+      "description": "This module defines the main application entry point that orchestrates data loading, text preprocessing, and various analytical workflows for Quran data, including word frequency analysis, co-occurrence, character frequency, root and lemma word analyses, and n-gram analysis. It also handles logging and error management.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main function to orchestrate data loading, text preprocessing, word frequency analysis, and root/lemma analyses. It logs various execution steps and gracefully handles errors.",
+          "description": "Orchestrates the complete workflow by configuring the logger, loading data, preprocessing text, invoking multiple analytical functions, and managing errors during execution.",
           "parameters": [],
           "return_type": "None"
         }
@@ -131,7 +131,8 @@
         "src/data_loader.py",
         "src/text_preprocessor.py",
         "src/frequency_analyzer.py",
-        "src/cooccurrence_analyzer.py"
+        "src/cooccurrence_analyzer.py",
+        "src/ngram_analyzer.py"
       ]
     },
     {
@@ -311,18 +312,18 @@
     {
       "path": "tests/test_integration.py",
       "language": "python",
-      "description": "Integration tests for the core application flow. This file verifies that the main application executes correctly and logs expected messages by simulating a full end-to-end run.",
+      "description": "This module contains integration tests for the main application flow. It verifies that data loading, processing, and various analytical modules work together correctly and that expected log messages are produced.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration tests for the core user flow of the application.",
+          "description": "Integration tests for the core user flow using the unittest framework.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the full integration flow of the application by setting up the environment, executing main, and validating log outputs.",
+              "description": "Tests the end-to-end integration flow by setting up the environment, triggering the main application workflow, and verifying log outputs and file operations.",
               "parameters": [
                 {
                   "name": "self",
@@ -691,6 +692,32 @@
       "dependencies": [
         "src/tokenizer.py"
       ]
+    },
+    {
+      "path": "src/ngram_analyzer.py",
+      "language": "python",
+      "description": "This module provides functionality to analyze word n-grams from Quran data using a sliding window approach. It calculates frequency statistics and logs the top 20 most frequent n-grams along with the total count of unique n-grams.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_word_ngrams",
+          "description": "Analyzes word n-gram frequency for the Quran data by tokenizing each ayah, generating n-grams, counting their occurrences, and logging the top 20 most frequent n-grams and the overall unique count.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of ayahs where each ayah is either a string (pre-tokenized) or a list of tokens."
+            },
+            {
+              "name": "n",
+              "type": "int",
+              "description": "The size of the n-gram. Default is 2 for bigrams."
+            }
+          ],
+          "return_type": "Counter"
+        }
+      ],
+      "dependencies": []
     }
   ]
 }

@@ -97,7 +97,7 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Starting Lemma Word Co-occurrence Analysis...", log_content)
         self.assertIn("Lemma Word Co-occurrence Analysis Completed.", log_content)
         
-        # Additional assertions for new Character Frequency Analyses at Surah and Ayah levels
+        # Additional assertions for Character Frequency Analyses at Surah and Ayah levels
         self.assertIn("Starting Surah-level Character Frequency Analysis.", log_content)
         self.assertIn("Surah-level Character Frequency Analysis completed.", log_content)
         self.assertIn("Starting Ayah-level Character Frequency Analysis.", log_content)
@@ -111,6 +111,12 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Total unique characters:", log_content)
         self.assertIn("Finished Character Frequency Analysis.", log_content)
 
+        # Additional assertions for word n-gram analysis
+        self.assertIn("Starting Word N-gram (Bigram) Frequency Analysis (Quran Level)...", log_content)
+        self.assertIn("Top 20 most frequent word bigrams:", log_content)
+        self.assertIn("Total unique word bigrams found:", log_content)
+        self.assertIn("Completed Word N-gram (Bigram) Frequency Analysis (Quran Level).", log_content)
+        
         # Cleanup created files
         os.remove(data_file)
         os.remove(log_file)
