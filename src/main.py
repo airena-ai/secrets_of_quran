@@ -1,9 +1,36 @@
 import logging
 import os
+import json
+import datetime
 from collections import Counter
 from src.logger_config import configure_logger
 from src.data_loader import QuranDataLoader, MAKKI_SURAHS, MADANI_SURAHS
 from src.text_preprocessor import TextPreprocessor
+
+def generate_summary(metadata, unique_words_count, top_words, gematria_cooccurrence):
+    '''
+    Generate a comprehensive summary of key analysis results.
+    
+    Aggregates metadata, word frequency analysis and gematria co-occurrence analysis.
+    
+    :param metadata: Dictionary containing metadata such as tool_version, execution_time, input_file.
+    :param unique_words_count: Total number of unique words (int).
+    :param top_words: List of top frequent words (list of tuples).
+    :param gematria_cooccurrence: Counter object from gematria co-occurrence analysis.
+    :return: Dictionary summarizing the key analysis results.
+    '''
+    summary = {
+        "metadata": metadata,
+        "word_frequency": {
+            "total_unique_words": unique_words_count,
+            "top_10_words": top_words[:10]
+        },
+        "gematria_cooccurrence": {
+            "total_unique_pairs": len(gematria_cooccurrence),
+            "top_10_pairs": list(gematria_cooccurrence.most_common(10))
+        }
+    }
+    return summary
 
 def analyze_quran_text_complexity():
     '''
@@ -96,7 +123,7 @@ def main():
     Main function to orchestrate data loading, text preprocessing, and various analyses on the Quran text.
     
     This function performs the following steps:
-    1. Loads Quran data.
+    1. Loads Quran data from the specified file.
     2. Preprocesses each verse (normalization, tokenization, lemmatization, root extraction).
     3. Collects the tokenized text (each verse as a list of words).
     4. Computes Gematria value distribution analysis on the entire Quran text.
@@ -107,10 +134,10 @@ def main():
     9. Computes Gematria distribution analysis by sentence length.
     10. Computes Sentence Length vs Gematria Correlation Analysis.
     11. Computes Surah-level and Ayah-level Character Frequency Analysis.
-    12. Computes word frequency analysis and logs the top frequent words.
+    12. Computes word frequency analysis and logs the top frequent words in a structured manner.
     13. Computes word collocation analysis.
     14. Computes Surah-level and Ayah-level word frequency analyses.
-    15. Computes ayah-level and surah-level root word frequency analyses.
+    15. Computes Ayah-level and Surah-level root word frequency analyses.
     16. Computes first and last root word frequency analyses at Ayah level.
     17. Computes semantic group frequency and co-occurrence analyses.
     18. Computes root word frequency and co-occurrence analyses.
@@ -122,6 +149,8 @@ def main():
     24. Performs advanced readability analyses including Flesch Reading Ease, Flesch-Kincaid Grade Level,
        Dale-Chall Readability Score, and SMOG Index.
     25. Performs comparative analysis between Makki and Madani Surahs.
+    26. Generates a comprehensive summary section that consolidates key findings, includes metadata such as tool version,
+       execution time, and input file, and logs top analysis results.
     '''
     logger = configure_logger()
     logger.info("Application started.")
@@ -305,9 +334,7 @@ def main():
         from src.semantic_analyzer import analyze_semantic_group_cooccurrence_ayah
         logger.info("Starting Semantic Group Co-occurrence Analysis at Ayah Level.")
         semantic_cooccurrence = analyze_semantic_group_cooccurrence_ayah(data)
-        logger.info("Top 10 semantic group co-occurrence pairs:")
-        for pair, count in sorted(semantic_cooccurrence.items(), key=lambda x: x[1], reverse=True)[:10]:
-            logger.info("Pair: %s, Count: %d", pair, count)
+        logger.info("Top 10 semantic group co-occurrence pairs: %s", sorted(semantic_cooccurrence.items(), key=lambda x: x[1], reverse=True)[:10])
         logger.info("Total unique semantic group co-occurrence pairs found: %d", len(semantic_cooccurrence))
         
         # Integrate root word frequency analysis
@@ -464,10 +491,19 @@ def main():
         comp_gematria = compare_makki_madani_gematria_distribution(MAKKI_SURAHS, MADANI_SURAHS)
         logger.info("Comparative Gematria Distribution: %s", comp_gematria)
 
+        # NEW: Generate final summary with metadata and key analysis results.
+        metadata = {
+            "tool_version": "0.1",
+            "execution_time": datetime.datetime.now().isoformat(),
+            "input_file": file_path
+        }
+        summary = generate_summary(metadata, unique_words_count, top_words, gematria_cooccurrence)
+        logger.info("Summary Section: %s", json.dumps(summary, ensure_ascii=False))
+
         logger.info("Application finished.")
         return {"gematria_cooccurrence": gematria_cooccurrence}
     except Exception as e:
-        logger.error(f"Error in application: {str(e)}")
+        logger.exception("Error in application occurred.")
         # Return a default error dictionary instead of None to ensure the test passes
         return {"error": str(e), "gematria_cooccurrence": Counter()}
     finally:

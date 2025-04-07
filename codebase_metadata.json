@@ -87,69 +87,98 @@
     },
     {
       "path": "src/logger_config.py",
-      "language": "python",
-      "description": "Configures and returns a logger for the application, logging messages to both console and a log file named 'quran_analysis.log'.",
+      "language": "Python",
+      "description": "This file configures and returns a logger for the Quran analysis application. It sets the logging level, file handler, and log message format to a structured JSON-like format for both machine parseability and human readability.",
       "classes": [],
       "functions": [
         {
           "name": "configure_logger",
-          "description": "Configures and returns a logger that logs messages to both console and a log file.\n\nThe log file is named 'quran_analysis.log' and is located in the project root.\n\n:return: Configured logger instance.",
+          "description": "Configure and return a logger instance for the Quran analysis application. It sets up file logging with a specific JSON-like format and writes logs to 'quran_analysis.log'.",
           "parameters": [],
-          "return_type": "logger"
+          "return_type": "Logger"
+        }
+      ],
+      "dependencies": []
+    },
+    {
+      "path": "src/main.py",
+      "language": "Python",
+      "description": "This is the main module of the Quran analysis application. It orchestrates the entire analysis process including data loading, text preprocessing, and various analyses such as word frequency, gematria distribution, text complexity, readability metrics, and comparative analysis between Makki and Madani Surahs. The module contains functions for generating summary reports and executing the main analysis workflow.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "generate_summary",
+          "description": "Generates a comprehensive summary of key analysis results. Aggregates metadata, word frequency analysis and gematria co-occurrence analysis.",
+          "parameters": [
+            {
+              "name": "metadata",
+              "type": "dict",
+              "description": "Dictionary containing metadata such as tool_version, execution_time, input_file."
+            },
+            {
+              "name": "unique_words_count",
+              "type": "int",
+              "description": "Total number of unique words."
+            },
+            {
+              "name": "top_words",
+              "type": "list",
+              "description": "List of top frequent words (list of tuples)."
+            },
+            {
+              "name": "gematria_cooccurrence",
+              "type": "Counter",
+              "description": "Counter object from gematria co-occurrence analysis."
+            }
+          ],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_quran_text_complexity",
+          "description": "Analyzes text complexity for the entire Quran. Loads the Quran data, concatenates the preprocessed text from all verses, calls the analyze_text_complexity() function, logs the resulting metrics, and returns the metrics.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_surah_text_complexity",
+          "description": "Analyzes text complexity for each Surah. Groups the verses by Surah, concatenates the preprocessed text for each Surah, calls the analyze_text_complexity() function for each Surah, and returns a dictionary mapping each Surah to its metrics.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "analyze_ayah_text_complexity",
+          "description": "Analyzes text complexity for each Ayah. For each Ayah, preprocesses the verse text, calls the analyze_text_complexity() function, and returns a dictionary mapping each Ayah (formatted as \"surah|ayah\") to its metrics.",
+          "parameters": [],
+          "return_type": "dict"
+        },
+        {
+          "name": "main",
+          "description": "Main function to orchestrate data loading, text preprocessing, and various analyses on the Quran text. Performs multiple analyses including word frequency, gematria distribution, text complexity, readability metrics, and comparative analysis between Makki and Madani Surahs. Generates a comprehensive summary of results.",
+          "parameters": [],
+          "return_type": "dict"
         }
       ],
       "dependencies": [
         "logging",
-        "os"
-      ]
-    },
-    {
-      "path": "src/main.py",
-      "language": "python",
-      "description": "Main application file that orchestrates data loading, preprocessing and multiple analyses on Quran text. It integrates modules for text complexity analysis, gematria value distribution, frequency analysis, readability metrics, anomaly detection, and comparative analysis. Contains functions: analyze_quran_text_complexity, analyze_surah_text_complexity, analyze_ayah_text_complexity, and main.",
-      "classes": [],
-      "functions": [
-        {
-          "name": "analyze_quran_text_complexity",
-          "description": "Analyze text complexity for the entire Quran. Loads Quran data, preprocesses verses, calls text complexity analysis, logs and returns metrics.",
-          "parameters": [],
-          "return_type": "Dictionary"
-        },
-        {
-          "name": "analyze_surah_text_complexity",
-          "description": "Analyze text complexity for each Surah. Loads Quran data, groups verses by Surah, calls text complexity analysis for each group, logs and returns a mapping of Surah metrics.",
-          "parameters": [],
-          "return_type": "Dictionary"
-        },
-        {
-          "name": "analyze_ayah_text_complexity",
-          "description": "Analyze text complexity for each Ayah. Processes each verse individually to compute and log complexity metrics, returning a mapping of Ayah identifiers to metrics.",
-          "parameters": [],
-          "return_type": "Dictionary"
-        },
-        {
-          "name": "main",
-          "description": "Orchestrates the overall application flow: configures logging, loads data, preprocesses text, integrates various analyses (gematria, frequency, readability, anomaly detection, comparative analysis), and manages error handling.",
-          "parameters": [],
-          "return_type": "Dictionary"
-        }
-      ],
-      "dependencies": [
-        "src/logger_config.py",
-        "src/data_loader.py",
-        "src/text_preprocessor.py",
-        "src/text_complexity_analyzer.py",
-        "src/gematria_analyzer.py",
-        "src/correlation_analyzer.py",
-        "src/frequency_analyzer.py",
-        "src/cooccurrence_analyzer.py",
-        "src/collocation_analyzer.py",
-        "src/distribution_analyzer.py",
-        "src/semantic_analyzer.py",
-        "src/ngram_analyzer.py",
-        "src/anomaly_detector.py",
-        "src/readability_analyzer.py",
-        "src/comparative_analyzer.py"
+        "os",
+        "json",
+        "datetime",
+        "collections.Counter",
+        "src.logger_config",
+        "src.data_loader",
+        "src.text_preprocessor",
+        "src.text_complexity_analyzer",
+        "src.gematria_analyzer",
+        "src.frequency_analyzer",
+        "src.correlation_analyzer",
+        "src.distribution_analyzer",
+        "src.cooccurrence_analyzer",
+        "src.collocation_analyzer",
+        "src.semantic_analyzer",
+        "src.ngram_analyzer",
+        "src.anomaly_detector",
+        "src.readability_analyzer",
+        "src.comparative_analyzer"
       ]
     },
     {

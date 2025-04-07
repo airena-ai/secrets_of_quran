@@ -183,5 +183,10 @@
         "iteration": 36,
         "date": "2025-04-07",
         "iteration_goal": "Introduce a new `comparative_analyzer` module with functions to compare Makki and Madani Surahs based on text complexity, word frequency, and Gematria. Add Makki/Madani Surah categorization data to `data_loader`. Update `main()` to include comparative analysis and add integration tests for the new module. This increment enhances analytical capabilities for stylistic and thematic comparison between Makki and Madani Surahs."
+    },
+    {
+        "iteration": 37,
+        "date": "2025-04-07",
+        "iteration_goal": "This iteration enhances `main.py` to orchestrate all analyses and updates `logger_config` for comprehensive, structured logging. The log file will include detailed results, summaries, timestamps, and metadata in a machine-parseable format. Analysis modules will provide structured outputs for logging. Integration tests will validate the enhanced `main` function and the self-sufficient log file, which serves as the primary output and documentation."
     }
 ]
