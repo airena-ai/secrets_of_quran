@@ -88,5 +88,10 @@
         "iteration": 17,
         "date": "2025-04-07",
         "iteration_goal": "This increment focuses on implementing semantic group frequency analysis. It introduces a new function `analyze_semantic_group_frequency` to count the occurrences of semantic groups, defined by root words, within the Quran text. This analysis will provide insights into the frequency distribution of root-based semantic categories, building upon previous root word extraction capabilities. The implementation includes function creation, semantic group counting logic, result logging, integration with the main function, and the addition of integration tests to validate the new functionality."
+    },
+    {
+        "iteration": 18,
+        "date": "2025-04-07",
+        "iteration_goal": "This increment focuses on analyzing semantic group co-occurrence within Quranic verses (Ayahs). A new function `analyze_semantic_group_cooccurrence_ayah` will be implemented to count how often pairs of semantic groups appear together in the same Ayah. The results, including the most frequent pairs and total unique pairs, will be logged and integration tests will be added to validate the implementation. This analysis will provide insights into the relationships between semantic themes within individual verses of the Quran."
     }
 ]

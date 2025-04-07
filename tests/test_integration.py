@@ -133,43 +133,49 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Top 20 most frequent word collocation pairs:", log_content)
         self.assertIn("Word Collocation Analysis completed.", log_content)
         
+        # New assertions for Semantic Group Co-occurrence Analysis at Ayah Level
+        self.assertIn("Starting Semantic Group Co-occurrence Analysis at Ayah Level.", log_content)
+        self.assertIn("Top 10 semantic group co-occurrence pairs:", log_content)
+        self.assertIn("Total unique semantic group co-occurrence pairs found:", log_content)
+        
         # Cleanup created files
         os.remove(data_file)
         os.remove(log_file)
         if not os.listdir(data_dir):
             os.rmdir(data_dir)
 
-    def test_analyze_semantic_group_frequency(self):
+    def test_semantic_group_cooccurrence_analysis(self):
         self.maxDiff = None
         import io
         import logging
-        from src.frequency_analyzer import analyze_semantic_group_frequency
-        # Set up a stream to capture log output
+        from src.semantic_analyzer import analyze_semantic_group_cooccurrence_ayah
         log_stream = io.StringIO()
         stream_handler = logging.StreamHandler(log_stream)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        formatter = logging.Formatter('%(message)s')
         stream_handler.setFormatter(formatter)
         logger = logging.getLogger("quran_analysis")
         logger.addHandler(stream_handler)
         logger.setLevel(logging.INFO)
         
-        # Define sample Quran data with roots
-        sample_quran_data = [
-            {"roots": ["root1", "root2", "root1"]},
-            {"roots": ["root2", "root3"]},
-            {"roots": ["root1"]}
+        sample_data = [
+            {"semantic_groups": ["themeA", "themeB", "themeC"]},
+            {"semantic_groups": ["themeA", "themeC"]},
+            {"semantic_groups": ["themeB", "themeC", "themeD"]}
         ]
-        result = analyze_semantic_group_frequency(sample_quran_data)
-        
+        expected_result = {
+            ("themeA", "themeB"): 1,
+            ("themeA", "themeC"): 2,
+            ("themeB", "themeC"): 2,
+            ("themeB", "themeD"): 1,
+            ("themeC", "themeD"): 1
+        }
+        result = analyze_semantic_group_cooccurrence_ayah(sample_data)
         logger.removeHandler(stream_handler)
         log_contents = log_stream.getvalue()
         
-        self.assertIn("Semantic Group Frequency Analysis:", log_contents)
-        self.assertIn("Total unique semantic groups: 3", log_contents)
-        self.assertIn("Root: root1, Count: 3", log_contents)
-        self.assertIn("Root: root2, Count: 2", log_contents)
-        self.assertIn("Root: root3, Count: 1", log_contents)
-        self.assertEqual(result, {"root1": 3, "root2": 2, "root3": 1})
+        self.assertEqual(result, expected_result)
+        self.assertIn("Top 10 semantic group co-occurrence pairs:", log_contents)
+        self.assertIn("Total unique semantic group co-occurrence pairs found: 5", log_contents)
 
 if __name__ == "__main__":
     unittest.main()

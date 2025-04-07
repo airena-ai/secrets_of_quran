@@ -133,6 +133,15 @@ def main():
         semantic_group_freq = analyze_semantic_group_frequency(data)
         logger.info("Semantic Group Frequency Analysis completed.")
         
+        # Integrate Semantic Group Co-occurrence Analysis at Ayah Level
+        from src.semantic_analyzer import analyze_semantic_group_cooccurrence_ayah
+        logger.info("Starting Semantic Group Co-occurrence Analysis at Ayah Level.")
+        semantic_cooccurrence = analyze_semantic_group_cooccurrence_ayah(data)
+        logger.info("Top 10 semantic group co-occurrence pairs:")
+        for pair, count in sorted(semantic_cooccurrence.items(), key=lambda x: x[1], reverse=True)[:10]:
+            logger.info("Pair: %s, Count: %d", pair, count)
+        logger.info("Total unique semantic group co-occurrence pairs found: %d", len(semantic_cooccurrence))
+        
         # Integrate root word frequency analysis
         from src.frequency_analyzer import analyze_root_word_frequency
         logger.info("Starting root word frequency analysis.")

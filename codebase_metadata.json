@@ -116,26 +116,24 @@
     {
       "path": "src/main.py",
       "language": "Python",
-      "description": "Main entry point for the Quran text analysis application. Orchestrates the entire workflow including data loading, text preprocessing, and various text analysis techniques. The file handles loading Quran data, preprocessing each verse, and performing multiple types of analyses including word frequency, character frequency, n-gram analysis, co-occurrence analysis, and collocation analysis at different levels (Quran-wide, Surah-level, and Ayah-level).",
+      "description": "Main entry point for the Quran analysis application. This module orchestrates data loading, text preprocessing, and integration of various analyses such as word frequency, co-occurrence, n-gram, root word frequency, semantic group analysis, collocation, and character n-gram analyses. It configures the logger, handles error management, and ensures a clean shutdown of logging.",
       "classes": [],
       "functions": [
         {
           "name": "main",
-          "description": "Main function that orchestrates the entire Quran text analysis workflow. It loads Quran data, preprocesses text, and performs various analyses including word frequency, character frequency, n-gram, co-occurrence, and collocation analyses at different levels (Quran-wide, Surah-level, and Ayah-level). The function handles exceptions and ensures proper logging throughout the execution process.",
+          "description": "Orchestrates the complete data analysis workflow by loading Quran data, preprocessing text, and executing a series of analytical routines including frequency and co-occurrence analyses. It also integrates logging and error handling to track the analysis process.",
           "parameters": [],
           "return_type": "None"
         }
       ],
       "dependencies": [
-        "logging",
-        "os",
-        "src.logger_config",
-        "src.data_loader",
-        "src.text_preprocessor",
-        "src.frequency_analyzer",
-        "src.cooccurrence_analyzer",
-        "src.collocation_analyzer",
-        "src.ngram_analyzer"
+        "src/logger_config.py",
+        "src/data_loader.py",
+        "src/text_preprocessor.py",
+        "src/frequency_analyzer.py",
+        "src/cooccurrence_analyzer.py",
+        "src/collocation_analyzer.py",
+        "src/ngram_analyzer.py"
       ]
     },
     {
@@ -315,35 +313,35 @@
     {
       "path": "tests/test_integration.py",
       "language": "Python",
-      "description": "Integration tests for the core user flow and analysis functions. Uses the unittest framework to verify application logging, data processing, and analysis results.",
+      "description": "Integration test suite for the Quran analysis application. This module contains tests that validate the complete integration flow of the application as well as specific tests for semantic group co-occurrence analysis.",
       "classes": [
         {
           "name": "TestIntegration",
-          "description": "Integration test suite for verifying end-to-end functionality of the application including data loading, analysis, and logging.",
+          "description": "Integration tests for the core user flow of the Quran analysis application, including end-to-end testing of the main function and direct testing of semantic group co-occurrence analysis.",
           "parents": [
             "unittest.TestCase"
           ],
           "methods": [
             {
               "name": "test_integration_flow",
-              "description": "Tests the complete integration flow of the application, verifying log outputs and ensuring that analysis functions produce expected results.",
+              "description": "Tests the full integration flow by running the main function, checking log outputs for expected messages, and validating that various analysis steps complete successfully.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestIntegration",
-                  "description": "Instance of TestIntegration"
+                  "description": "Instance reference for the test case."
                 }
               ],
               "return_type": "None"
             },
             {
-              "name": "test_analyze_semantic_group_frequency",
-              "description": "Tests the semantic group frequency analysis function by providing sample Quran data and verifying that the logged output contains expected values.",
+              "name": "test_semantic_group_cooccurrence_analysis",
+              "description": "Tests the analyze_semantic_group_cooccurrence_ayah function using sample data to validate correct co-occurrence counts and proper logging of analysis results.",
               "parameters": [
                 {
                   "name": "self",
                   "type": "TestIntegration",
-                  "description": "Instance of TestIntegration"
+                  "description": "Instance reference for the test case."
                 }
               ],
               "return_type": "None"
@@ -354,7 +352,7 @@
       "functions": [],
       "dependencies": [
         "src/main.py",
-        "src/frequency_analyzer.py"
+        "src/semantic_analyzer.py"
       ]
     },
     {
@@ -953,6 +951,27 @@
         "collections",
         "src.text_preprocessor"
       ]
+    },
+    {
+      "path": "src/semantic_analyzer.py",
+      "language": "Python",
+      "description": "Module for semantic analysis functionalities. This module encapsulates functions to perform various semantic analyses, including semantic group co-occurrence analysis at the Ayah level. It defines the function analyze_semantic_group_cooccurrence_ayah which computes unique alphabetical pairs of semantic groups from each Ayah in Quran data and logs the top co-occurring pairs along with the total count.",
+      "classes": [],
+      "functions": [
+        {
+          "name": "analyze_semantic_group_cooccurrence_ayah",
+          "description": "Analyzes the co-occurrence of semantic groups within each Ayah in the provided Quran data. It retrieves semantic groups from each Ayah, forms unique alphabetical pairs excluding self-pairs, counts their occurrences, and logs the top 10 pairs along with the overall count.",
+          "parameters": [
+            {
+              "name": "quran_data",
+              "type": "list",
+              "description": "List of dictionaries representing Quran data, where each dictionary should have a 'semantic_groups' key containing a list of semantic group strings."
+            }
+          ],
+          "return_type": "dict"
+        }
+      ],
+      "dependencies": []
     }
   ]
 }
