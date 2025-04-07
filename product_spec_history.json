@@ -38,5 +38,10 @@
         "iteration": 7,
         "date": "2025-04-06",
         "iteration_goal": "This increment focuses on implementing root word frequency analysis across the entire Quran. A new function `analyze_root_word_frequency` will be created to count and log the frequency of each root word. The `main()` function will be updated to include this new analysis, and integration tests will be enhanced to validate its correct implementation. This step provides insights into the distribution of root words, building upon previous root word extraction capabilities and offering a deeper linguistic perspective on the Quranic text."
+    },
+    {
+        "iteration": 8,
+        "date": "2025-04-07",
+        "iteration_goal": "This increment focuses on performing root word frequency analysis at the Surah level. A new function `analyze_surah_root_word_frequency` will be created to calculate and log the frequency of each root word within each Surah. The `main()` function and integration tests will be updated to include and validate this new analysis, providing a more detailed view of root word distribution across different chapters of the Quran."
     }
 ]

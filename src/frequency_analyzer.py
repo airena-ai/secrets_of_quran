@@ -134,3 +134,35 @@ def analyze_lemma_word_frequency(data):
     top_1000 = lemma_counts.most_common(1000)
     logger.info("Top 1000 most frequent lemma words: %s", top_1000)
     return lemma_counts
+
+def analyze_surah_root_word_frequency(data):
+    '''
+    Analyze the frequency of root words at the Surah level.
+    
+    For each Surah in the Quran data:
+    - Preprocess each verse's original text using TextPreprocessor.preprocess_text to extract root words.
+    - Count the frequency of each root word using collections.Counter.
+    - Log the top 10 most frequent root words and the total unique root words count.
+    
+    :param data: List of dictionaries containing Quran data.
+    :return: Dictionary mapping Surah identifiers to a Counter of root word frequencies.
+    '''
+    import logging
+    from collections import Counter, defaultdict
+    from src.text_preprocessor import TextPreprocessor
+    logger = logging.getLogger("quran_analysis")
+    surah_root_freq = defaultdict(Counter)
+    processor = TextPreprocessor()
+    for item in data:
+        surah = item.get("surah", "Unknown")
+        original_text = item.get("verse_text", "")
+        if not original_text:
+            continue
+        processed_text = processor.preprocess_text(original_text)
+        tokens = processed_text.split()
+        surah_root_freq[surah].update(tokens)
+    for surah, counter in surah_root_freq.items():
+        top_10 = counter.most_common(10)
+        unique_count = len(counter)
+        logger.info("Surah-level Root Word Frequency Analysis - Surah %s Top 10 Root Words: %s, Unique Root Words Count: %d", surah, top_10, unique_count)
+    return surah_root_freq

@@ -70,6 +70,10 @@ class TestIntegration(unittest.TestCase):
         self.assertIn("Average word length:", log_content)
         self.assertIn("Most frequent word length(s):", log_content)
 
+        # Assertions for surah-level root word frequency analysis
+        self.assertIn("Starting surah-level root word frequency analysis.", log_content)
+        self.assertIn("Surah-level Root Word Frequency Analysis - Surah 1 Top 10 Root Words:", log_content)
+
         # Assertions for root word frequency analysis
         self.assertIn("Starting root word frequency analysis.", log_content)
         self.assertIn("Total unique root words found:", log_content)

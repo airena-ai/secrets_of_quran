@@ -81,6 +81,12 @@ def main():
         ayah_frequencies = analyze_ayah_word_frequency(data)
         logger.info("Ayah-level word frequency analysis completed.")
 
+        # Integrate surah-level root word frequency analysis
+        from src.frequency_analyzer import analyze_surah_root_word_frequency
+        logger.info("Starting surah-level root word frequency analysis.")
+        surah_root_frequencies = analyze_surah_root_word_frequency(data)
+        logger.info("Surah-level root word frequency analysis completed.")
+
         # Integrate root word frequency analysis
         from src.frequency_analyzer import analyze_root_word_frequency
         logger.info("Starting root word frequency analysis.")
